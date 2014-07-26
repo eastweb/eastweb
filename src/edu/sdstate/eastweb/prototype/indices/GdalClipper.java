@@ -2,7 +2,6 @@ package edu.sdstate.eastweb.prototype.indices;
 
 import java.io.File;
 import java.util.Arrays;
-
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.Transformer;
@@ -11,13 +10,8 @@ import org.gdal.gdalconst.gdalconst;
 import org.gdal.ogr.DataSource;
 import org.gdal.ogr.Layer;
 import org.gdal.ogr.ogr;
-
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
-/**
- * @author Isaiah Snell-Feikema
- *
- */
 public class GdalClipper implements Clipper {
 
     private final File mRaster;
@@ -61,7 +55,7 @@ public class GdalClipper implements Clipper {
                     (int) Math.ceil((featureExtent[3]-featureExtent[2])/pixelSize),
                     1,
                     gdalconst.GDT_Int16
-            );
+                    );
 
             outputDS.SetProjection(featureLyr.GetSpatialRef().ExportToWkt());
             outputDS.SetGeoTransform(new double[] {
@@ -70,8 +64,6 @@ public class GdalClipper implements Clipper {
             });
 
             System.out.println(Arrays.toString(outputDS.GetGeoTransform()));
-
-
 
             // Get pixel coordinate in output raster of corner of zone raster
             Transformer transformer = new Transformer(outputDS, rasterDS, null);

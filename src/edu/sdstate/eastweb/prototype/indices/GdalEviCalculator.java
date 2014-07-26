@@ -3,7 +3,8 @@ package edu.sdstate.eastweb.prototype.indices;
 import java.io.File;
 
 /**
- * EVI = G * (NIR - RED)/(NIR + C1*RED - C2*BLUE + L) where L=1, C1=6, C2=7.5, and G=2.5
+ * EVI = G * (NIR - RED)/(NIR + C1*RED - C2*BLUE + L) where L=1, C1=6, C2=7.5,
+ * and G=2.5
  * 
  * @author Isaiah Snell-Feikema
  */
@@ -30,12 +31,12 @@ public class GdalEviCalculator extends GdalSimpleIndexCalculator {
 
     @Override
     protected double calculatePixelValue(double[] values) {
-        if (values[NIR] == 32767 || values[RED] == 32767|| values[BLUE] == 32767) {
+        if (values[NIR] == 32767 || values[RED] == 32767
+                || values[BLUE] == 32767) {
             return -3.40282346639e+038;
         } else {
-            return G * (values[NIR] - values[RED]) /
-            (values[NIR] + C1*values[RED] - C2*values[BLUE] + L);
+            return G * (values[NIR] - values[RED])
+                    / (values[NIR] + C1 * values[RED] - C2 * values[BLUE] + L);
         }
     }
-
 }

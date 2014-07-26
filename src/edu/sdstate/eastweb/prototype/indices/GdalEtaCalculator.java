@@ -1,15 +1,13 @@
 package edu.sdstate.eastweb.prototype.indices;
 
 import java.io.File;
-
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.Transformer;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconst;
-
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
-public class GdalEtaCalculator implements IndexCalculator {
+public class GdalEtaCalculator extends GdalSimpleIndexCalculator {
 
     final File mLst; // Daytime LST
     final File mElevation;
@@ -18,7 +16,8 @@ public class GdalEtaCalculator implements IndexCalculator {
     final double mMinLst;
     final double mMaxLst;
 
-    public GdalEtaCalculator(File lst, File elevation, File eto, File eta, double minLst, double maxLst) {
+    public GdalEtaCalculator(File lst, File elevation, File eto, File eta,
+            double minLst, double maxLst) {
         mLst = lst;
         mElevation = elevation;
         mEto = eto;
@@ -40,37 +39,31 @@ public class GdalEtaCalculator implements IndexCalculator {
             final int HEIGHT = lstDS.GetRasterYSize();
 
             Dataset elevationDS = gdal.Open(mElevation.getPath());
-            Dataset correctedLstDS = gdal.GetDriverByName("GTiff").Create(
-                    new File(mEta.getParent(), "clst.tif").getPath(), // FIXME
-                    WIDTH, HEIGHT,
-                    1,
-                    gdalconst.GDT_Float32
-            );
-            Dataset etfDS = gdal.GetDriverByName("GTiff").Create(
-                    new File(mEta.getParent(), "etf.tif").getPath(), // FIXME
-                    WIDTH, HEIGHT,
-                    1,
-                    gdalconst.GDT_Float32
-            );
+            Dataset correctedLstDS =
+                    gdal.GetDriverByName("GTiff").Create(
+                            new File(mEta.getParent(), "clst.tif").getPath(), // FIXME
+                            WIDTH, HEIGHT, 1, gdalconst.GDT_Float32);
+            Dataset etfDS =
+                    gdal.GetDriverByName("GTiff").Create(
+                            new File(mEta.getParent(), "etf.tif").getPath(), // FIXME
+                            WIDTH, HEIGHT, 1, gdalconst.GDT_Float32);
             Dataset etoDS = gdal.Open(mEto.getPath());
-            Dataset etaDS = gdal.GetDriverByName("GTiff").Create(
-                    mEta.getPath(),
-                    WIDTH, HEIGHT,
-                    1,
-                    gdalconst.GDT_Float32
-            );
+            Dataset etaDS =
+                    gdal.GetDriverByName("GTiff").Create(mEta.getPath(), WIDTH,
+                            HEIGHT, 1, gdalconst.GDT_Float32);
             etaDS.SetProjection(lstDS.GetProjection());
             etaDS.SetGeoTransform(lstDS.GetGeoTransform());
 
-            assert(lstDS.GetRasterXSize() == elevationDS.GetRasterXSize());
-            assert(lstDS.GetRasterYSize() == elevationDS.GetRasterYSize());
+            assert (lstDS.GetRasterXSize() == elevationDS.GetRasterXSize());
+            assert (lstDS.GetRasterYSize() == elevationDS.GetRasterYSize());
 
-            assert(lstDS.GetRasterYSize() == etoDS.GetRasterXSize());
-            assert(lstDS.GetRasterYSize() == etoDS.GetRasterYSize());
+            assert (lstDS.GetRasterYSize() == etoDS.GetRasterXSize());
+            assert (lstDS.GetRasterYSize() == etoDS.GetRasterYSize());
 
             Transformer transformer = new Transformer(lstDS, elevationDS, null);
 
-            double[] point = new double[] {-0.5, -0.5, 0}; // Location of corner of first zone raster pixel
+            // Location of corner of first zone raster pixel
+            double[] point = new double[] { -0.5, -0.5, 0 };
 
             transformer.TransformPoint(0, point);
             int xOffset = (int) Math.round(point[0]);
@@ -79,17 +72,23 @@ public class GdalEtaCalculator implements IndexCalculator {
             double[] lstArray = new double[WIDTH];
             double[] elevationArray = new double[WIDTH];
             double[] correctedArray = new double[WIDTH];
-            for (int y=0; y<HEIGHT; y++) {
+            for (int y = 0; y < HEIGHT; y++) {
                 lstDS.GetRasterBand(1).ReadRaster(0, y, WIDTH, 1, lstArray);
-                elevationDS.GetRasterBand(1).ReadRaster(xOffset, yOffset + y, WIDTH, 1, elevationArray);
-                for (int x=0; x<WIDTH; x++) {
-                    if (lstArray[x] != 32767 && lstArray[x] > mMinLst && lstArray[x] < mMaxLst && elevationArray[x] != -3.4028234663852886E38) {
-                        correctedArray[x] = lstArray[x] + (elevationArray[x] * 0.0065); // FIXME: assumes elevation hasn't been corrected yet
+                elevationDS.GetRasterBand(1).ReadRaster(xOffset, yOffset + y,
+                        WIDTH, 1, elevationArray);
+                for (int x = 0; x < WIDTH; x++) {
+                    if (lstArray[x] != 32767 && lstArray[x] > mMinLst
+                            && lstArray[x] < mMaxLst
+                            && elevationArray[x] != -3.4028234663852886E38) {
+                        // FIXME: assumes elevation hasn't been corrected yet
+                        correctedArray[x] =
+                                lstArray[x] + (elevationArray[x] * 0.0065);
                     } else {
                         correctedArray[x] = 0;
                     }
                 }
-                correctedLstDS.GetRasterBand(1).WriteRaster(0, y, WIDTH, 1, correctedArray);
+                correctedLstDS.GetRasterBand(1).WriteRaster(0, y, WIDTH, 1,
+                        correctedArray);
             }
 
             // Calculate ETf
@@ -101,9 +100,10 @@ public class GdalEtaCalculator implements IndexCalculator {
             final double cold = min[0];
 
             double[] etfArray = new double[WIDTH];
-            for (int y=0; y<HEIGHT; y++) {
-                correctedLstDS.GetRasterBand(1).ReadRaster(0, y, WIDTH, 1, correctedArray);
-                for (int x=0; x<WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                correctedLstDS.GetRasterBand(1).ReadRaster(0, y, WIDTH, 1,
+                        correctedArray);
+                for (int x = 0; x < WIDTH; x++) {
                     if (correctedArray[x] != 0) {
                         etfArray[x] = (hot - correctedArray[x]) / (hot - cold);
                     } else {
@@ -116,10 +116,10 @@ public class GdalEtaCalculator implements IndexCalculator {
             // Calculate ETa
             double[] etoArray = new double[WIDTH];
             double[] etaArray = new double[WIDTH];
-            for (int y=0; y<HEIGHT; y++) {
+            for (int y = 0; y < HEIGHT; y++) {
                 etfDS.GetRasterBand(1).ReadRaster(0, y, WIDTH, 1, etfArray);
                 etoDS.GetRasterBand(1).ReadRaster(0, y, WIDTH, 1, etoArray);
-                for (int x=0; x<WIDTH; x++) {
+                for (int x = 0; x < WIDTH; x++) {
                     if (etfArray[x] != 0) {
                         etaArray[x] = etfArray[x] * etoArray[x];
                     } else {
@@ -145,6 +145,11 @@ public class GdalEtaCalculator implements IndexCalculator {
             etoDS.delete();
             etaDS.delete();
         }
+    }
+
+    @Override
+    protected double calculatePixelValue(double[] values) throws Exception {
+        throw new Exception();
     }
 
 }

@@ -5,13 +5,8 @@ import java.io.File;
 public class GdalFilterCalculator extends GdalSimpleIndexCalculator {
 
     final static int INPUT = 0;
-
     final double mMin;
     final double mMax;
-
-    public static void main(String[] args) throws Exception {
-        new GdalFilterCalculator(new File(args[0]), new File(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3])).calculate();
-    }
 
     public GdalFilterCalculator(File input, File output, double min, double max) {
         File[] inputFiles = new File[1];
@@ -32,5 +27,4 @@ public class GdalFilterCalculator extends GdalSimpleIndexCalculator {
             return values[INPUT];
         }
     }
-
 }

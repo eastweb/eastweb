@@ -3,17 +3,17 @@ package edu.sdstate.eastweb.prototype.indices;
 import java.io.File;
 
 /**
- * 
- * NDWI = (NIR-SWIR2)/(NIR+SWIR2)
- * 
+ * uses the same logic for ndwi5 and ndwi6
+ * NDWI5 = (NIR-SWIR2)/(NIR+SWIR2)
+ * NDWI6 = (NIR-SWIR)/(NIR+SWIR)
  * @author Isaiah Snell-Feikema
  */
-public class GdalNdwi5Calculator extends GdalSimpleIndexCalculator {
+public class GdalNdwiCalculator extends GdalSimpleIndexCalculator {
 
     private static final int NIR = 0;
     private static final int SWIR = 1;
 
-    public GdalNdwi5Calculator(File nir, File swir, File output) {
+    public GdalNdwiCalculator(File nir, File swir, File output) {
         File[] inputs = new File[2];
         inputs[NIR] = nir;
         inputs[SWIR] = swir;
@@ -21,7 +21,6 @@ public class GdalNdwi5Calculator extends GdalSimpleIndexCalculator {
         setInputFiles(inputs);
         setOutputFile(output);
     }
-
 
     @Override
     protected double calculatePixelValue(double[] values) {
@@ -31,5 +30,4 @@ public class GdalNdwi5Calculator extends GdalSimpleIndexCalculator {
             return (values[NIR] - values[SWIR]) / (values[SWIR] + values[NIR]);
         }
     }
-
 }
