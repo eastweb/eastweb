@@ -8,6 +8,7 @@ import edu.sdstate.eastweb.prototype.download.TrmmProduct;
 import edu.sdstate.eastweb.prototype.indices.EnvironmentalIndex;
 import edu.sdstate.eastweb.prototype.scheduler.tasks.*;
 
+
 public final class ProcessingQueue extends BaseTaskQueue {
     private enum Priority {
         Reprojection,
@@ -25,17 +26,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
         return Runtime.getRuntime().availableProcessors();
     }
 
-    /**
-     * Enqueues a MODIS reprojection task.
-     */
-    public void enqueueReprojectModis(ProjectInfo project, ModisProduct product,
-            DataDate date, Runnable continuation) {
-        enqueue(new RunnableTaskQueueEntry(
-                Priority.Reprojection.ordinal(),
-                new ReprojectModisTask(project, product, date),
-                continuation
-        ));
-    }
+
 
     /**
      * Enqueues a MODIS preparation task.
@@ -46,7 +37,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new PrepareModisTask(project, product, date),
                 continuation
-        ));
+                ));
     }
 
     public void enqueueModisClip(ProjectInfo project, ModisProduct product,
@@ -55,7 +46,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new ModisClipTask(project, product, date, feature),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -66,7 +57,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new GdalProjectTrmmTask(project, product, date),
                 continuation
-        ));
+                ));
     }
 
     public void enqueueTrmmClip(ProjectInfo project, TrmmProduct product,
@@ -75,7 +66,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new TrmmClipTask(project, product, date, feature),
                 continuation
-        ));
+                ));
     }
 
 
@@ -89,7 +80,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new ReprojectEtoTask(project, date),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -102,7 +93,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.IndexCalculation.ordinal(),
                 new GdalCalculateIndexTask(project, index, date, feature),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -114,7 +105,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.ZonalSummary.ordinal(),
                 new CalculateZonalStatisticsTask(project, index, date),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -126,7 +117,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.DatabaseInsert.ordinal(),
                 new UploadResultsTask(project, index, date),
                 continuation
-        ));
+                ));
     }
 
 

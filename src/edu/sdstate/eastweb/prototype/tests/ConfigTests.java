@@ -24,7 +24,7 @@ public class ConfigTests {
 
         System.out.println(Config.getInstance().getTrmmDownMode());
         System.out.println(Config.getInstance().getTrmmFtpHostName());
-        System.out.println(Config.getInstance().getTrmmRootDir());
+        // System.out.println(Config.getInstance().getTrmmRootDir());
 
         System.out.println(Config.getInstance().getDatabaseHost());
         System.out.println(Config.getInstance().getDatabaseUsername());
