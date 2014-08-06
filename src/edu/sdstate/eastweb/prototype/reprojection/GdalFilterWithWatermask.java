@@ -2,12 +2,9 @@ package edu.sdstate.eastweb.prototype.reprojection;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.Transformer;
 import org.gdal.gdal.gdal;
-
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
 /**

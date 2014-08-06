@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <active>false</active>
+    <active>true</active>
     <name>ami</name>
     <start.date>
         <month>2</month>

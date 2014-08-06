@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
-import java.util.Arrays;
-
 import edu.sdstate.eastweb.prototype.Config;
 import edu.sdstate.eastweb.prototype.ConfigReadException;
 
@@ -25,7 +23,7 @@ public class Database {
 
     public static void main(String[] args) throws ConfigReadException, SQLException {
         args[0] = "SELECT year, day, \"zoneID\", count, sum, mean, stdev, index FROM \"project_eth_utm\".\"ZonalStats\" WHERE (\"zoneID\" >= 0) AND (year >= 0) AND (day >= 0) AND (index IN (0,1,2,3,4,5,6,7,8,9,10));";
-        Database db = new Database(args[0], Arrays.copyOfRange(args, 1, args.length));
+        //Database db = new Database(args[0], Arrays.copyOfRange(args, 1, args.length));
     }
 
     public Database (String query, String[] fields) throws SQLException, ConfigReadException{

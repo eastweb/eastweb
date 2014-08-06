@@ -7,6 +7,7 @@ import edu.sdstate.eastweb.prototype.scheduler.framework.RunnableTask;
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
 
+@SuppressWarnings("serial")
 public class openRun implements RunnableTask{
     String[] name;
     openRun(String[] a){

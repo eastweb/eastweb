@@ -48,12 +48,12 @@ public class Config {
     private static final String WGS84_WGS72_TRANSFORM_KEY = "WGS84_WGS72_TRANSFORM";
     //private static final String DOWNLOAD_REFRESH_DAYS_KEY = "DOWNLOAD_REFRESH_DAYS";
     private static final String TRANSFORM_KEY = "Transform";
-    private static final String HOST_ADDRESS_KEY = "HOST_ADDRESS";
-    private static final String CONTROL_PORT_KEY = "CONTROL_PORT";
-    private static final String TRANSFER_PORT_KEY = "TRANSFER_PORT";
+    //private static final String HOST_ADDRESS_KEY = "HOST_ADDRESS";
+    //private static final String CONTROL_PORT_KEY = "CONTROL_PORT";
+    //private static final String TRANSFER_PORT_KEY = "TRANSFER_PORT";
 
     private static final LazyCachedReference<Config, ConfigReadException> instance =
-        new LazyCachedReference<Config, ConfigReadException>() {
+            new LazyCachedReference<Config, ConfigReadException>() {
         @Override
         protected Config makeInstance() throws ConfigReadException {
             try {
@@ -270,7 +270,7 @@ public class Config {
         if (rootDirectory == null ||tempDirectory==null||
                 databaseHost == null ||databasePassword == null || databaseUsername == null ||
                 downloadRefreshDays == -1
-        ){
+                ){
             throw new ConfigReadException("Not all configuration parameters provided!");
         }else if( etoHttpUrl == null&&(etoFtpHostName==null||etoRootDir==null)) {
             throw new ConfigReadException("Not all eto download configuration parameters provided!");
@@ -563,8 +563,8 @@ public class Config {
         datum.appendChild(
                 document.createTextNode(
                         proj.getDatum().toString()
-                )
-        );
+                        )
+                );
         projection.appendChild(datum);
 
         // Pixel size
@@ -572,8 +572,8 @@ public class Config {
         pixelSize.appendChild(
                 document.createTextNode(
                         Integer.toString(proj.getPixelSize())
-                )
-        );
+                        )
+                );
         projection.appendChild(pixelSize);
 
         // Standard parallel 1
@@ -739,7 +739,7 @@ public class Config {
                 modisTiles,
                 zonalSummaries,
                 calculateETa
-        );
+                );
         projectInfo.setActive(active); // TODO: rearrange
 
         return projectInfo;

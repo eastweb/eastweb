@@ -21,9 +21,9 @@ public class DownloadTrmmTask implements RunnableTask {
         mDate = date;
     }
 
-    private File getOutputFile() throws ConfigReadException {
+    /* private File getOutputFile() throws ConfigReadException {
         return DirectoryLayout.getTrmmDownload(mProduct, mDate);
-    }
+    }*/
 
     private File getMetadataFile() throws ConfigReadException {
         return DirectoryLayout.getTrmmDownloadMetadata(mProduct, mDate);
@@ -60,7 +60,7 @@ public class DownloadTrmmTask implements RunnableTask {
         return String.format(
                 "Download TRMM: date=%s",
                 mDate.toCompactString()
-        );
+                );
     }
 
 }

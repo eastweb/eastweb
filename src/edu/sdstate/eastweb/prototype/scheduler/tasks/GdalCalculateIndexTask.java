@@ -1,6 +1,7 @@
 package edu.sdstate.eastweb.prototype.scheduler.tasks;
 
 import java.io.File;
+import java.lang.reflect.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,13 +9,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
+
 import edu.sdstate.eastweb.prototype.ConfigReadException;
 import edu.sdstate.eastweb.prototype.DataDate;
 import edu.sdstate.eastweb.prototype.DirectoryLayout;
 import edu.sdstate.eastweb.prototype.ProjectInfo;
 import edu.sdstate.eastweb.prototype.download.ModisProduct;
-import edu.sdstate.eastweb.prototype.indices.DefaultIndices;
+import edu.sdstate.eastweb.prototype.indices.SampleIncidiesImplementation;
 import edu.sdstate.eastweb.prototype.indices.EnvironmentalIndex;
 import edu.sdstate.eastweb.prototype.indices.IndexCalculator;
 import edu.sdstate.eastweb.prototype.indices.IndexMetadata;
@@ -23,12 +26,13 @@ import edu.sdstate.eastweb.prototype.reprojection.ModisReprojectedMetadata;
 import edu.sdstate.eastweb.prototype.reprojection.TrmmReprojectedMetadata;
 import edu.sdstate.eastweb.prototype.scheduler.framework.RunnableTask;
 
+@SuppressWarnings("serial")
 public class GdalCalculateIndexTask implements RunnableTask {
     private final ProjectInfo mProject;
     private final EnvironmentalIndex mIndex;
     private final DataDate mDate;
     private final String mFeature;
-    private DefaultIndices indices;
+    private SampleIncidiesImplementation indices;
 
     public GdalCalculateIndexTask(ProjectInfo project,
             EnvironmentalIndex index, DataDate date, String feature) {
@@ -39,7 +43,7 @@ public class GdalCalculateIndexTask implements RunnableTask {
 
         try {
             indices =
-                    new DefaultIndices(mProject, mIndex, mDate,
+                    new SampleIncidiesImplementation(mProject, mIndex, mDate,
                             mFeature);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -102,8 +106,12 @@ public class GdalCalculateIndexTask implements RunnableTask {
         }
     }
 
-    private IndexCalculator makeCalculator() throws IOException, SQLException {
-        return indices.IndicesMap.get(mIndex);
+    private IndexCalculator makeCalculator() throws IOException, SQLException,
+    NoSuchFieldException, SecurityException, IllegalArgumentException,
+    IllegalAccessException {
+        Field j = indices.getClass().getField(mIndex.toString());
+
+        return (IndexCalculator) j.get(indices);
     }
 
     @Override

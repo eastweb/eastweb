@@ -2,7 +2,9 @@ package edu.sdstate.eastweb.prototype.scheduler.tasks;
 
 import java.io.*;
 import java.util.*;
+
 import org.apache.commons.io.FileUtils;
+
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.download.EtoDownloadMetadata;
 import edu.sdstate.eastweb.prototype.reprojection.*;
@@ -14,6 +16,8 @@ import edu.sdstate.eastweb.prototype.scheduler.framework.RunnableTask;
  * 
  * @author Michael VanBemmel
  */
+
+@SuppressWarnings("serial")
 public class ReprojectEtoTask implements RunnableTask {
     private final ProjectInfo mProject;
     private final DataDate mDate;
@@ -99,7 +103,7 @@ public class ReprojectEtoTask implements RunnableTask {
                 "Composite and reproject ETo: project=\"%s\", date=%s",
                 mProject.getName(),
                 mDate.toCompactString()
-        );
+                );
     }
 
 }

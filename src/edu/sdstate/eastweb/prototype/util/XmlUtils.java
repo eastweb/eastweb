@@ -3,6 +3,7 @@ package edu.sdstate.eastweb.prototype.util;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+
 import org.w3c.dom.*;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.*;
@@ -25,7 +26,7 @@ public final class XmlUtils {
             }
 
             final DOMImplementationLS impl =
-                (DOMImplementationLS)registry.getDOMImplementation("XML LS");
+                    (DOMImplementationLS)registry.getDOMImplementation("XML LS");
             if (impl == null) {
                 throw new IOException("No DOM implementation supports the XML and LS features");
             }
@@ -81,6 +82,7 @@ public final class XmlUtils {
      * @param file Target file
      * @throws IOException thrown if anything goes wrong
      */
+    @SuppressWarnings("resource")
     public static final void transformToGzippedFile(Document document, File file) throws IOException {
         final DOMImplementationLS impl = sDomImplementationLS.get();
         final LSSerializer serializer;
@@ -145,6 +147,7 @@ public final class XmlUtils {
      * @param file Source file
      * @throws IOException thrown if anything goes wrong
      */
+    @SuppressWarnings("resource")
     public static final Document parseGzipped(File file) throws IOException {
         final FileInputStream fileInputStream = new FileInputStream(file);
         Closeable closeable = fileInputStream;

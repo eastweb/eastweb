@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config>
-<ROOT_DIRECTORY>E:\eastweb-data</ROOT_DIRECTORY>
-<TEMP_DIRECTORY>E:\eastweb-data\temp</TEMP_DIRECTORY>
+<ROOT_DIRECTORY>C:\eastweb-data</ROOT_DIRECTORY>
+<TEMP_DIRECTORY>C:\eastweb-data\temp</TEMP_DIRECTORY>
 <productList>MODIS;Eto;Trmm;TRMM_3B42</productList>
   <MODIS>
 	<type>http</type>

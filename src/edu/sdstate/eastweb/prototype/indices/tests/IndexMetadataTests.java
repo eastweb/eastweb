@@ -47,7 +47,7 @@ public final class IndexMetadataTests extends MetadataTests {
         final List<ModisReprojectedMetadata> modis = ModisReprojectedMetadataTests.randomList();
         final List<TrmmReprojectedMetadata> trmm = TrmmReprojectedMetadataTests.randomList();
         final List<EtoReprojectedMetadata> eto = EtoReprojectedMetadataTests.randomList();
-        final int zonalSummaryId = sRandom.nextInt();
+        //final int zonalSummaryId = sRandom.nextInt();
         final long timestamp = sRandom.nextLong();
         final IndexMetadata obj = new IndexMetadata(modis, trmm, eto, "ngp", timestamp);
 

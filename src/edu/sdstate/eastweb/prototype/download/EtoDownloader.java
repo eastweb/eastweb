@@ -6,11 +6,14 @@ import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 import java.util.zip.GZIPInputStream;
+
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
+
 import org.apache.commons.compress.archivers.tar.*;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.download.EtoArchive.Type;
 
@@ -55,8 +58,8 @@ public final class EtoDownloader extends Downloader {
 
         // Process yearly archives
         final NodeList yearlyOptions = downloadPage
-        .getElementById(ETO_YEARLY_ID)
-        .getElementsByTagName("option");
+                .getElementById(ETO_YEARLY_ID)
+                .getElementsByTagName("option");
         DataDate yearlyArchiveEnd = null;
         for (int i = 0; i < yearlyOptions.getLength(); ++i) {
             final String path = ((Element)yearlyOptions.item(i)).getAttribute("value");
@@ -98,8 +101,8 @@ public final class EtoDownloader extends Downloader {
 
         // Process monthly archives
         final NodeList monthlyOptions = downloadPage
-        .getElementById(ETO_MONTHLY_ID)
-        .getElementsByTagName("option");
+                .getElementById(ETO_MONTHLY_ID)
+                .getElementsByTagName("option");
         DataDate monthlyArchiveEnd = null;
         for (int i = 0; i < monthlyOptions.getLength(); ++i) {
             final String path = ((Element)monthlyOptions.item(i)).getAttribute("value");
@@ -141,8 +144,8 @@ public final class EtoDownloader extends Downloader {
         DataDate now = DataDate.today().next();
 
         final NodeList dailyOptions = downloadPage
-        .getElementById(ETO_DAILY_ID)
-        .getElementsByTagName("option");
+                .getElementById(ETO_DAILY_ID)
+                .getElementsByTagName("option");
         for (int i = 0; i < dailyOptions.getLength(); ++i) {
             final String path = ((Element)dailyOptions.item(i)).getAttribute("value");
 
@@ -199,7 +202,7 @@ public final class EtoDownloader extends Downloader {
                     String.format("global/pet/years/pet_%04d.tar.gz", mArchive.getYear()),
                     "",
                     ""
-            );
+                    );
             break;
 
         case Monthly:
@@ -209,7 +212,7 @@ public final class EtoDownloader extends Downloader {
                     String.format("global/pet/months/pet_%04d%02d.tar.gz",
                             mArchive.getYear(), mArchive.getMonth()),
                             ""
-            );
+                    );
 
             break;
 
@@ -220,7 +223,7 @@ public final class EtoDownloader extends Downloader {
                     "",
                     String.format("global/pet/days/et%02d%02d%02d.tar.gz",
                             mArchive.getYear() % 100, mArchive.getMonth(), mArchive.getDay())
-            );
+                    );
 
             break;
 
@@ -287,8 +290,8 @@ public final class EtoDownloader extends Downloader {
     }
 
     private static final List<DataDate> extractEtoNestedArchive(File archiveFile)
-    throws IOException, ConfigReadException
-    {
+            throws IOException, ConfigReadException
+            {
         final Pattern pattern = Pattern.compile("et(\\d{2})(\\d{2})(\\d{2}).tar.gz");
 
         // Create a temporary directory
@@ -329,7 +332,7 @@ public final class EtoDownloader extends Downloader {
         } finally {
             FileUtils.deleteQuietly(tempDir);
         }
-    }
+            }
 
 
     /**
@@ -337,9 +340,10 @@ public final class EtoDownloader extends Downloader {
      * extracted files. Directory structure is not preserved.
      * @throws DownloadFailedException
      */
+    @SuppressWarnings("resource")
     private static final List<File> extractTgzToDirectory(File archiveFile, File destDir)
-    throws IOException
-    {
+            throws IOException
+            {
         FileUtils.forceMkdir(destDir);
 
         final FileInputStream fis = new FileInputStream(archiveFile);
@@ -390,5 +394,5 @@ public final class EtoDownloader extends Downloader {
             closeable.close();
         }
         return files;
-    }
+            }
 }

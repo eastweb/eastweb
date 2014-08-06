@@ -14,6 +14,7 @@ import edu.sdstate.eastweb.prototype.indices.Clipper;
 import edu.sdstate.eastweb.prototype.indices.GdalClipper;
 import edu.sdstate.eastweb.prototype.scheduler.framework.RunnableTask;
 
+@SuppressWarnings("serial")
 public class ModisClipTask implements RunnableTask {
 
     private ProjectInfo project;
