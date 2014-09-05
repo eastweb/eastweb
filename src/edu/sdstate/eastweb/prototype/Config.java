@@ -18,7 +18,8 @@ import edu.sdstate.eastweb.prototype.util.*;
 
 public class Config {
     private static final String PROJECTS_DIR = ".\\projects";
-    private static final String CONFIG_FILENAME = ".\\config.xml";
+    //CONFIG_FILENAME is changed because linux system use forward slash
+    private static final String CONFIG_FILENAME = ".//config.xml";
     private static final String ROOT_DIRECTORY_KEY = "ROOT_DIRECTORY";
     private static final String TEMP_DIRECTORY_KEY = "TEMP_DIRECTORY";
     private static final String PRODUCT_LIST_KEY="productList";
@@ -53,7 +54,7 @@ public class Config {
     private static final String TRANSFER_PORT_KEY = "TRANSFER_PORT";
 
     private static final LazyCachedReference<Config, ConfigReadException> instance =
-        new LazyCachedReference<Config, ConfigReadException>() {
+            new LazyCachedReference<Config, ConfigReadException>() {
         @Override
         protected Config makeInstance() throws ConfigReadException {
             try {
@@ -270,7 +271,7 @@ public class Config {
         if (rootDirectory == null ||tempDirectory==null||
                 databaseHost == null ||databasePassword == null || databaseUsername == null ||
                 downloadRefreshDays == -1
-        ){
+                ){
             throw new ConfigReadException("Not all configuration parameters provided!");
         }else if( etoHttpUrl == null&&(etoFtpHostName==null||etoRootDir==null)) {
             throw new ConfigReadException("Not all eto download configuration parameters provided!");
@@ -285,7 +286,7 @@ public class Config {
 
     /**
      * Normalizes a project name to a file system friendly equivalent.
-     * 
+     *
      * @param name name to normalize
      * @return normalized name
      */
@@ -563,8 +564,8 @@ public class Config {
         datum.appendChild(
                 document.createTextNode(
                         proj.getDatum().toString()
-                )
-        );
+                        )
+                );
         projection.appendChild(datum);
 
         // Pixel size
@@ -572,8 +573,8 @@ public class Config {
         pixelSize.appendChild(
                 document.createTextNode(
                         Integer.toString(proj.getPixelSize())
-                )
-        );
+                        )
+                );
         projection.appendChild(pixelSize);
 
         // Standard parallel 1
@@ -661,7 +662,7 @@ public class Config {
 
     /**
      * Loads a project file from the projects directory.
-     * 
+     *
      * @param name Normalized or non-normalized project name to load.
      * @return ProjectInfo The specified project.
      * @throws Exception
@@ -739,7 +740,7 @@ public class Config {
                 modisTiles,
                 zonalSummaries,
                 calculateETa
-        );
+                );
         projectInfo.setActive(active); // TODO: rearrange
 
         return projectInfo;

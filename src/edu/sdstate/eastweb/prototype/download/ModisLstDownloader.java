@@ -1,8 +1,10 @@
 package edu.sdstate.eastweb.prototype.download;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.util.*;
+
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.download.Downloader.DataType;
 import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
@@ -10,7 +12,7 @@ import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
 
 /**
  * Implements the MODIS LST component of the download module.
- * 
+ *
  * @author Dan Woodward
  * @author Michael VanBemmel
  */
@@ -22,12 +24,13 @@ public final class ModisLstDownloader extends ModisDownloader {
      * Constructs a new ModisLstDownloader.
      */
     public ModisLstDownloader(DataDate date, ModisTile tile, DataDate processed)
-    throws ConfigReadException
+            throws ConfigReadException
     {
         super(
                 date, tile, processed,
-                DirectoryLayout.getModisDownload(ModisProduct.LST, date, tile)
-        );
+                //DirectoryLayout.getModisDownload(ModisProduct.LST, date, tile)
+                new File("/Users/jiameng/Desktop/modis.tiff")
+                );
     }
 
     public static final List<DataDate> listDates(DataDate startDate) throws IOException {

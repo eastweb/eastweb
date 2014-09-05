@@ -1,14 +1,16 @@
 package edu.sdstate.eastweb.prototype.download;
 
+import edu.sdstate.eastweb.prototype.download.Downloader.DataType;
 import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
 
-public class ConnectionInfo {
+public  abstract class ConnectionInfo {
     Mode mode;
-    String hostName;
-    String userName;
-    String password;
-    String url;
+    ConnectionInfo(){
 
+    }
+
+
+    /*
     ConnectionInfo(Mode m, String hn, String un, String pw){
         mode=m;
         hostName=hn;
@@ -23,6 +25,6 @@ public class ConnectionInfo {
         userName="";
         password="";
         this.url=url;
-    }
+    }*/
 
 }

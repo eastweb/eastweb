@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
+
 import org.apache.commons.net.ftp.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,7 +23,7 @@ import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
  * Implements the MODIS NBAR and LST components of the download module. The concrete classes
  * {@link ModisNbarDownloader} and {@link ModisLstDownloader} implement the static methods
  * {@code getRootDir()} and {@code getProduct()}, completing the implementation.
- * 
+ *
  * @author Dan Woodward
  * @author Michael VanBemmel
  * @author Yi Liu.  Modified the FTP to HTTP on 6/7/13
@@ -56,7 +57,7 @@ public abstract class ModisDownloader {
      * @throws IOException
      */
     protected static final List<DataDate> listDates(DataDate startDate, Object conn)
-    throws IOException {
+            throws IOException {
         Mode mode=Settings.getMode(DataType.MODIS);
         if(mode==Mode.HTTP){
             //final Pattern re = Pattern.compile("(\\d{4})\\.(\\d{2})\\.(\\d{2})");
@@ -187,8 +188,9 @@ public abstract class ModisDownloader {
      * @param tile Tile location
      * @param outFile Destination file
      * @throws IOException
+     * @throws Exception
      */
-    public final void download() throws IOException {
+    public final void download() throws IOException  {
         Mode mode=Settings.getMode(DataType.MODIS);
         if(mode==Mode.HTTP){
             // Build a regular expression that will match any HDF files with the specified date and tile
@@ -200,10 +202,10 @@ public abstract class ModisDownloader {
                     mDate.getYear(),
                     mDate.getDayOfYear(),
                     mTile.getHTile(),
-                    mTile.getVTile(),
-                    mProcessed.getYear(),
-                    mProcessed.getDayOfYear()
-            ));
+                    mTile.getVTile()
+                    // mProcessed.getYear(),
+                    // mProcessed.getDayOfYear()
+                    ));
 
             // changed to use http protocal on 6/7/13 --- Y.L.
             String url_str = getModisDateDir(getRootDir(), mDate);
@@ -215,6 +217,7 @@ public abstract class ModisDownloader {
             try{
                 downloadPage = DownloadUtils.downloadToByteArray(url);
             }catch(ConnectException e){
+
                 throw e;
             }
 
@@ -290,8 +293,8 @@ public abstract class ModisDownloader {
      * @throws IOException
      */
     public static List<DataDate> listDates(ModisProduct product, DataDate startDate)
-    throws IOException
-    {
+            throws IOException
+            {
         switch (product) {
         case NBAR:
             return ModisNbarDownloader.listDates(startDate);
@@ -302,7 +305,7 @@ public abstract class ModisDownloader {
         default:
             throw new IllegalArgumentException();
         }
-    }
+            }
 
     /**
      * Builds and returns a map from each of the available MODIS tiles on the specified data date to
@@ -312,8 +315,8 @@ public abstract class ModisDownloader {
      * @throws IOException
      */
     public static Map<ModisTile, DataDate> listTiles(ModisProduct product, DataDate date)
-    throws IOException
-    {
+            throws IOException
+            {
         switch (product) {
         case NBAR:
             return ModisNbarDownloader.listTiles(date);
@@ -324,7 +327,7 @@ public abstract class ModisDownloader {
         default:
             throw new IllegalArgumentException();
         }
-    }
+            }
 
     /**
      * Returns a new instance of either ModisNbarDownloader or ModisLstDownloader, depending on

@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class Http extends ConnectionStrategy{
+public class HTTP extends ConnectionStrategy{
 
     @Override
     public Object buildConn(ConnectionInfo ci) throws IOException {
-        final URL url = new URL(ci.url);
+        HTTPConnectionInfo hci=(HTTPConnectionInfo)ci;
+        final URL url = new URL(hci.url);
         //System.out.println(ci.url);
         URLConnection conn = url.openConnection();
         return conn;

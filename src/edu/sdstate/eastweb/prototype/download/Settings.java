@@ -138,7 +138,8 @@ public class Settings {
     //return the download file format string of Modis product
     static String getModisDownloadStr(){
 
-        return "%s\\.A%04d%03d\\.h%02dv%02d\\.005\\.%04d%03d\\d{6}\\.hdf";
+        // return "%s\\.A%04d%03d\\.h%02dv%02d\\.005\\.%04d%03d\\d{6}\\.hdf";
+        return "%s\\.A%04d%03d\\.h%02dv%02d\\.005\\.\\d{13}\\.hdf";
 
     }
     //return the list tiles format string of Modis product
@@ -161,14 +162,14 @@ public class Settings {
                     date.getYear(),
                     date.getMonth(),
                     date.getDay()
-            );
+                    );
         case TRMM_3B42RT:
             return String.format(
                     "3B42RT_daily.%04d.%02d.%02d.bin",
                     date.getYear(),
                     date.getMonth(),
                     date.getDay()
-            );
+                    );
         default:
             throw new IllegalArgumentException("Product " + product + " not supported.");
         }
@@ -191,12 +192,12 @@ public class Settings {
 
     public static String getEtoRequestFormat() {
         return "selarchive=%s&" +
-        "selarchive1=%s&" +
-        "selarchive2=%s&" +
-        "image=nd&" +
-        "extent=af&" +
-        "z=&" +
-        "server_store=http://earlywarning.usgs.gov/";
+                "selarchive1=%s&" +
+                "selarchive2=%s&" +
+                "image=nd&" +
+                "extent=af&" +
+                "z=&" +
+                "server_store=http://earlywarning.usgs.gov/";
     }
 
 
