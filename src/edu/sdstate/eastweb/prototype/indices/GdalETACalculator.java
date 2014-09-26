@@ -1,13 +1,20 @@
 package edu.sdstate.eastweb.prototype.indices;
 
 import java.io.File;
+
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.Transformer;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconst;
+
+import edu.sdstate.eastweb.prototype.ConfigReadException;
+import edu.sdstate.eastweb.prototype.DataDate;
+import edu.sdstate.eastweb.prototype.DirectoryLayout;
+import edu.sdstate.eastweb.prototype.ProjectInfo;
+import edu.sdstate.eastweb.prototype.download.ModisProduct;
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
-public class GdalEtaCalculator extends GdalSimpleIndexCalculator {
+public class GdalETACalculator extends IndicesFramework {
 
     final File mLst; // Daytime LST
     final File mElevation;
@@ -16,14 +23,15 @@ public class GdalEtaCalculator extends GdalSimpleIndexCalculator {
     final double mMinLst;
     final double mMaxLst;
 
-    public GdalEtaCalculator(File lst, File elevation, File eto, File eta,
-            double minLst, double maxLst) {
-        mLst = lst;
-        mElevation = elevation;
-        mEto = eto;
-        mEta = eta;
-        mMinLst = minLst;
-        mMaxLst = maxLst;
+    public GdalETACalculator(ProjectInfo mProject, DataDate mDate, String feature, EnvironmentalIndex mIndex ) throws ConfigReadException {
+        mLst = DirectoryLayout.getModisClip(mProject, mDate,
+                ModisProduct.LST, feature, "LST_Day_1km");
+        mElevation = new File(DirectoryLayout.getSettingsDirectory(mProject),
+                mProject.getElevation());
+        mEto = DirectoryLayout.getEtoReprojected(mProject, mDate);
+        mEta = DirectoryLayout.getIndex(mProject, mIndex, mDate, feature);
+        mMinLst = mProject.getMinLst() + 273.15;
+        mMaxLst = mProject.getMaxLst() + 273.15;
     }
 
     @Override

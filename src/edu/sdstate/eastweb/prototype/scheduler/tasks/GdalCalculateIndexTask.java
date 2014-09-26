@@ -10,14 +10,18 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.FileUtils;
+import org.xml.sax.SAXException;
 
 import edu.sdstate.eastweb.prototype.ConfigReadException;
 import edu.sdstate.eastweb.prototype.DataDate;
 import edu.sdstate.eastweb.prototype.DirectoryLayout;
+import edu.sdstate.eastweb.prototype.MetaData;
 import edu.sdstate.eastweb.prototype.ProjectInfo;
 import edu.sdstate.eastweb.prototype.download.ModisProduct;
-import edu.sdstate.eastweb.prototype.indices.SampleIncidiesImplementation;
+import edu.sdstate.eastweb.prototype.indices.IndicesFramework;
 import edu.sdstate.eastweb.prototype.indices.EnvironmentalIndex;
 import edu.sdstate.eastweb.prototype.indices.IndexCalculator;
 import edu.sdstate.eastweb.prototype.indices.IndexMetadata;
@@ -32,7 +36,7 @@ public class GdalCalculateIndexTask implements RunnableTask {
     private final EnvironmentalIndex mIndex;
     private final DataDate mDate;
     private final String mFeature;
-    private SampleIncidiesImplementation indices;
+
 
     public GdalCalculateIndexTask(ProjectInfo project,
             EnvironmentalIndex index, DataDate date, String feature) {
@@ -40,15 +44,6 @@ public class GdalCalculateIndexTask implements RunnableTask {
         mIndex = index;
         mDate = date;
         mFeature = feature;
-
-        try {
-            indices =
-                    new SampleIncidiesImplementation(mProject, mIndex, mDate,
-                            mFeature);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -108,10 +103,14 @@ public class GdalCalculateIndexTask implements RunnableTask {
 
     private IndexCalculator makeCalculator() throws IOException, SQLException,
     NoSuchFieldException, SecurityException, IllegalArgumentException,
-    IllegalAccessException {
-        Field j = indices.getClass().getField(mIndex.toString());
+    IllegalAccessException, ClassNotFoundException, ParserConfigurationException, SAXException, NoSuchMethodException, InstantiationException, InvocationTargetException {
 
-        return (IndexCalculator) j.get(indices);
+        // replace mIndex with MetaData.GetInstance().IndicesMetaData when ready with schedule
+        Class<?> clazz = Class.forName("edu.sdstate.eastweb.prototype.indices." + "Gdal" + mIndex.name()  + "Calculator");
+        Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
+        Object object = ctor.newInstance(new Object[] { mProject, mDate, new File(mFeature).getName().split("\\.")[0], mIndex });
+
+        return (IndexCalculator) object;
     }
 
     @Override
