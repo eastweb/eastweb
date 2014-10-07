@@ -2,10 +2,8 @@ package edu.sdstate.eastweb.prototype;
 
 import java.io.IOException;
 import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
-
 import edu.sdstate.eastweb.prototype.download.NLDASDownloader;
 
 public class MainDriver {
@@ -33,3 +31,4 @@ public class MainDriver {
 
     }
 }
+

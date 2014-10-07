@@ -2,6 +2,7 @@ package edu.sdstate.eastweb.prototype;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,6 +109,7 @@ public class MetaData {
             url=((Element)e).getElementsByTagName("url").item(0).getTextContent();
         }
     }
+
     public class ProjectionMetaData {
 
         private NodeList nList;
