@@ -18,7 +18,8 @@ import edu.sdstate.eastweb.prototype.util.*;
 
 public class Config {
     private static final String PROJECTS_DIR = ".\\projects";
-    private static final String CONFIG_FILENAME = ".\\config.xml";
+    //CONFIG_FILENAME is changed because linux system use forward slash
+    private static final String CONFIG_FILENAME = ".//config.xml";
     private static final String ROOT_DIRECTORY_KEY = "ROOT_DIRECTORY";
     private static final String TEMP_DIRECTORY_KEY = "TEMP_DIRECTORY";
     private static final String PRODUCT_LIST_KEY="productList";
@@ -285,7 +286,7 @@ public class Config {
 
     /**
      * Normalizes a project name to a file system friendly equivalent.
-     * 
+     *
      * @param name name to normalize
      * @return normalized name
      */
@@ -661,7 +662,7 @@ public class Config {
 
     /**
      * Loads a project file from the projects directory.
-     * 
+     *
      * @param name Normalized or non-normalized project name to load.
      * @return ProjectInfo The specified project.
      * @throws Exception
