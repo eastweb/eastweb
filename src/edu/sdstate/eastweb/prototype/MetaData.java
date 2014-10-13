@@ -48,7 +48,6 @@ public class MetaData {
         return instance;
     }
 
-
     public class DownloadMetaData{
         private NodeList nList;
 
@@ -73,6 +72,7 @@ public class MetaData {
         }
 
     }
+
     public class ProjectionMetaData {
 
         private NodeList nList;
@@ -110,7 +110,5 @@ public class MetaData {
     public class SummaryMetaData{
 
     }
-
-
 }
 
