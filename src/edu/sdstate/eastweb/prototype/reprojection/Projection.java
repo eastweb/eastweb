@@ -4,7 +4,7 @@ import java.io.File;
 
 import edu.sdstate.eastweb.prototype.ProjectInfo;
 
-public interface ProjectEto {
+public interface Projection {
 
     void project(File eto, ProjectInfo project, File out) throws Exception;
 

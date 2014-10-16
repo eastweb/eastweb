@@ -26,7 +26,7 @@ public final class XmlUtils {
             }
 
             final DOMImplementationLS impl =
-                    (DOMImplementationLS)registry.getDOMImplementation("XML LS");
+                (DOMImplementationLS)registry.getDOMImplementation("XML LS");
             if (impl == null) {
                 throw new IOException("No DOM implementation supports the XML and LS features");
             }
@@ -158,6 +158,7 @@ public final class XmlUtils {
             return parse(gzipInputStream);
         } finally {
             closeable.close();
+            System.out.println(file.getPath()+" is closed");
         }
     }
 

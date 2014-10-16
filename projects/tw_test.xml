@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <active>false</active>
+    <active>true</active>
     <name>tw_test</name>
     <start.date>
-        <month>7</month>
-        <day>23</day>
-        <year>2013</year>
+        <month>10</month>
+        <day>1</day>
+        <year>2014</year>
     </start.date>
     <watermask>watermask\Water_M.tif</watermask>
     <elevation>elevation</elevation>

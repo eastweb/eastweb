@@ -22,15 +22,15 @@ import edu.sdstate.eastweb.prototype.*;
  * module. Dependency: config.java; Downloader.Mode; Downloader.Settings;
  * Downloader.ConnectionContext
  */
-public final class NLDASDownloader extends Downloader {
+public final class NldasDownloader extends Downloader {
     private final DataDate mDate;
     private final File mOutFile;
 
-    public NLDASDownloader(DataDate date, File outFile) throws IOException {
+    public NldasDownloader(DataDate date, File outFile) throws IOException {
         mDate = date;
         mOutFile = outFile;
     }
-    public NLDASDownloader() {
+    public NldasDownloader() {
         mDate=null;
         mOutFile=null;
 
@@ -54,7 +54,7 @@ public final class NLDASDownloader extends Downloader {
         try {
 
             //set up the parameters and method name.
-            NLDASDownloader nd=new NLDASDownloader();
+            NldasDownloader nd=new NldasDownloader();
             Class cls=nd.getClass();
             Class[] paramDatadate=new Class[1];
             paramDatadate[0]=startDate.getClass();
@@ -87,7 +87,7 @@ public final class NLDASDownloader extends Downloader {
         try {
             ftp =
                 (FTPClient) ConnectionContext.getConnection(mode,
-                        "NLDAS");
+                "NLDAS");
         } catch (ConnectException e) {
             System.out.println("Can't connect to NLDAS data website, please check your URL.");
             return null;
@@ -129,12 +129,30 @@ public final class NLDASDownloader extends Downloader {
                 // The path of NLDS is \year\dayOfYear\fileName.grd
                 for (FTPFile file : ftp.listDirectories()) {
                     int dayOfYear = Integer.parseInt(file.getName());
-                    final DataDate dataDate =
-                        new DataDate(dayOfYear,
-                                Integer.parseInt(yearFile.getName()));
-                    if (dataDate.compareTo(startDate) >= 0) {
-                        list.add(dataDate);
+                    if (dayOfYear < startDate.getDayOfYear()) {
+                        continue;
                     }
+                    //move into day folder and count the number of hourly data
+                    final String dayDirectory=String.format("%s/%03d", yearDirectory , dayOfYear);
+                    System.out.println(dayDirectory);
+                    if (!ftp.changeWorkingDirectory(dayDirectory)) {
+                        throw new IOException(
+                                "Couldn't navigate to directory: "
+                                + yearDirectory);
+                    }
+                    int hourlyFileNum=ftp.listFiles().length/2;
+                    //Add hourly data into list, start with 0 to 23
+                    for(int i=0;i<hourlyFileNum;i++){
+                        final DataDate dataDate =
+                            DataDate.DataDateWithHour(i, dayOfYear,
+                                    Integer.parseInt(yearFile.getName()));
+                        if (dataDate.compareTo(startDate) >= 0) {
+                            System.out.println(dataDate.toCompactString());
+                            list.add(dataDate);
+                        }
+                    }
+                    //move back to year folder
+                    ftp.changeWorkingDirectory(yearDirectory);
                 }
 
             }
@@ -155,37 +173,35 @@ public final class NLDASDownloader extends Downloader {
     public final void download() throws IOException, ConfigReadException,
     DownloadFailedException, SAXException, Exception {
         String mode = MetaData.GetInstance().get("NLDAS").Download.mode;
-        try {
-            //set up the parameters and method name.
-            NLDASDownloader nd=new NLDASDownloader();
-            Class cls=nd.getClass();
-            Class[] paramDatadate=new Class[2];
-            paramDatadate[0]=mDate.getClass();
-            paramDatadate[1]=Class.forName("java.io.File");
-            String methodName=mode.toLowerCase()+"Download";
-            //call the listDates method for different download protocol
-            Method method=cls.getDeclaredMethod(methodName,null);
-            Constructor ctor=cls.getDeclaredConstructor(paramDatadate);
-            ctor.setAccessible(true);
-            Object obj=ctor.newInstance(mDate,mOutFile);
-            method.invoke(obj, null);
 
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        //set up the parameters and method name.
+        NldasDownloader nd=new NldasDownloader();
+        Class cls=nd.getClass();
+        Class[] paramDatadate=new Class[2];
+        paramDatadate[0]=mDate.getClass();
+        paramDatadate[1]=Class.forName("java.io.File");
+        String methodName=mode.toLowerCase()+"Download";
+        //call the listDates method for different download protocol
+        Method method=cls.getDeclaredMethod(methodName,null);
+        Constructor ctor=cls.getDeclaredConstructor(paramDatadate);
+        ctor.setAccessible(true);
+        Object obj=ctor.newInstance(mDate,mOutFile);
+        method.invoke(obj, null);
+
     }
 
     private void ftpDownload() throws ParserConfigurationException, SAXException, IOException {
         String mode = MetaData.GetInstance().get("NLDAS").Download.mode;
+        String rootDir=MetaData.GetInstance().get("NLDAS").Download.myFtp.rootDir;
         final FTPClient ftp =
             (FTPClient) ConnectionContext.getConnection(mode,
-                    "NLDAS");
+            "NLDAS");
         try {
             // TODO: Change the year directory as needed.
             final String yearDirectory =
                 String.format("%s/%s",
-                        Settings.getRootDir(DataType.NLDAS),
+                        //Settings.getRootDir(DataType.NLDAS),
+                        rootDir,
                         Integer.toString(mDate.getYear()));
 
             if (!ftp.changeWorkingDirectory(yearDirectory)) {
@@ -197,7 +213,7 @@ public final class NLDASDownloader extends Downloader {
             // Change to the day of year directory. Added by Jiameng Hu
             int dayOfYear = mDate.getDayOfYear();
             final String dayDirectory =
-                String.format("%s/%3d", yearDirectory, dayOfYear);
+                String.format("%s/%03d", yearDirectory, dayOfYear);
             if (!ftp.changeWorkingDirectory(dayDirectory)) {
                 throw new IOException("Couldn't navigate to directory: "
                         + dayDirectory);

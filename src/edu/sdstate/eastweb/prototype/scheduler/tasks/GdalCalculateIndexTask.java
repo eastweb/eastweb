@@ -94,6 +94,7 @@ public class GdalCalculateIndexTask implements RunnableTask {
 
         case TRMM:
         case TRMM_RT:
+        case NLDAS:
             return Collections.emptyList();
 
         default:
@@ -109,7 +110,6 @@ public class GdalCalculateIndexTask implements RunnableTask {
         Class<?> clazz = Class.forName("edu.sdstate.eastweb.prototype.indices." + "Gdal" + mIndex.name()  + "Calculator");
         Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
         Object object = ctor.newInstance(new Object[] { mProject, mDate, new File(mFeature).getName().split("\\.")[0], mIndex });
-
         return (IndexCalculator) object;
     }
 

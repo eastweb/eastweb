@@ -15,7 +15,7 @@ import edu.sdstate.eastweb.prototype.DirectoryLayout;
 import edu.sdstate.eastweb.prototype.ProjectInfo;
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
-public class GdalProjectEto implements ProjectEto {
+public class GdalProjectEto implements Projection {
 
     public static void main(String[] args) throws Exception {
         ProjectInfo[] projects = Config.getInstance().getProjects();
@@ -26,7 +26,7 @@ public class GdalProjectEto implements ProjectEto {
             }
         }
 
-        ProjectEto projecter = new GdalProjectEto();
+        Projection projecter = new GdalProjectEto();
         projecter
         .project(new File(args[0]), selectedProject, new File(args[1]));
     }

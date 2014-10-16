@@ -29,6 +29,7 @@ public class GdalETACalculator extends IndicesFramework {
         mElevation = new File(DirectoryLayout.getSettingsDirectory(mProject),
                 mProject.getElevation());
         mEto = DirectoryLayout.getEtoReprojected(mProject, mDate);
+        System.out.println("This is feature "+feature);
         mEta = DirectoryLayout.getIndex(mProject, mIndex, mDate, feature);
         mMinLst = mProject.getMinLst() + 273.15;
         mMaxLst = mProject.getMaxLst() + 273.15;
@@ -48,17 +49,17 @@ public class GdalETACalculator extends IndicesFramework {
 
             Dataset elevationDS = gdal.Open(mElevation.getPath());
             Dataset correctedLstDS =
-                    gdal.GetDriverByName("GTiff").Create(
-                            new File(mEta.getParent(), "clst.tif").getPath(), // FIXME
-                            WIDTH, HEIGHT, 1, gdalconst.GDT_Float32);
+                gdal.GetDriverByName("GTiff").Create(
+                        new File(mEta.getParent(), "clst.tif").getPath(), // FIXME
+                        WIDTH, HEIGHT, 1, gdalconst.GDT_Float32);
             Dataset etfDS =
-                    gdal.GetDriverByName("GTiff").Create(
-                            new File(mEta.getParent(), "etf.tif").getPath(), // FIXME
-                            WIDTH, HEIGHT, 1, gdalconst.GDT_Float32);
+                gdal.GetDriverByName("GTiff").Create(
+                        new File(mEta.getParent(), "etf.tif").getPath(), // FIXME
+                        WIDTH, HEIGHT, 1, gdalconst.GDT_Float32);
             Dataset etoDS = gdal.Open(mEto.getPath());
             Dataset etaDS =
-                    gdal.GetDriverByName("GTiff").Create(mEta.getPath(), WIDTH,
-                            HEIGHT, 1, gdalconst.GDT_Float32);
+                gdal.GetDriverByName("GTiff").Create(mEta.getPath(), WIDTH,
+                        HEIGHT, 1, gdalconst.GDT_Float32);
             etaDS.SetProjection(lstDS.GetProjection());
             etaDS.SetGeoTransform(lstDS.GetGeoTransform());
 
@@ -90,7 +91,7 @@ public class GdalETACalculator extends IndicesFramework {
                             && elevationArray[x] != -3.4028234663852886E38) {
                         // FIXME: assumes elevation hasn't been corrected yet
                         correctedArray[x] =
-                                lstArray[x] + (elevationArray[x] * 0.0065);
+                            lstArray[x] + (elevationArray[x] * 0.0065);
                     } else {
                         correctedArray[x] = 0;
                     }

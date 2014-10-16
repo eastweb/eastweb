@@ -4,16 +4,14 @@ import java.io.File;
 import edu.sdstate.eastweb.prototype.ProjectInfo;
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
-public class TrmmProjection implements ProjectEto {
+public class TrmmProjection implements Projection {
 
 
     @Override
     public void project(File input, ProjectInfo project, File out)
     throws Exception {
-
-        //TODO:get wkt from user setting
         String wkt="  ";
-        GdalUtils.project(wkt,input, project,out);
+        GdalUtils.project(input, project,out);
     }
 
 }

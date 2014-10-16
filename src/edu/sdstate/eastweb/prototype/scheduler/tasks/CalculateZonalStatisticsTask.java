@@ -68,7 +68,9 @@ public class CalculateZonalStatisticsTask implements RunnableTask {
     @Override
     public void run() throws Exception {
         for (ZonalSummary zone : getNeededZonalSummaries()) {
-            final File inRaster = DirectoryLayout.getIndex(mProject, mIndex, mDate, zone.getShapeFile());
+            //TODO: NLDAS index calculating is empty, so zonal statistics will start after reprojection
+            //final File inRaster = DirectoryLayout.getIndex(mProject, mIndex, mDate, zone.getShapeFile());
+            final File inRaster = DirectoryLayout.getNldasReprojected(mProject, mDate);
             final File inShapefile = new File(DirectoryLayout.getSettingsDirectory(mProject),
                     zone.getShapeFile());
             final File outTable = DirectoryLayout.getZonalSummary(
