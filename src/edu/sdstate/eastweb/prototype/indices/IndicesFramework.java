@@ -1,6 +1,9 @@
 package edu.sdstate.eastweb.prototype.indices;
 
 import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
@@ -23,12 +26,16 @@ public abstract class IndicesFramework implements IndexCalculator {
         mOutputFile = outputFile;
     }
 
-    private Dataset createOutput(Dataset[] inputs) {
+    private Dataset createOutput(Dataset[] inputs) throws IOException {
+        System.out.println("inputs 0 is  "+inputs[0]);
+        System.out.println(inputs[0].GetRasterXSize());
+        System.out.println(inputs[0].GetRasterYSize());
+        FileUtils.forceMkdir(mOutputFile.getParentFile());
         Dataset outputDS =
-                gdal.GetDriverByName("GTiff").Create(mOutputFile.getPath(),
-                        inputs[0].GetRasterXSize(), inputs[0].GetRasterYSize(),
-                        1, gdalconst.GDT_Float32);
-
+            gdal.GetDriverByName("GTiff").Create(mOutputFile.getPath(),
+                    inputs[0].GetRasterXSize(), inputs[0].GetRasterYSize(),
+                    1, gdalconst.GDT_Float32);
+        System.out.println("output is  "+outputDS);
         outputDS.SetGeoTransform(inputs[0].GetGeoTransform());
         outputDS.SetProjection(inputs[0].GetProjection());
         outputDS.SetMetadata(inputs[0].GetMetadata_Dict());
@@ -44,8 +51,10 @@ public abstract class IndicesFramework implements IndexCalculator {
             // Setup the output and inputs
             Dataset[] inputs = new Dataset[mInputFiles.length];
             for (int i = 0; i < mInputFiles.length; i++) {
+                System.out.println("index calculate input files name: "+mInputFiles[i].getPath());
                 inputs[i] = gdal.Open(mInputFiles[i].getPath());
             }
+
             Dataset outputDS = createOutput(inputs);
 
             // Process the output and inputs
@@ -104,6 +113,6 @@ public abstract class IndicesFramework implements IndexCalculator {
      * @return
      */
     protected abstract double calculatePixelValue(double[] values)
-            throws Exception;
+    throws Exception;
 
 }

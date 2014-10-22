@@ -119,6 +119,8 @@ public final class DirectoryLayout {
 
         case TRMM_RT:
             return "trmmrt";
+        case NLDAS:
+            return "ndlas";
 
         default:
             throw new IllegalArgumentException();
@@ -146,7 +148,7 @@ public final class DirectoryLayout {
                 "%s/projects/%s/settings",
                 getRootDirectory(),
                 getProjectDirectoryName(project)
-                ));
+        ));
     }
 
     public static File getModisDateCache(ModisProduct product) throws ConfigReadException {
@@ -154,7 +156,7 @@ public final class DirectoryLayout {
                 "%s/download/%s/DateCache.xml.gz",
                 getRootDirectory(),
                 getModisDirectoryName(product)
-                ));
+        ));
     }
 
     public static File getTrmmDateCache(TrmmProduct product) throws ConfigReadException {
@@ -162,31 +164,39 @@ public final class DirectoryLayout {
                 "%s/download/%s/DateCache.xml.gz",
                 getRootDirectory(),
                 getTrmmName(product)
-                ));
+        ));
+    }
+
+    public static File getDateCache(String pluginName) throws ConfigReadException {
+        return new File(String.format(
+                "%s/download/%s/DateCache.xml.gz",
+                getRootDirectory(),
+                pluginName
+        ));
     }
 
     public static File getEtoArchiveCache() throws ConfigReadException {
         return new File(String.format(
                 "%s/download/eto/EtoArchiveCache.xml.gz",
                 getRootDirectory()
-                ));
+        ));
     }
 
     public static File getModisTileCache(ModisProduct product, DataDate date)
-            throws ConfigReadException
-            {
+    throws ConfigReadException
+    {
         return new File(String.format(
                 "%s/download/%s/%04d/%03d/ModisTileCache.xml.gz",
                 getRootDirectory(),
                 getModisDirectoryName(product),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
-            }
+        ));
+    }
 
     public static File getModisDownload(ModisProduct product, DataDate date, ModisTile tile)
-            throws ConfigReadException
-            {
+    throws ConfigReadException
+    {
         return new File(String.format(
                 "%s/download/%s/%04d/%03d/h%02dv%02d/tile.hdf",
                 getRootDirectory(),
@@ -195,8 +205,8 @@ public final class DirectoryLayout {
                 date.getDayOfYear(),
                 tile.getHTile(),
                 tile.getVTile()
-                ));
-            }
+        ));
+    }
 
     public static File getModisDownloadMetadata(ModisProduct product, DataDate date,
             ModisTile tile) throws ConfigReadException {
@@ -208,7 +218,7 @@ public final class DirectoryLayout {
                 date.getDayOfYear(),
                 tile.getHTile(),
                 tile.getVTile()
-                ));
+        ));
     }
 
     public static File getTrmmDownload(TrmmProduct product, DataDate date) throws ConfigReadException {
@@ -219,7 +229,7 @@ public final class DirectoryLayout {
                 date.getYear(),
                 date.getDayOfYear(),
                 getTrmmName(product)
-                ));
+        ));
     }
 
     public static File getTrmmDownloadMetadata(TrmmProduct product, DataDate date) throws ConfigReadException {
@@ -229,7 +239,29 @@ public final class DirectoryLayout {
                 getTrmmName(product),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
+    }
+
+    public static File getNldasDownload(DataDate date) throws ConfigReadException{
+        return new File(String.format(
+                "%s/download/%s/%04d/%03d/%02d/%s.gbr",
+                getRootDirectory(),
+                "Nldas",
+                date.getYear(),
+                date.getDayOfYear(),
+                date.getHour(),
+                "Nldas"
+        ));
+    }
+
+    public static File getDownloadMetadata(String pluginName, DataDate date)throws ConfigReadException{
+        return new File(String.format(
+                "%s/download/%s/%04d/%03d/"+pluginName+"DownloadMetadata.xml.gz",
+                getRootDirectory(),
+                pluginName,
+                date.getYear(),
+                date.getDayOfYear()
+        ));
     }
 
     public static File getEtoDownloadDir(DataDate date) throws ConfigReadException {
@@ -238,7 +270,7 @@ public final class DirectoryLayout {
                 getRootDirectory(),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getEtoDownloadMainFile(DataDate date) throws ConfigReadException {
@@ -250,7 +282,7 @@ public final class DirectoryLayout {
                 date.getYear() % 100,
                 date.getMonth(),
                 date.getDay()
-                ));
+        ));
     }
 
     public static File getEtoArchiveMetadata(EtoArchive archive) throws ConfigReadException {
@@ -260,7 +292,7 @@ public final class DirectoryLayout {
                     "%s/download/eto/%04d/EtoArchiveMetadata.yearly.xml.gz",
                     getRootDirectory(),
                     archive.getYear()
-                    ));
+            ));
 
         case Monthly:
             return new File(String.format(
@@ -268,7 +300,7 @@ public final class DirectoryLayout {
                     getRootDirectory(),
                     archive.getYear(),
                     archive.getMonth()
-                    ));
+            ));
 
         case Daily:
             return new File(String.format(
@@ -276,7 +308,7 @@ public final class DirectoryLayout {
                     getRootDirectory(),
                     archive.getYear(),
                     archive.toDataDate().getDayOfYear()
-                    ));
+            ));
 
         default:
             throw new IllegalArgumentException();
@@ -289,7 +321,7 @@ public final class DirectoryLayout {
                 getRootDirectory(),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getModisReprojectedFolder(ProjectInfo project, ModisProduct product,
@@ -301,7 +333,7 @@ public final class DirectoryLayout {
                 getModisDirectoryName(product),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getModisReprojected(ProjectInfo project, ModisProduct product,
@@ -313,7 +345,7 @@ public final class DirectoryLayout {
                 getModisDirectoryName(product),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getModisReprojectedMetadata(ProjectInfo project, ModisProduct product,
@@ -325,7 +357,7 @@ public final class DirectoryLayout {
                 getModisDirectoryName(product),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getModisReprojectedBand(ProjectInfo project, ModisProduct product,
@@ -338,7 +370,7 @@ public final class DirectoryLayout {
                 date.getYear(),
                 date.getDayOfYear(),
                 band
-                ));
+        ));
     }
 
     public static File getTrmmReprojectedFolder(ProjectInfo project,
@@ -350,12 +382,12 @@ public final class DirectoryLayout {
                 getTrmmName(product),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getTrmmReprojected(ProjectInfo project, TrmmProduct product, DataDate date)
-            throws ConfigReadException
-            {
+    throws ConfigReadException
+    {
         return new File(String.format(
                 "%s/projects/%s/reprojected/%s/%04d/%03d/%s.tif",
                 getRootDirectory(),
@@ -364,12 +396,27 @@ public final class DirectoryLayout {
                 date.getYear(),
                 date.getDayOfYear(),
                 getTrmmName(product)
-                ));
-            }
+        ));
+    }
+
+    public static File getNldasReprojected(ProjectInfo project, DataDate date)
+    throws ConfigReadException
+    {
+        return new File(String.format(
+                "%s/projects/%s/reprojected/%s/%04d/%03d/%s.tif",
+                getRootDirectory(),
+                getProjectDirectoryName(project),
+                "Nldas",
+                date.getYear(),
+                date.getDayOfYear(),
+                "Nldas"
+        ));
+    }
+
 
     public static File getTrmmReprojectedMetadata(ProjectInfo project, TrmmProduct product, DataDate date)
-            throws ConfigReadException
-            {
+    throws ConfigReadException
+    {
         return new File(String.format(
                 "%s/projects/%s/reprojected/%s/%04d/%03d/TrmmReprojectedMetadata.xml.gz",
                 getRootDirectory(),
@@ -377,41 +424,54 @@ public final class DirectoryLayout {
                 getTrmmName(product),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
-            }
+        ));
+    }
+
+    public static File getNldasReprojectedMetadata(ProjectInfo project, DataDate date)
+    throws ConfigReadException
+    {
+        return new File(String.format(
+                "%s/projects/%s/reprojected/%s/%04d/%03d/NldasReprojectedMetadata.xml.gz",
+                getRootDirectory(),
+                getProjectDirectoryName(project),
+                "Nldas",
+                date.getYear(),
+                date.getDayOfYear()
+        ));
+    }
 
     public static File getEtoReprojectedFolder(ProjectInfo project, DataDate date)
-            throws ConfigReadException
-            {
+    throws ConfigReadException
+    {
         return new File(String.format(
                 "%s/projects/%s/reprojected/eto/%04d/%03d",
                 getRootDirectory(),
                 getProjectDirectoryName(project),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
-            }
+        ));
+    }
 
     public static File getEtoReprojected(ProjectInfo project, DataDate date)
-            throws ConfigReadException
-            {
+    throws ConfigReadException
+    {
         return new File(String.format(
                 "%s/eto.tif",
                 getEtoReprojectedFolder(project, date).toString())
-                );
-            }
+        );
+    }
 
     public static File getEtoReprojectedMetadata(ProjectInfo project, DataDate date)
-            throws ConfigReadException
-            {
+    throws ConfigReadException
+    {
         return new File(String.format(
                 "%s/projects/%s/reprojected/eto/%04d/%03d/EtoReprojectedMetadata.xml.gz",
                 getRootDirectory(),
                 getProjectDirectoryName(project),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
-            }
+        ));
+    }
 
     public static File getEtoClip(ProjectInfo project, DataDate date,
             String shapefile) throws ConfigReadException {
@@ -422,7 +482,7 @@ public final class DirectoryLayout {
                 date.getYear(),
                 date.getDayOfYear(),
                 shapefile
-                ));
+        ));
     }
 
     public static File getTrmmClip(ProjectInfo project, TrmmProduct product, DataDate date,
@@ -437,7 +497,7 @@ public final class DirectoryLayout {
                 date.getDayOfYear(),
                 shapefile,
                 getTrmmName(product)
-                ));
+        ));
     }
 
     public static File getModisClipFolder(ProjectInfo project, DataDate date,
@@ -450,7 +510,7 @@ public final class DirectoryLayout {
                 date.getYear(),
                 date.getDayOfYear(),
                 shapefile
-                ));
+        ));
     }
 
     public static File getModisClip(ProjectInfo project, DataDate date,
@@ -464,7 +524,7 @@ public final class DirectoryLayout {
                 date.getDayOfYear(),
                 shapefile,
                 band
-                ));
+        ));
     }
 
     public static File getIndexFolder(ProjectInfo project, EnvironmentalIndex index,
@@ -476,7 +536,7 @@ public final class DirectoryLayout {
                 getIndexDirectoryName(index),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getIndex(ProjectInfo project, EnvironmentalIndex index,
@@ -489,9 +549,9 @@ public final class DirectoryLayout {
                 getIndexDirectoryName(index),
                 date.getYear(),
                 date.getDayOfYear(),
-                shapeFile.substring(0, shapeFile.indexOf('.')),
+                shapeFile,
                 getIndexFileName(index)
-                ));
+        ));
     }
 
     public static File getIndexMetadata(ProjectInfo project, EnvironmentalIndex index,
@@ -505,7 +565,7 @@ public final class DirectoryLayout {
                 date.getYear(),
                 date.getDayOfYear(),
                 shapeFile.substring(0, shapeFile.indexOf('.'))
-                ));
+        ));
     }
 
     public static File getZonalSummaryFolder(ProjectInfo project, EnvironmentalIndex index,
@@ -517,7 +577,7 @@ public final class DirectoryLayout {
                 getIndexDirectoryName(index),
                 date.getYear(),
                 date.getDayOfYear()
-                ));
+        ));
     }
 
     public static File getZonalSummary(ProjectInfo project, EnvironmentalIndex index,
@@ -531,7 +591,7 @@ public final class DirectoryLayout {
                 date.getDayOfYear(),
                 zonalSummary,
                 getIndexFileName(index)
-                ));
+        ));
     }
 
     public static File getZonalSummaryMetadata(ProjectInfo project, EnvironmentalIndex index,
@@ -545,7 +605,7 @@ public final class DirectoryLayout {
                 date.getDayOfYear(),
                 zonalSummary,
                 getIndexFileName(index)
-                ));
+        ));
     }
 
     public static File getDatabaseInsertMetadata(ProjectInfo project, EnvironmentalIndex index,
@@ -559,6 +619,16 @@ public final class DirectoryLayout {
                 date.getDayOfYear(),
                 zonalSummary,
                 getIndexFileName(index)
-                ));
+        ));
     }
+    public static File getNldasDownloadMetadata(DataDate date) throws ConfigReadException {
+        return new File(String.format(
+                "%s/download/%s/%04d/%03d/NldasDownloadMetadata.xml.gz",
+                getRootDirectory(),
+                "Nldas",
+                date.getYear(),
+                date.getDayOfYear()
+        ));
+    }
+
 }
