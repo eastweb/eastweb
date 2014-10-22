@@ -7,6 +7,10 @@ import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.*;
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
+
+
+import org.apache.commons.net.ftp.*;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -16,11 +20,11 @@ import edu.sdstate.eastweb.prototype.download.Downloader.DataType;
 import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
 
 /**
- * Implements the MODIS NBAR and LST components of the download module. The
- * concrete classes {@link ModisNbarDownloader} and {@link ModisLstDownloader}
- * implement the static methods {@code getRootDir()} and {@code getProduct()},
- * completing the implementation.
- * 
+
+ * Implements the MODIS NBAR and LST components of the download module. The concrete classes
+ * {@link ModisNbarDownloader} and {@link ModisLstDownloader} implement the static methods
+ * {@code getRootDir()} and {@code getProduct()}, completing the implementation.
+ *
  * @author Dan Woodward
  * @author Michael VanBemmel
  * @author Yi Liu. Modified the FTP to HTTP on 6/7/13
@@ -56,12 +60,13 @@ public abstract class ModisDownloader {
      *            returned data date list; if null, data dates are not filtered
      * @throws IOException
      */
-    protected static final List<DataDate> listDates(DataDate startDate,
-            Object conn) throws IOException {
-        Mode mode = Settings.getMode(DataType.MODIS);
-        if (mode == Mode.HTTP) {
-            // final Pattern re =
-            // Pattern.compile("(\\d{4})\\.(\\d{2})\\.(\\d{2})");
+
+    protected static final List<DataDate> listDates(DataDate startDate, Object conn)
+    throws IOException {
+        Mode mode=Settings.getMode(DataType.MODIS);
+        if(mode==Mode.HTTP){
+            //final Pattern re = Pattern.compile("(\\d{4})\\.(\\d{2})\\.(\\d{2})");
+
 
             // pattern is changed to be d{4}.d{2}.d{2}/ with http href
             // somthing likes like "2000.02.18/"
@@ -74,7 +79,7 @@ public abstract class ModisDownloader {
             byte[] downloadPage = null;
             try {
                 downloadPage =
-                        DownloadUtils.downloadToByteArray((URLConnection) conn);
+                    DownloadUtils.downloadToByteArray((URLConnection) conn);
             } catch (ConnectException e) {
                 throw e;
             }
@@ -95,7 +100,7 @@ public abstract class ModisDownloader {
 
             for (int i = 0; i < dirlist.getLength(); ++i) {
                 final String dir =
-                        ((Element) dirlist.item(i)).getAttribute("href");
+                    ((Element) dirlist.item(i)).getAttribute("href");
 
                 // Match the filename against the known pattern of a MODIS NBAR
                 // date directory
@@ -134,9 +139,9 @@ public abstract class ModisDownloader {
         Mode mode = Settings.getMode(DataType.MODIS);
         if (mode == Mode.HTTP) {
             final Pattern re =
-                    Pattern.compile(String.format(
-                            Settings.getModisListTilesStr(), product,
-                            date.getYear(), date.getDayOfYear()));
+                Pattern.compile(String.format(
+                        Settings.getModisListTilesStr(), product,
+                        date.getYear(), date.getDayOfYear()));
 
             // changed to http protocol. 6/7/13 by Y.L.
             // Remove http:// and modishostname. add it into getModisDateDir
@@ -166,11 +171,11 @@ public abstract class ModisDownloader {
             final NodeList dirlist = pagedoc.getElementsByTagName("a");
 
             final Map<ModisTile, DataDate> map =
-                    new HashMap<ModisTile, DataDate>();
+                new HashMap<ModisTile, DataDate>();
 
             for (int i = 0; i < dirlist.getLength(); ++i) {
                 final String dir =
-                        ((Element) dirlist.item(i)).getAttribute("href");
+                    ((Element) dirlist.item(i)).getAttribute("href");
 
                 // Match the filename against the known pattern of a MODIS tile
                 // directory
@@ -202,20 +207,27 @@ public abstract class ModisDownloader {
      * @param outFile
      *            Destination file
      * @throws IOException
+     * @throws Exception
      */
-    public final void download() throws IOException {
-        Mode mode = Settings.getMode(DataType.MODIS);
-        if (mode == Mode.HTTP) {
-            // Build a regular expression that will match any HDF files with the
-            // specified date and tile
+
+    public final void download() throws IOException  {
+        Mode mode=Settings.getMode(DataType.MODIS);
+        if(mode==Mode.HTTP){
+            // Build a regular expression that will match any HDF files with the specified date and tile
+
             // (and any processing date)
 
-            final Pattern re =
-                    Pattern.compile(String.format(
-                            Settings.getModisDownloadStr(), getProduct(),
-                            mDate.getYear(), mDate.getDayOfYear(),
-                            mTile.getHTile(), mTile.getVTile(),
-                            mProcessed.getYear(), mProcessed.getDayOfYear()));
+            final Pattern re = Pattern.compile(String.format(
+                    Settings.getModisDownloadStr(),
+                    getProduct(),
+                    mDate.getYear(),
+                    mDate.getDayOfYear(),
+                    mTile.getHTile(),
+                    mTile.getVTile()
+                    // mProcessed.getYear(),
+                    // mProcessed.getDayOfYear()
+            ));
+
 
             // changed to use http protocal on 6/7/13 --- Y.L.
             String url_str = getModisDateDir(getRootDir(), mDate);
@@ -226,7 +238,10 @@ public abstract class ModisDownloader {
             byte[] downloadPage = null;
             try {
                 downloadPage = DownloadUtils.downloadToByteArray(url);
-            } catch (ConnectException e) {
+
+            }catch(ConnectException e){
+
+
                 throw e;
             }
 
@@ -247,7 +262,7 @@ public abstract class ModisDownloader {
                 String bestMatch = null;
                 for (int i = 0; i < dirlist.getLength(); ++i) {
                     final String dir =
-                            ((Element) dirlist.item(i)).getAttribute("href");
+                        ((Element) dirlist.item(i)).getAttribute("href");
 
                     if (re.matcher(dir).matches()
                             && (bestMatch == null || dir.compareTo(bestMatch) > 0)) {
@@ -306,8 +321,11 @@ public abstract class ModisDownloader {
      *            returned data date list; if null, data dates are not filtered
      * @throws IOException
      */
-    public static List<DataDate> listDates(ModisProduct product,
-            DataDate startDate) throws IOException {
+
+    public static List<DataDate> listDates(ModisProduct product, DataDate startDate)
+    throws IOException
+    {
+
         switch (product) {
         case NBAR:
             return ModisNbarDownloader.listDates(startDate);
@@ -330,8 +348,11 @@ public abstract class ModisDownloader {
      *            Specifies the data date
      * @throws IOException
      */
-    public static Map<ModisTile, DataDate> listTiles(ModisProduct product,
-            DataDate date) throws IOException {
+
+    public static Map<ModisTile, DataDate> listTiles(ModisProduct product, DataDate date)
+    throws IOException
+    {
+
         switch (product) {
         case NBAR:
             return ModisNbarDownloader.listTiles(date);
@@ -349,7 +370,7 @@ public abstract class ModisDownloader {
      * ModisLstDownloader, depending on the specified product.
      */
     public static ModisDownloader newWithProduct(ModisId modisId)
-            throws ConfigReadException {
+    throws ConfigReadException {
         switch (modisId.getProduct()) {
         case NBAR:
             return new ModisNbarDownloader(modisId.getDate(),

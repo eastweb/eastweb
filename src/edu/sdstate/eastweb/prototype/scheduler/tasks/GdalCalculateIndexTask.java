@@ -61,7 +61,7 @@ public class GdalCalculateIndexTask implements RunnableTask {
 
     private IndexMetadata makeMetadata(String shapeFile) throws IOException {
         final List<ModisReprojectedMetadata> modis =
-                new ArrayList<ModisReprojectedMetadata>();
+            new ArrayList<ModisReprojectedMetadata>();
 
         for (ModisProduct product : getModisProducts()) {
             modis.add(ModisReprojectedMetadata.fromFile(DirectoryLayout
@@ -69,9 +69,9 @@ public class GdalCalculateIndexTask implements RunnableTask {
         }
 
         final List<TrmmReprojectedMetadata> trmm =
-                new ArrayList<TrmmReprojectedMetadata>();
+            new ArrayList<TrmmReprojectedMetadata>();
         final List<EtoReprojectedMetadata> eto =
-                new ArrayList<EtoReprojectedMetadata>();
+            new ArrayList<EtoReprojectedMetadata>();
         final long timestamp = new Date().getTime();
 
         return new IndexMetadata(modis, trmm, eto, shapeFile, timestamp);
@@ -105,7 +105,7 @@ public class GdalCalculateIndexTask implements RunnableTask {
     NoSuchFieldException, SecurityException, IllegalArgumentException,
     IllegalAccessException, ClassNotFoundException, ParserConfigurationException, SAXException, NoSuchMethodException, InstantiationException, InvocationTargetException {
 
-        // replace mIndex with MetaData.GetInstance().IndicesMetaData when ready with schedule
+        //replace mIndex with MetaData.GetInstance().IndicesMetaData when ready with schedule
         Class<?> clazz = Class.forName("edu.sdstate.eastweb.prototype.indices." + "Gdal" + mIndex.name()  + "Calculator");
         Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
         Object object = ctor.newInstance(new Object[] { mProject, mDate, new File(mFeature).getName().split("\\.")[0], mIndex });
@@ -128,7 +128,7 @@ public class GdalCalculateIndexTask implements RunnableTask {
     public boolean getCanSkip() {
         try {
             return IndexMetadata.fromFile(getMetadataFile(mFeature))
-                    .equalsIgnoreTimestamp(makeMetadata(mFeature));
+            .equalsIgnoreTimestamp(makeMetadata(mFeature));
         } catch (Exception e) {
             return false;
         }

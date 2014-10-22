@@ -2,6 +2,10 @@ package edu.sdstate.eastweb.prototype;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,57 +24,90 @@ public class MetaData {
     public SummaryMetaData Summary;
     public String IndicesMetaData;
     public String Title;
+    private static Map<String,MetaData> instance;
+    public static String[] pluginList;
 
     public MetaData() throws ParserConfigurationException, SAXException, IOException{
 
-        File fXmlFile = new File(System.getProperty("user.dir") + "\\metaData.xml");
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(fXmlFile);
+        pluginList= new String[1];
+        pluginList[0]="NLDAS";
 
-        doc.getDocumentElement().normalize();
-
-        Title = doc.getElementsByTagName("title").item(0).getTextContent();
-        Download = new DownloadMetaData(doc.getElementsByTagName("Download"));
-        Projection = new ProjectionMetaData(doc.getElementsByTagName("Projection"));
-        IndicesMetaData = doc.getElementsByTagName("Indices").item(0).getTextContent();
-        Summary = new SummaryMetaData();
     }
 
-    private static MetaData instance;
+    Map<String, MetaData> createMap(String[] pluginList) throws ParserConfigurationException, SAXException, IOException{
+        Map<String,MetaData> myMap=new HashMap<String,MetaData>();
+        for(int i=0; i<pluginList.length; i++){
+            File fXmlFile = new File(System.getProperty("user.dir") + "\\Plugin_"+pluginList[i]+".xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile);
 
-    public static MetaData GetInstance() throws ParserConfigurationException, SAXException, IOException
+            doc.getDocumentElement().normalize();
+            MetaData temp=new MetaData();
+            temp.Title = doc.getElementsByTagName("title").item(0).getTextContent();
+            temp.Download = new DownloadMetaData(doc.getElementsByTagName("Download"));
+            temp.Projection = new ProjectionMetaData(doc.getElementsByTagName("Projection"));
+            temp.IndicesMetaData = doc.getElementsByTagName("Indices").item(0).getTextContent();
+            temp.Summary = new SummaryMetaData();
+            myMap.put(pluginList[i], temp);
+        }
+        return myMap;
+    }
+
+
+
+    public static Map<String, MetaData> GetInstance() throws ParserConfigurationException, SAXException, IOException
     {
         if(instance == null) {
-            instance = new MetaData();
+            instance = new MetaData().createMap(pluginList);
         }
 
         return instance;
     }
 
+
     public class DownloadMetaData{
         private NodeList nList;
-
-        public String ftpType;
-        public String ftphostName;
-        public String ftpNbarRootDir;
-        public String ftpUserName;
-        public String ftpPassword;
-        public String downloadClassname;
+        public String mode;// the protocol type: ftp or http
+        public ftp myFtp;
+        public http myHttp;
 
         public DownloadMetaData(NodeList n){
+            myFtp=null;
+            myHttp=null;
             nList = n;
             Node downloadNode = nList.item(0);
-            Node ftpNode = ((Element) downloadNode).getElementsByTagName("Ftp").item(0);
-
-            downloadClassname = ((Element) downloadNode).getElementsByTagName("className").item(0).getTextContent();
-            ftpType = ((Element) ftpNode).getElementsByTagName("type").item(0).getTextContent();
-            ftphostName   = ((Element) ftpNode).getElementsByTagName("hostName").item(0).getTextContent();
-            ftpNbarRootDir  = ((Element) ftpNode).getElementsByTagName("nbarRootDir").item(0).getTextContent();
-            ftpUserName  = ((Element) ftpNode).getElementsByTagName("userName").item(0).getTextContent();
-            ftpPassword  = ((Element) ftpNode).getElementsByTagName("passWord").item(0).getTextContent();
+            mode=((Element) downloadNode).getElementsByTagName("type").item(0).getTextContent();
+            mode=mode.toUpperCase();
+            if(mode.equalsIgnoreCase("Ftp")){
+                myFtp=new ftp(((Element)downloadNode).getElementsByTagName(mode).item(0));
+            }else{
+                myHttp=new http(((Element)downloadNode).getElementsByTagName(mode).item(0));
+            }
         }
 
+    }
+
+
+    public class ftp {
+        public String hostName;
+        public String rootDir;
+        public String userName;
+        public String password;
+
+        public ftp(Node e){
+            hostName=((Element)e).getElementsByTagName("hostName").item(0).getTextContent();
+            rootDir=((Element)e).getElementsByTagName("rootDir").item(0).getTextContent();
+            userName=((Element)e).getElementsByTagName("userName").item(0).getTextContent();
+            password=((Element)e).getElementsByTagName("passWord").item(0).getTextContent();
+        }
+    }
+
+    public class http {
+        public String url;
+        public http(Node e){
+            url=((Element)e).getElementsByTagName("url").item(0).getTextContent();
+        }
     }
 
     public class ProjectionMetaData {
@@ -110,5 +147,7 @@ public class MetaData {
     public class SummaryMetaData{
 
     }
+
+
 }
 
