@@ -9,7 +9,7 @@ import java.net.InetAddress;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
-import edu.sdstate.eastweb.prototype.download.NldasDownloader;
+import edu.sdstate.eastweb.prototype.download.NLDASDownloader;
 
 public class MainDriver {
 
@@ -20,7 +20,7 @@ public class MainDriver {
         /*MetaData test=MetaData.GetInstance().get("NLDAS");
         System.out.println( test.Download.mode);*/
         DataDate startDate=new DataDate(10,9,2014);
-        List<DataDate> list=NldasDownloader.listDates(startDate);
+        List<DataDate> list=NLDASDownloader.listDates(startDate);
         for(DataDate item: list){
             System.out.println(item.toString());
         }
