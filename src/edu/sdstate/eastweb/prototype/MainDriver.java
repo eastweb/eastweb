@@ -19,6 +19,7 @@ public class MainDriver {
 
         /*MetaData test=MetaData.GetInstance().get("NLDAS");
         System.out.println( test.Download.mode);*/
+
         DataDate startDate=new DataDate(10,9,2014);
         List<DataDate> list=NldasDownloader.listDates(startDate);
         for(DataDate item: list){
