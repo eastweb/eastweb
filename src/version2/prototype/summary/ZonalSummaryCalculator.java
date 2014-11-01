@@ -1,4 +1,4 @@
-package edu.sdstate.eastweb.prototype.summary;
+package version2.prototype.summary;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package edu.sdstate.eastweb.prototype.summary;
+package version2.prototype.summary;
 
 import java.util.Map;
 
