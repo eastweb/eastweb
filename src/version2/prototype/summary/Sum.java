@@ -1,11 +1,16 @@
 package version2.prototype.summary;
 
+import java.util.ArrayList;
 import java.util.Map;
 
-public class Sum implements SummaryStrategy {
+public class Sum extends SummarySingleton {
+
+    public Sum(SummariesCollection col) {
+        super(col);
+    }
 
     @Override
-    public void put(Map<Integer, Double> map, int index, double value) {
+    public void put(int index, double value) {
         if(map.get(index) == null) {
             map.put(index, value);
         } else {
@@ -13,4 +18,15 @@ public class Sum implements SummaryStrategy {
         }
     }
 
+    @Override
+    public Map<Integer, Double> getResult() {
+        return map;
+    }
+
+    @Override
+    public ArrayList<SummarySingleton> getDistinctLeaflets() {
+        ArrayList<SummarySingleton> temp = new ArrayList<SummarySingleton>();
+        temp.add(this);
+        return temp;
+    }
 }

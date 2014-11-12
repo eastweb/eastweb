@@ -1,6 +1,8 @@
 package version2.prototype.summary;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import edu.sdstate.eastweb.prototype.DataDate;
 
@@ -12,9 +14,12 @@ public class TemporalSummaryCalculator implements SummaryCalculator {
     private String outPath;
     private int hrsPerInputData;
     private int hrsPerOutputData;
-    private SummaryStrategy[] sumStrategy;
+    private ArrayList<TemporalSummary> tempMethods;
+    private ArrayList<MergeSummary> mergMethods;
     private MergeStrategy merStrategy;
     private InterpolateStrategy intStrategy;
+    private Calendar projectSDate;
+    private CalendarStrategy calStrategy;
 
     /**
      * @param inRaster
@@ -29,8 +34,9 @@ public class TemporalSummaryCalculator implements SummaryCalculator {
      */
     public TemporalSummaryCalculator(File[] inRaster, File inShape,
             DataDate[] inDate, String outPath, int hrsPerInputData,
-            int hrsPerOutputData, SummaryStrategy[] sumStrategy,
-            MergeStrategy merStrategy, InterpolateStrategy intStrategy) {
+            int hrsPerOutputData, Calendar projectSDate, CalendarStrategy calStrategy,
+            MergeStrategy merStrategy, InterpolateStrategy intStrategy,
+            ArrayList<TemporalSummary> tempMethods, ArrayList<MergeSummary> mergMethods) {
         super();
         this.inRaster = inRaster;
         this.inShape = inShape;
@@ -38,9 +44,12 @@ public class TemporalSummaryCalculator implements SummaryCalculator {
         this.outPath = outPath;
         this.hrsPerInputData = hrsPerInputData;
         this.hrsPerOutputData = hrsPerOutputData;
-        this.sumStrategy = sumStrategy;
+        this.tempMethods = tempMethods;
         this.merStrategy = merStrategy;
         this.intStrategy = intStrategy;
+        this.projectSDate = projectSDate;
+        this.calStrategy = calStrategy;
+        this.mergMethods = mergMethods;
     }
 
     @Override

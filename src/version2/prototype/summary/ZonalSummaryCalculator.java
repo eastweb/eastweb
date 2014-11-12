@@ -3,6 +3,8 @@ package version2.prototype.summary;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +29,7 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
     private File mLayerFile;
     private File mTableFile;
     private String mField;
-    private SummaryStrategy[] sumStrategy;
+    private SummariesCollection summaries;
 
     /**
      * @param inRaster
@@ -35,15 +37,22 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
      * @param outTable
      * @param zone
      * @param sumStrategy
+     * @throws InvocationTargetException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     * @throws ClassNotFoundException
      */
     public ZonalSummaryCalculator(File inRaster, File inShape, File outTable,
-            String zone, SummaryStrategy[] sumStrategy) {
+            String zone, String... summarySingletonNames) throws Exception {
         super();
         mRasterFile = inRaster;
         mLayerFile = inShape;
         mTableFile = outTable;
         mField = zone;
-        this.sumStrategy = sumStrategy;
+        summaries = new SummariesCollection(summarySingletonNames);
     }
 
     @Override
@@ -56,13 +65,6 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
             Layer layer = null;
             Dataset zoneRaster = null;
             try {
-                Map<Integer, Long> countMap = new HashMap<Integer, Long>();
-                Map<Integer, Double> sumMap = new HashMap<Integer, Double>();
-                Map<Integer, Double> minMap = new HashMap<Integer, Double>();
-                Map<Integer, Double> maxMap = new HashMap<Integer, Double>();
-                Map<Integer, Double> meanMap = new HashMap<Integer, Double>();
-                Map<Integer, Double> stdMap = new HashMap<Integer, Double>();
-
                 // Open inputs
                 raster = gdal.Open(mRasterFile.getPath()); GdalUtils.errorCheck();
                 layerSource = ogr.Open(mLayerFile.getPath());
@@ -90,20 +92,10 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
                 assert(raster.GetRasterYSize() == zoneRaster.GetRasterYSize());
 
                 // Calculate statistics
-                calculateStatistics(
-                        raster, zoneRaster, layer,
-                        countMap, sumMap,
-                        minMap, maxMap,
-                        meanMap, stdMap
-                        );
+                calculateStatistics(raster, zoneRaster, layer);
 
                 // Write the table
-                writeTable(
-                        layer,
-                        countMap, sumMap,
-                        minMap, maxMap,
-                        meanMap, stdMap
-                        );
+                writeTable(layer);
             } finally { // Clean up
                 if (raster != null) {
                     raster.delete(); GdalUtils.errorCheck();
@@ -234,14 +226,7 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
     }
 
 
-    private void calculateStatistics(
-            Dataset rasterDS, Dataset featureDS, Layer layer,
-            Map<Integer, Long> countMap, Map<Integer, Double> sumMap,
-            Map<Integer, Double> minMap, Map<Integer, Double> maxMap,
-            Map<Integer, Double> meanMap, Map<Integer, Double> stdMap) throws Exception {
-
-        Map<Integer, Double> squareSumMap = new HashMap<Integer, Double>();
-
+    private void calculateStatistics(Dataset rasterDS, Dataset featureDS, Layer layer) throws Exception {
         // Calculate zonal statistics
         Band zoneBand = featureDS.GetRasterBand(1); GdalUtils.errorCheck();
         Band rasterBand = rasterDS.GetRasterBand(1); GdalUtils.errorCheck();
@@ -265,81 +250,43 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
                 int zone = zoneArray[i];
                 double value = rasterArray[i];
                 if (zone != 0 && value != NO_DATA) { // Neither are no data values
-                    if (countMap.get(zone) == null) { // New zone
-                        countMap.put(zone, 1l);
-                        sumMap.put(zone, value);
-                        squareSumMap.put(zone, value*value);
-                        minMap.put(zone, value);
-                        maxMap.put(zone, value);
-                    } else {
-                        countMap.put(zone, countMap.get(zone) + 1);
-                        sumMap.put(zone, sumMap.get(zone) + value);
-                        squareSumMap.put(zone, squareSumMap.get(zone) + value*value);
-
-                        if (minMap.get(zone) > value) {
-                            minMap.put(zone, value);
-                        }
-
-                        if (maxMap.get(zone) < value) {
-                            maxMap.put(zone, value);
-                        }
-                    }
+                    summaries.put(zone, value);
                 }
             }
         }
 
-        System.out.print("Count: ");
-        System.out.println(countMap);
-        System.out.format("Sum: %s\n", sumMap.toString());
-        System.out.format("Square Sum: %s\n", squareSumMap.toString());
-        System.out.print("Min: ");
-        System.out.println(minMap);
-        System.out.print("Max: ");
-        System.out.println(maxMap);
-
-        layer.ResetReading();
-        Feature feature = layer.GetNextFeature(); GdalUtils.errorCheck();
-        while (feature != null) {
-            int zone = feature.GetFieldAsInteger(mField); GdalUtils.errorCheck();
-            if (countMap.get(zone) != null) {
-                meanMap.put(zone, sumMap.get(zone)/countMap.get(zone));
-                stdMap.put(zone, Math.sqrt( (squareSumMap.get(zone)/countMap.get(zone)) - (meanMap.get(zone) * meanMap.get(zone)) ));
-            }
-            feature = layer.GetNextFeature(); GdalUtils.errorCheck();
+        ArrayList<SummaryNameResultPair> results = summaries.getResults();
+        for(SummaryNameResultPair pair : results){
+            System.out.println(pair.toString());
         }
-
-        System.out.format("Mean: %s\n", meanMap.toString());
-        System.out.format("Standard deviation: %s\n", stdMap.toString());
     }
 
 
-    private void writeTable(
-            Layer layer,
-            Map<Integer, Long> countMap, Map<Integer, Double> sumMap,
-            Map<Integer, Double> minMap, Map<Integer, Double> maxMap,
-            Map<Integer, Double> meanMap, Map<Integer, Double> stdMap
-            ) throws Exception {
-
-        // Every map is expected to be the same size
-        assert(countMap.size() == sumMap.size());
-        assert(countMap.size() == minMap.size());
-        assert(countMap.size() == maxMap.size());
-        assert(countMap.size() == meanMap.size());
-        assert(countMap.size() == stdMap.size());
-
+    private void writeTable(Layer layer) throws Exception {
         // Write the table
         PrintWriter writer = new PrintWriter(mTableFile);
 
         layer.ResetReading(); GdalUtils.errorCheck();
         Feature feature = layer.GetNextFeature(); GdalUtils.errorCheck();
+        ArrayList<SummaryNameResultPair> results = summaries.getResults();
+        Map<Integer, Double> countMap = new HashMap<Integer, Double>(1);
+        for(SummaryNameResultPair pair : results){
+            if(pair.getSimpleName().equalsIgnoreCase("count")){
+                countMap = pair.getResult();
+                break;
+            }
+        }
         while (feature != null) {
             int zone = feature.GetFieldAsInteger(mField); GdalUtils.errorCheck();
             if (countMap.get(zone) != null && countMap.get(zone) != 0) {
                 writer.print(zone + ",");
-                writer.print(countMap.get(zone) + ",");
-                writer.print(sumMap.get(zone) + ",");
-                writer.print(meanMap.get(zone) + ",");
-                writer.print(stdMap.get(zone));
+                for(int i=0; i < results.size(); i++){
+                    if(i < results.size() - 1) {
+                        System.out.println(results.get(i).toString(",") + ", ");
+                    } else {
+                        System.out.println(results.get(i).toString(","));
+                    }
+                }
                 writer.println();
             }
             feature = layer.GetNextFeature(); GdalUtils.errorCheck();
