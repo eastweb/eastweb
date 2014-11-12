@@ -8,9 +8,6 @@ import edu.sdstate.eastweb.prototype.DirectoryLayout;
 import edu.sdstate.eastweb.prototype.ProjectInfo;
 import edu.sdstate.eastweb.prototype.download.TrmmProduct;
 
-// FIXME: delete this. temporary (and dreadful) hack so I can release the
-// software today
-// Simply converts the input to 32 bits and saves it to the output location
 public class GdalTRMMCalculator extends IndicesFramework {
 
     private final int INPUT = 0;
