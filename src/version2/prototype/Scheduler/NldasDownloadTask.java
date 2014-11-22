@@ -1,4 +1,4 @@
-package version2.prototype.download;
+package version2.prototype.Scheduler;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +11,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
 
+import version2.prototype.DataDate;
+import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
+import version2.prototype.download.NldasDownloader;
 import edu.sdstate.eastweb.prototype.ConfigReadException;
-import edu.sdstate.eastweb.prototype.DataDate;
 import edu.sdstate.eastweb.prototype.DirectoryLayout;
 import edu.sdstate.eastweb.prototype.MetaData;
 import edu.sdstate.eastweb.prototype.download.cache.CacheUtils;
@@ -26,13 +28,13 @@ public class NldasDownloadTask implements Runnable {
             "C:\\Users\\jiameng\\Nldas\\avaliable.xml.gz";
     List<DataDate> available;
     List<DataDate> finished;
-    String mode;
-    String rootDir;
+    DownloadMetaData mode;
 
-    public NldasDownloadTask(DataDate startDate, String mode, String rootDir ) {
-        this.startDate = startDate;
-        this.mode=mode;
-        this.rootDir=rootDir;
+
+    public NldasDownloadTask(DataDate dataDate, DownloadMetaData metaData) {
+        startDate = dataDate;
+        mode=metaData;
+
     }
 
     @Override
@@ -49,12 +51,10 @@ public class NldasDownloadTask implements Runnable {
             return;
         }
 
-
-
         for (DataDate item : download) {
             try {
                 FileUtils.forceMkdir(getoutFile(item).getParentFile());
-                new NldasDownloader(item, getoutFile(item),mode, rootDir).download();
+                new NldasDownloader(item, getoutFile(item),mode).download();
             } catch (Exception e) {
                 // update the downloadedCache
                 updateDownloadedCache();

@@ -10,10 +10,13 @@ import java.util.regex.*;
 import javax.xml.parsers.ParserConfigurationException;
 
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+
+import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
 import edu.sdstate.eastweb.prototype.*;
 
 /**
@@ -33,6 +36,14 @@ public final class NldasDownloader extends Downloader {
         mOutFile = outFile;
         mode=NldasMode;
         rootDir=NldasRootDir;
+    }
+
+    public NldasDownloader(DataDate date, File outFile, DownloadMetaData data) {
+        mDate=null;
+        mOutFile=null;
+        mode=null;
+        rootDir=null;
+
     }
     public NldasDownloader() {
         mDate=null;

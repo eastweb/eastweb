@@ -2,6 +2,7 @@ package version2.prototype;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,52 +16,43 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-public class MetaData {
+public class PluginMetaDataCollection {
+    public static Map<String,PluginMetaData> instance;
+    public static ArrayList<String> pluginList;
 
-    public DownloadMetaData Download;
-    public ProjectionMetaData Projection;
-    public SummaryMetaData Summary;
-    public String IndicesMetaData;
-    public String Title;
-    private static Map<String,MetaData> instance;
-    public static String[] pluginList;
 
-    public MetaData() throws ParserConfigurationException, SAXException, IOException{
+    public PluginMetaDataCollection(ArrayList<String> listOfPluginMetaData) throws ParserConfigurationException, SAXException, IOException{
 
-        pluginList= new String[1];
-        pluginList[0]="NLDAS";
-
+        pluginList= listOfPluginMetaData;
     }
 
-    Map<String, MetaData> createMap(String[] pluginList) throws ParserConfigurationException, SAXException, IOException{
-        Map<String,MetaData> myMap=new HashMap<String,MetaData>();
-        for(int i=0; i<pluginList.length; i++){
-            File fXmlFile = new File(System.getProperty("user.dir") + "\\Plugin_"+pluginList[i]+".xml");
+    Map<String, PluginMetaData> createMap(ArrayList<String> pluginList) throws ParserConfigurationException, SAXException, IOException{
+        Map<String,PluginMetaData> myMap=new HashMap<String,PluginMetaData>();
+        for(String item: pluginList){
+            File fXmlFile = new File(System.getProperty("user.dir") + "\\Plugin_"+item+".xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
 
             doc.getDocumentElement().normalize();
-            MetaData temp=new MetaData();
+            PluginMetaData temp=new PluginMetaData();
             temp.Title = doc.getElementsByTagName("title").item(0).getTextContent();
             temp.Download = new DownloadMetaData(doc.getElementsByTagName("Download"));
             temp.Projection = new ProjectionMetaData(doc.getElementsByTagName("Projection"));
             temp.IndicesMetaData = doc.getElementsByTagName("Indices").item(0).getTextContent();
             temp.Summary = new SummaryMetaData();
-            myMap.put(pluginList[i], temp);
+            myMap.put(item, temp);
         }
         return myMap;
     }
 
+    public class PluginMetaData {
 
-
-    public static Map<String, MetaData> GetInstance() throws ParserConfigurationException, SAXException, IOException
-    {
-        if(instance == null) {
-            instance = new MetaData().createMap(pluginList);
-        }
-
-        return instance;
+        public DownloadMetaData Download;
+        public ProjectionMetaData Projection;
+        public SummaryMetaData Summary;
+        public String IndicesMetaData;
+        public String Title;
     }
 
 
@@ -83,9 +75,7 @@ public class MetaData {
                 myHttp=new http(((Element)downloadNode).getElementsByTagName(mode).item(0));
             }
         }
-
     }
-
 
     public class ftp {
         public String hostName;

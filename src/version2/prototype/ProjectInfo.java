@@ -20,6 +20,7 @@ public class ProjectInfo implements Serializable {
     private ModisTile[] modisTiles;
     private ZonalSummary[] zonalSummaries;
     private boolean calculateETa;
+    private ArrayList<String> listOfPluginNames;
 
     public ProjectInfo() {
         projection = new Projection();
@@ -147,6 +148,13 @@ public class ProjectInfo implements Serializable {
         .append(", zonalSummaries: ")
         .append(", calculateETa: ").append(calculateETa)
         .append("}").toString();
+    }
+
+    // TODO: this will be initalized by the user in the UI
+    public ArrayList<String> getPlugin() {
+        listOfPluginNames = new ArrayList<String>();
+        listOfPluginNames.add("NLDAS");
+        return listOfPluginNames;
     }
 
 }
