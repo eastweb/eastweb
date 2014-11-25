@@ -38,8 +38,14 @@ public class PluginMetaDataCollection {
             PluginMetaData temp=new PluginMetaData();
             temp.Title = doc.getElementsByTagName("title").item(0).getTextContent();
             temp.Download = new DownloadMetaData(doc.getElementsByTagName("Download"));
-            temp.Projection = new ProjectionMetaData(doc.getElementsByTagName("Projection"));
-            temp.IndicesMetaData = doc.getElementsByTagName("Indices").item(0).getTextContent();
+            temp.Projection = new ProcessMetaData(doc.getElementsByTagName("Process"));
+
+            temp.IndicesMetaData = new ArrayList<String>();
+            for(int i = 0; i < doc.getElementsByTagName("Indices").getLength(); i++)
+            {
+                temp.IndicesMetaData.add( ((Element) doc.getElementsByTagName("Indices").item(i)).getElementsByTagName("ClassName").item(0).getTextContent());
+            }
+
             temp.Summary = new SummaryMetaData();
             myMap.put(item, temp);
         }
@@ -49,26 +55,31 @@ public class PluginMetaDataCollection {
     public class PluginMetaData {
 
         public DownloadMetaData Download;
-        public ProjectionMetaData Projection;
+        public ProcessMetaData Projection;
         public SummaryMetaData Summary;
-        public String IndicesMetaData;
+        public ArrayList<String> IndicesMetaData;
         public String Title;
     }
 
 
     public class DownloadMetaData{
         private NodeList nList;
+
         public String mode;// the protocol type: ftp or http
         public ftp myFtp;
         public http myHttp;
+        public String className;
 
         public DownloadMetaData(NodeList n){
             myFtp=null;
             myHttp=null;
             nList = n;
             Node downloadNode = nList.item(0);
-            mode=((Element) downloadNode).getElementsByTagName("type").item(0).getTextContent();
+
+            className = ((Element) downloadNode).getElementsByTagName("className").item(0).getTextContent();
+            mode=((Element) downloadNode).getElementsByTagName("mode").item(0).getTextContent();
             mode=mode.toUpperCase();
+
             if(mode.equalsIgnoreCase("Ftp")){
                 myFtp=new ftp(((Element)downloadNode).getElementsByTagName(mode).item(0));
             }else{
@@ -98,7 +109,7 @@ public class PluginMetaDataCollection {
         }
     }
 
-    public class ProjectionMetaData {
+    public class ProcessMetaData {
 
         private NodeList nList;
 
@@ -112,23 +123,39 @@ public class PluginMetaDataCollection {
         public String filterClassName;
         public Boolean filterRunFilter;
 
-        public ProjectionMetaData(NodeList n){
+        public Map<Integer, String> processStep;
+
+        public ProcessMetaData(NodeList n){
             nList = n;
-            Node projectionNode = nList.item(0);
+            processStep = new HashMap<Integer, String>();
+            Node processNode = nList.item(0);
 
-            projectionClassName = ((Element) projectionNode).getElementsByTagName("className").item(0).getTextContent();
-            projectionMozaix = Boolean.valueOf(((Element) projectionNode).getElementsByTagName("mozaic").item(0).getTextContent());
+            Node projection = ((Element) processNode).getElementsByTagName("Projection").item(0);
+            processStep.put(Integer.parseInt((projection.getAttributes().getNamedItem("processStep").getTextContent())),
+                    ((Element) projection).getElementsByTagName("className").item(0).getTextContent());
 
-            Node convertNode = ((Element) projectionNode).getElementsByTagName("convert").item(0);
-            convertHasConvert = ((Element) convertNode).getElementsByTagName("hasConvert").item(0).getTextContent();
+            //projectionClassName = ((Element) projectionNode).getElementsByTagName("className").item(0).getTextContent();
+            //mozaic
+            Node mozaic = ((Element) processNode).getElementsByTagName("mozaic").item(0);
+            processStep.put(Integer.parseInt(mozaic.getAttributes().getNamedItem("processStep").getTextContent()),
+                    mozaic.getTextContent());
+
+            //projectionMozaix = Boolean.valueOf(((Element) processNode).getElementsByTagName("mozaic").item(0).getTextContent());
+
+            Node convertNode = ((Element) processNode).getElementsByTagName("convert").item(0);
+            convertHasConvert = ((Element) convertNode).getElementsByTagName("isConvert").item(0).getTextContent();
             convertOriFormat = ((Element) convertNode).getElementsByTagName("oriFormat").item(0).getTextContent();
             convertToFormat = ((Element) convertNode).getElementsByTagName("toFormat").item(0).getTextContent();
             convertGeoTransform = ((Element) convertNode).getElementsByTagName("GeoTransform").item(0).getTextContent();
             convertProjectionStr = ((Element) convertNode).getElementsByTagName("projectionStr").item(0).getTextContent();
+            processStep.put(Integer.parseInt((convertNode.getAttributes().getNamedItem("processStep").getTextContent())),
+                    ((Element) convertNode).getElementsByTagName("className").item(0).getTextContent());
 
-            Node filterNode = ((Element) projectionNode).getElementsByTagName("filter").item(0);
+            Node filterNode = ((Element) processNode).getElementsByTagName("filter").item(0);
             filterClassName = ((Element) filterNode).getElementsByTagName("className").item(0).getTextContent();
-            filterRunFilter = Boolean.valueOf(((Element) filterNode).getElementsByTagName("runFilter").item(0).getTextContent());
+            //filterRunFilter = Boolean.valueOf(((Element) filterNode).getElementsByTagName("isFilter").item(0).getTextContent());
+            processStep.put(Integer.parseInt((filterNode.getAttributes().getNamedItem("processStep").getTextContent())),
+                    ((Element) filterNode).getElementsByTagName("className").item(0).getTextContent());
         }
     }
 
