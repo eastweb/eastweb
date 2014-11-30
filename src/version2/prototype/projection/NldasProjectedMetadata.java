@@ -6,8 +6,8 @@ import java.io.IOException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import edu.sdstate.eastweb.prototype.download.NldasDownloadMetadata;
-import edu.sdstate.eastweb.prototype.util.XmlUtils;
+import version2.prototype.download.NldasDownloadMetadata;
+import version2.prototype.util.XmlUtils;
 
 public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadata>{
 
@@ -40,7 +40,7 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
 
     public boolean equals(NldasProjectedMetadata o) {
         return mDownload.equals(o.mDownload) &&
-        mTimestamp == o.mTimestamp;
+                mTimestamp == o.mTimestamp;
     }
 
     public boolean equalsIgnoreTimestamp(NldasProjectedMetadata o) {

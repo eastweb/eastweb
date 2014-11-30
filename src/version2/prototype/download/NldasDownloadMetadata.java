@@ -4,8 +4,10 @@ import java.io.*;
 
 import org.w3c.dom.*;
 
-import edu.sdstate.eastweb.prototype.DataDate;
-import edu.sdstate.eastweb.prototype.util.XmlUtils;
+import version2.prototype.DataDate;
+import version2.prototype.util.XmlUtils;
+
+
 
 public class NldasDownloadMetadata {
     private static final String ROOT_ELEMENT_NAME = "NldasDownloadMetadata";
@@ -39,7 +41,7 @@ public class NldasDownloadMetadata {
 
     public boolean equals(NldasDownloadMetadata o) {
         return mDate.equals(o.mDate) &&
-        mTimestamp == o.mTimestamp;
+                mTimestamp == o.mTimestamp;
     }
 
     public boolean equalsIgnoreTimestamp(NldasDownloadMetadata o) {

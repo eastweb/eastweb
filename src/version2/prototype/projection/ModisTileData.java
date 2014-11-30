@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 
-import edu.sdstate.eastweb.prototype.util.GdalUtils;
+import version2.prototype.util.GdalUtils;
 
 /*
  * ModisTile class stores bands and metadata information for given modis tile

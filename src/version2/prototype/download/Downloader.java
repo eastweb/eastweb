@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 public abstract class Downloader {
 
     public abstract void download() throws IOException, DownloadFailedException, Exception, SAXException;
+
     public enum DataType {
         TRMM,
         ETO,

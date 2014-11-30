@@ -1,7 +1,7 @@
 package version2.prototype.download;
+
 import java.io.IOException;
-import java.net.ConnectException;
-import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
+
 
 public class FTP extends ConnectionStrategy{
 

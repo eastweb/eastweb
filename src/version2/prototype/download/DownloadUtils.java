@@ -1,4 +1,5 @@
 package version2.prototype.download;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;

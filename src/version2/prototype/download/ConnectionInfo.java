@@ -1,14 +1,10 @@
 package version2.prototype.download;
 
-import edu.sdstate.eastweb.prototype.download.Downloader.DataType;
-import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
-
 public  abstract class ConnectionInfo {
     String mode;
     ConnectionInfo(){
 
     }
-
 
     /*
     ConnectionInfo(Mode m, String hn, String un, String pw){

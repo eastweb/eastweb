@@ -8,7 +8,8 @@ package version2.prototype.projection;
 
 import org.gdal.gdal.Band;
 
-import edu.sdstate.eastweb.prototype.util.GdalUtils;
+import version2.prototype.util.GdalUtils;
+
 
 public class ImageArray {
     private double [] array;

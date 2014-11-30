@@ -1,21 +1,18 @@
 package version2.prototype.download;
 
 import java.io.IOException;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.xml.sax.SAXException;
 
-import edu.sdstate.eastweb.prototype.ConfigReadException;
-import edu.sdstate.eastweb.prototype.MetaData;
-import edu.sdstate.eastweb.prototype.download.Downloader.DataType;
-import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
+import version2.prototype.ConfigReadException;
+import version2.prototype.download.Downloader.DataType;
+
 
 public class HTTPConnectionInfo extends ConnectionInfo{
     String url;
     HTTPConnectionInfo(DataType dt) throws ParserConfigurationException, SAXException, IOException {
         mode="HTTP";
-        url=MetaData.GetInstance().get(dt).Download.myHttp.url;
+        //url=MetaData.GetInstance().get(dt).Download.myHttp.url;
 
     }
 

@@ -4,10 +4,8 @@ import java.io.File;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import version2.prototype.util.GdalUtils;
+
 public abstract class Filter {
-
-
-
 
     private final File mInput;
     private final File mOutput;
@@ -20,7 +18,6 @@ public abstract class Filter {
         mInput = input;
         mOutput = output;
     }
-
 
     public void filter() throws Exception {
         GdalUtils.register();

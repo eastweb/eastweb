@@ -9,9 +9,9 @@ import version2.prototype.ProjectInfo;
 public class Scheduler {
 
     private static Scheduler instance;
-    private ProjectInfo projectInfo;
-    private Config config;
-    private PluginMetaDataCollection pluginMetaDataCollection;
+    public ProjectInfo projectInfo;
+    public Config config;
+    public PluginMetaDataCollection pluginMetaDataCollection;
 
     private Scheduler(InitializeMockData data)
     {

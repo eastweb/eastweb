@@ -9,15 +9,15 @@ import java.util.regex.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
-
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import version2.prototype.Config;
+import version2.prototype.ConfigReadException;
+import version2.prototype.DataDate;
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
-import edu.sdstate.eastweb.prototype.*;
+
 
 /**
  * This download class is automatically generated. Please go through all the
@@ -28,29 +28,24 @@ import edu.sdstate.eastweb.prototype.*;
 public final class NldasDownloader extends Downloader {
     private final DataDate mDate;
     private final File mOutFile;
-    static private  String mode;
-    static private  String rootDir;
+
+    private static DownloadMetaData metaData;
 
     public NldasDownloader(DataDate date, File outFile, String NldasMode, String NldasRootDir) throws IOException {
         mDate = date;
         mOutFile = outFile;
-        mode=NldasMode;
-        rootDir=NldasRootDir;
+
     }
 
     public NldasDownloader(DataDate date, File outFile, DownloadMetaData data) {
-        mDate=null;
-        mOutFile=null;
-        mode=null;
-        rootDir=null;
+        mDate=date;
+        mOutFile=outFile;
+        metaData = data;
 
     }
     public NldasDownloader() {
         mDate=null;
         mOutFile=null;
-        mode=null;
-        rootDir=null;
-
     }
 
     /**
@@ -66,7 +61,6 @@ public final class NldasDownloader extends Downloader {
      */
     public static final List<DataDate> listDates(DataDate startDate)
             throws ConfigReadException, IOException, ParserConfigurationException, SAXException {
-        String mode = MetaData.GetInstance().get("NLDAS").Download.mode;
         List<DataDate> result=new ArrayList<DataDate>();
         try {
 
@@ -75,7 +69,7 @@ public final class NldasDownloader extends Downloader {
             Class cls=nd.getClass();
             Class[] paramDatadate=new Class[1];
             paramDatadate[0]=startDate.getClass();
-            String methodName=mode.toLowerCase()+"ListDates";
+            String methodName=metaData.mode.toLowerCase()+"ListDates";
 
 
             //call the listDates method for different download protocol
@@ -101,7 +95,7 @@ public final class NldasDownloader extends Downloader {
 
         try {
             ftp =
-                    (FTPClient) ConnectionContext.getConnection(mode,
+                    (FTPClient) ConnectionContext.getConnection(metaData.mode,
                             "NLDAS");
         } catch (ConnectException e) {
             System.out.println("Can't connect to NLDAS data website, please check your URL.");
@@ -110,9 +104,9 @@ public final class NldasDownloader extends Downloader {
 
         try {
 
-            if (!ftp.changeWorkingDirectory(rootDir)) {
+            if (!ftp.changeWorkingDirectory(metaData.myFtp.rootDir)) {
                 throw new IOException("Couldn't navigate to directory: "
-                        + rootDir);
+                        + metaData.myFtp.rootDir);
             }
 
             // List years
@@ -133,7 +127,7 @@ public final class NldasDownloader extends Downloader {
                 // List days in this year
                 // TODO: Please check the format of year dicrectory.
                 final String yearDirectory =
-                        String.format("%s/%s", rootDir, yearFile.getName());
+                        String.format("%s/%s", metaData.myFtp.rootDir, yearFile.getName());
 
                 if (!ftp.changeWorkingDirectory(yearDirectory)) {
                     throw new IOException(
@@ -187,7 +181,7 @@ public final class NldasDownloader extends Downloader {
     @Override
     public final void download() throws IOException, ConfigReadException,
     DownloadFailedException, SAXException, Exception {
-        String mode = MetaData.GetInstance().get("NLDAS").Download.mode;
+        String mode = metaData.mode;
 
         //set up the parameters and method name.
         NldasDownloader nd=new NldasDownloader();
@@ -206,8 +200,8 @@ public final class NldasDownloader extends Downloader {
     }
 
     private void ftpDownload() throws ParserConfigurationException, SAXException, IOException {
-        String mode = MetaData.GetInstance().get("NLDAS").Download.mode;
-        String rootDir=MetaData.GetInstance().get("NLDAS").Download.myFtp.rootDir;
+        String mode = metaData.mode;
+        String rootDir=metaData.myFtp.rootDir;
         final FTPClient ftp =
                 (FTPClient) ConnectionContext.getConnection(mode,
                         "NLDAS");

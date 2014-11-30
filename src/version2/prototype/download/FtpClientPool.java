@@ -1,13 +1,11 @@
 package version2.prototype.download;
 
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -41,7 +39,7 @@ public class FtpClientPool {
     private static final long CLIENT_POOL_EXPIRE_TIME = 60000; // 60 seconds
 
     private static Map<String, Set<PoolEntry>> sClientsByHost =
-        new HashMap<String, Set<PoolEntry>>();
+            new HashMap<String, Set<PoolEntry>>();
 
     static {
         final Thread thread = new Thread(new Runnable() {
@@ -53,7 +51,7 @@ public class FtpClientPool {
                         Thread.sleep(CLIENT_POOL_CHECK_INTERVAL);
                     } catch (InterruptedException e) {
                         System.err.println("[FtpClientPool] Warning: monitor thread was" +
-                        " interrupted");
+                                " interrupted");
                         return;
                     }
 

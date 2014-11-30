@@ -9,6 +9,8 @@ import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconst;
 
+import version2.prototype.util.GdalUtils;
+
 public abstract class IndicesFramework implements IndexCalculator {
 
     private static final float OUTPUT_NODATA = Float.intBitsToFloat(0xff7fffff);

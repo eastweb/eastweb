@@ -2,13 +2,15 @@ package version2.prototype.projection;
 
 import java.io.File;
 
-import edu.sdstate.eastweb.prototype.ProjectInfo;
-import edu.sdstate.eastweb.prototype.util.GdalUtils;
+import version2.prototype.ProjectInfo;
+import version2.prototype.util.GdalUtils;
+
+
 
 public class NldasProjection implements Projection{
     @Override
     public void project(File input, ProjectInfo project, File out)
-    throws Exception {
+            throws Exception {
         GdalUtils.project(input, project,out);
     }
 

@@ -1,14 +1,10 @@
 package version2.prototype.download;
-import java.io.IOException;
+
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ConnectException;
 
-import edu.sdstate.eastweb.prototype.Config;
-import edu.sdstate.eastweb.prototype.ConfigReadException;
-import edu.sdstate.eastweb.prototype.download.Downloader.DataType;
-import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
+
 
 public class ConnectionContext {
 
@@ -69,8 +65,6 @@ public class ConnectionContext {
         }
 
     }*/
-
-
 
     static void close(Object conn){
 

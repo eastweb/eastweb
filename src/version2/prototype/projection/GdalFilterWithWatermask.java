@@ -2,10 +2,13 @@ package version2.prototype.projection;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.Transformer;
 import org.gdal.gdal.gdal;
-import edu.sdstate.eastweb.prototype.util.GdalUtils;
+
+import version2.prototype.util.GdalUtils;
+
 
 /**
  *

@@ -2,7 +2,9 @@ package version2.prototype.projection;
 
 import java.io.File;
 
-import edu.sdstate.eastweb.prototype.ProjectInfo;
+import version2.prototype.ProjectInfo;
+
+
 
 public interface Projection {
 

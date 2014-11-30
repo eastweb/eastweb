@@ -20,10 +20,10 @@ public class PluginMetaDataCollection {
     public static Map<String,PluginMetaData> instance;
     public static ArrayList<String> pluginList;
 
-
     public PluginMetaDataCollection(ArrayList<String> listOfPluginMetaData) throws ParserConfigurationException, SAXException, IOException{
 
         pluginList= listOfPluginMetaData;
+        instance = createMap(pluginList);
     }
 
     Map<String, PluginMetaData> createMap(ArrayList<String> pluginList) throws ParserConfigurationException, SAXException, IOException{
