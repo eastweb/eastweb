@@ -11,6 +11,7 @@ import version2.prototype.Config;
 import version2.prototype.InitializeMockData;
 import version2.prototype.PluginMetaDataCollection;
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
+import version2.prototype.PluginMetaDataCollection.ProcessMetaData;
 import version2.prototype.ProjectInfo;
 
 public class Scheduler {
@@ -45,23 +46,33 @@ public class Scheduler {
             NldasDownloadTask download = new NldasDownloadTask(projectInfo.getStartDate(), downloadMetaData);
             download.run();
 
-            // Process
-            // base on processStep
 
-            // get data for data, file, and the last thing that i dont really know about
-            // ask jiameng what the hell the file is suppose to do
-            for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(item).IndicesMetaData)
+            ProcessMetaData temp = PluginMetaDataCollection.instance.get(item).Projection;
+
+            for (int i = 0; i < temp.processStep.size(); i++)
             {
-                Class<?> clazz = Class.forName("edu.sdstate.eastweb.prototype.indices." + "Gdal" + indexCalculatorItem + "Calculator");
-                Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
-                IndexCalculator indexCalculator = (IndexCalculator) ctor.newInstance(new Object[] {
-                        projectInfo,
-                        projectInfo.getStartDate(),
-                        new File(indexCalculatorItem).getName().split("\\.")[0],
-                        indexCalculatorItem });
+                Class<?> clazz = Class.forName("version2.prototype.projection." + temp.processStep.get(i));
+                Constructor<?> ctor = clazz.getConstructor(ProcessReflectionData.class);
+                Object indexCalculator =  ctor.newInstance(new Object[] {
+                        new ProcessReflectionData());
+                }
+                // Process
+                // base on processStep
+
+                // get data for data, file, and the last thing that i dont really know about
+                // ask jiameng what the hell the file is suppose to do
+                for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(item).IndicesMetaData)
+                {
+                    Class<?> clazz = Class.forName("version2.prototype.indices." + "Gdal" + indexCalculatorItem + "Calculator");
+                    Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
+                    IndexCalculator indexCalculator = (IndexCalculator) ctor.newInstance(new Object[] {
+                            projectInfo,
+                            projectInfo.getStartDate(),
+                            new File(indexCalculatorItem).getName().split("\\.")[0],
+                            indexCalculatorItem });
+                }
+
+
             }
-
-
         }
     }
-}

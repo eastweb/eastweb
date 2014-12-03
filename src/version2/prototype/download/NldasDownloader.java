@@ -96,7 +96,7 @@ public final class NldasDownloader extends Downloader {
         try {
             ftp =
                     (FTPClient) ConnectionContext.getConnection(metaData.mode,
-                            "NLDAS");
+                            "NLDAS", metaData);
         } catch (ConnectException e) {
             System.out.println("Can't connect to NLDAS data website, please check your URL.");
             return null;
@@ -204,7 +204,7 @@ public final class NldasDownloader extends Downloader {
         String rootDir=metaData.myFtp.rootDir;
         final FTPClient ftp =
                 (FTPClient) ConnectionContext.getConnection(mode,
-                        "NLDAS");
+                        "NLDAS", metaData);
         try {
             // TODO: Change the year directory as needed.
             final String yearDirectory =

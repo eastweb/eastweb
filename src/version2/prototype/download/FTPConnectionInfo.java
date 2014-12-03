@@ -1,8 +1,12 @@
 package version2.prototype.download;
 
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.xml.sax.SAXException;
+
+import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
 
 public class FTPConnectionInfo extends ConnectionInfo {
 
@@ -10,11 +14,11 @@ public class FTPConnectionInfo extends ConnectionInfo {
     String userName;
     String password;
 
-    FTPConnectionInfo(String dt) throws ParserConfigurationException, SAXException, IOException{
+    FTPConnectionInfo(String dt, DownloadMetaData metadata) throws ParserConfigurationException, SAXException, IOException{
         mode="FTP";
-        //hostName=MetaData.GetInstance().get(dt).Download.myFtp.hostName;
-        //userName=MetaData.GetInstance().get(dt).Download.myFtp.userName;
-        //password=MetaData.GetInstance().get(dt).Download.myFtp.password;
+        hostName=metadata.myFtp.hostName;
+        userName=metadata.myFtp.userName;
+        password=metadata.myFtp.password;
     }
     /*FTPConnectionInfo(){
         super();

@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import version2.prototype.download.NldasDownloadMetadata;
+//import version2.prototype.download.NldasDownloadMetadata;
 import version2.prototype.util.XmlUtils;
 
 public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadata>{
