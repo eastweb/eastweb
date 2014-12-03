@@ -53,7 +53,7 @@ public final class DirectoryLayout {
 
     public static File getNldasReprojectedMetadata(ProjectInfo project, DataDate date)
             throws ConfigReadException
-            {
+    {
         return new File(String.format(
                 "%s/projects/%s/reprojected/%s/%04d/%03d/NldasReprojectedMetadata.xml.gz",
                 getRootDirectory(),
@@ -62,7 +62,7 @@ public final class DirectoryLayout {
                 date.getYear(),
                 date.getDayOfYear()
                 ));
-            }
+    }
 
     public static File getIndexMetadata(ProjectInfo project, String index,
             DataDate date, String shapefile) throws ConfigReadException {
@@ -77,13 +77,10 @@ public final class DirectoryLayout {
                 shapeFile.substring(0, shapeFile.indexOf('.'))
                 ));
     }
-
-
-
-
-
-
-
+    public static File getNldasDownload(DataDate date) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 
 }

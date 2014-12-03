@@ -14,11 +14,11 @@ import org.xml.sax.SAXException;
 import version2.prototype.DataDate;
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
 import version2.prototype.download.NldasDownloader;
-import edu.sdstate.eastweb.prototype.ConfigReadException;
-import edu.sdstate.eastweb.prototype.DirectoryLayout;
-import edu.sdstate.eastweb.prototype.MetaData;
-import edu.sdstate.eastweb.prototype.download.cache.CacheUtils;
-import edu.sdstate.eastweb.prototype.download.cache.NldasCache;
+import version2.prototype.download.cache.*;
+import version2.prototype.ConfigReadException;
+import version2.prototype.DirectoryLayout;
+import version2.prototype.MetaData;
+
 
 public class NldasDownloadTask implements Runnable {
     DataDate startDate;
