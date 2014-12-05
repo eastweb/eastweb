@@ -1,30 +1,29 @@
 package version2.prototype.projection;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
-
-import version2.prototype.projection.NldasDownloadMetadataHolder;
-//import version2.prototype.download.NldasDownloadMetadata;
+import version2.prototype.DataDate;
 import version2.prototype.util.XmlUtils;
 
-public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadata>{
 
-    private static final String ROOT_ELEMENT_NAME = "NldasReprojectedMetadata";
+
+public class NldasDownloadMetadataHolder {
+    private static final String ROOT_ELEMENT_NAME = "NldasDownloadMetadata";
+    private static final String DATE_ATTRIBUTE_NAME = "date";
     private static final String TIMESTAMP_ATTRIBUTE_NAME = "timestamp";
-    private final NldasDownloadMetadataHolder mDownload;
+
+    private final DataDate mDate;
     private final long mTimestamp;
 
-    public NldasProjectedMetadata(NldasDownloadMetadataHolder download, long timestamp) {
-        mDownload = download;
+    public NldasDownloadMetadataHolder(DataDate date, long timestamp) {
+        mDate = date;
         mTimestamp = timestamp;
     }
 
-    public NldasDownloadMetadataHolder getDownload() {
-        return mDownload;
+    public DataDate getDate() {
+        return mDate;
     }
 
     public long getTimestamp() {
@@ -33,25 +32,25 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof NldasProjectedMetadata) {
-            return equals((NldasProjectedMetadata)obj);
+        if (obj instanceof NldasDownloadMetadataHolder) {
+            return equals((NldasDownloadMetadataHolder)obj);
         } else {
             return false;
         }
     }
 
-    public boolean equals(NldasProjectedMetadata o) {
-        return mDownload.equals(o.mDownload) &&
+    public boolean equals(NldasDownloadMetadataHolder o) {
+        return mDate.equals(o.mDate) &&
                 mTimestamp == o.mTimestamp;
     }
 
-    public boolean equalsIgnoreTimestamp(NldasProjectedMetadata o) {
-        return mDownload.equals(o.mDownload);
+    public boolean equalsIgnoreTimestamp(NldasDownloadMetadataHolder o) {
+        return mDate.equals(o.mDate);
     }
 
-    @Override
-    public int compareTo(NldasProjectedMetadata o) {
-        int cmp = mDownload.compareTo(o.mDownload);
+
+    public int compareTo(NldasDownloadMetadataHolder o) {
+        int cmp = mDate.compareTo(o.mDate);
         if (cmp != 0) {
             return cmp;
         }
@@ -61,28 +60,28 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
 
     @Override
     public int hashCode() {
-        int hash = mDownload.hashCode();
+        int hash = mDate.hashCode();
         hash = hash * 17 + Long.valueOf(mTimestamp).hashCode();
         return hash;
     }
 
     public Element toXml(Document doc) {
         final Element rootElement = doc.createElement(ROOT_ELEMENT_NAME);
-        rootElement.appendChild(mDownload.toXml(doc));
+        rootElement.setAttribute(DATE_ATTRIBUTE_NAME, mDate.toCompactString());
         rootElement.setAttribute(TIMESTAMP_ATTRIBUTE_NAME, Long.toString(mTimestamp));
         return rootElement;
     }
 
-    public static NldasProjectedMetadata fromXml(Element rootElement) throws IOException {
+    public static NldasDownloadMetadataHolder fromXml(Element rootElement) throws IOException {
         if (!rootElement.getNodeName().equals(ROOT_ELEMENT_NAME)) {
             throw new IOException("Unexpected root element name");
         }
 
-        final NldasDownloadMetadataHolder download = NldasDownloadMetadataHolder.fromXml(
-                XmlUtils.getChildElement(rootElement));
+        final DataDate date = DataDate.fromCompactString(
+                rootElement.getAttribute(DATE_ATTRIBUTE_NAME));
         final long timestamp = Long.parseLong(rootElement.getAttribute(TIMESTAMP_ATTRIBUTE_NAME));
 
-        return new NldasProjectedMetadata(download, timestamp);
+        return new NldasDownloadMetadataHolder(date, timestamp);
     }
 
     public void toFile(File file) throws IOException {
@@ -91,7 +90,8 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
         XmlUtils.transformToGzippedFile(doc, file);
     }
 
-    public static NldasProjectedMetadata fromFile(File file) throws IOException {
+    public static NldasDownloadMetadataHolder fromFile(File file) throws IOException {
         return fromXml(XmlUtils.parseGzipped(file).getDocumentElement());
     }
+
 }
