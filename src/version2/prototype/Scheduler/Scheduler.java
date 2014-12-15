@@ -3,16 +3,16 @@ package version2.prototype.Scheduler;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import edu.sdstate.eastweb.prototype.DataDate;
-import edu.sdstate.eastweb.prototype.indices.EnvironmentalIndex;
-import edu.sdstate.eastweb.prototype.indices.IndexCalculator;
 import version2.prototype.Config;
+import version2.prototype.DataDate;
 import version2.prototype.InitializeMockData;
 import version2.prototype.PluginMetaDataCollection;
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
 import version2.prototype.PluginMetaDataCollection.ProcessMetaData;
 import version2.prototype.ProjectInfo;
+import version2.prototype.indices.IndexCalculator;
 
 public class Scheduler {
 
@@ -37,42 +37,67 @@ public class Scheduler {
         return instance;
     }
 
-    // TODO: change to use reflection to call classes
     public void run() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         for(String item: projectInfo.getPlugin())
         {
-            DownloadMetaData downloadMetaData = PluginMetaDataCollection.instance.get(item).Download;
-            NldasDownloadTask download = new NldasDownloadTask(projectInfo.getStartDate(), downloadMetaData);
+            NldasDownloadTask download = new NldasDownloadTask(projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(item).Download);
             download.run();
 
+            RunDownloader(item);
+            RunProcess(item);
+            RunIndicies(item);
+            RunSummary(item);
+        }
+    }
 
-            ProcessMetaData temp = PluginMetaDataCollection.instance.get(item).Projection;
+    public void RunDownloader(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        // uses reflection
+        Class<?> clazzDownloader = Class.forName("version2.prototype.projection." + "NldasDownloadTask"); // TODO: need to change so that it calls base on the metaData
+        Constructor<?> ctorDownloader = clazzDownloader.getConstructor(ProjectInfo.class, DownloadMetaData.class);
+        Object downloader =  ctorDownloader.newInstance(new Object[] {projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(pluginName).Download});
+        Method methodDownloader = downloader.getClass().getMethod("Run");
+        methodDownloader.invoke(downloader);
+    }
 
-            for (int i = 0; i < temp.processStep.size(); i++)
-            {
-                Class<?> clazz = Class.forName("version2.prototype.projection." + temp.processStep.get(i));
-                Constructor<?> ctor = clazz.getConstructor(ProcessReflectionData.class);
-                Object indexCalculator =  ctor.newInstance(new Object[] {
-                        new ProcessReflectionData());
-                }
-                // Process
-                // base on processStep
+    public void RunProcess(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        ProcessMetaData temp = PluginMetaDataCollection.instance.get(pluginName).Projection;
 
-                // get data for data, file, and the last thing that i dont really know about
-                // ask jiameng what the hell the file is suppose to do
-                for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(item).IndicesMetaData)
-                {
-                    Class<?> clazz = Class.forName("version2.prototype.indices." + "Gdal" + indexCalculatorItem + "Calculator");
-                    Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
-                    IndexCalculator indexCalculator = (IndexCalculator) ctor.newInstance(new Object[] {
+        for (int i = 0; i < temp.processStep.size(); i++)
+        {
+            Class<?> clazzProcess = Class.forName("version2.prototype.projection." + temp.processStep.get(i));
+            Constructor<?> ctorProcess = clazzProcess.getConstructor(ProcessReflectionData.class);
+            Object process =  ctorProcess.newInstance(new Object[] {new ProcessReflectionData()});
+            Method methodProcess = process.getClass().getMethod("Run");
+            methodProcess.invoke(process);
+        }
+    }
+
+    public void RunIndicies(String pulginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        // get data for data, file, and the last thing that i dont really know about
+        // ask jiameng what the hell the file is suppose to do
+        for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(pulginName).IndicesMetaData)
+        {
+            Class<?> clazzIndicies = Class.forName("version2.prototype.indices." + "Gdal" + indexCalculatorItem + "Calculator");
+            Constructor<?> ctorIndicies = clazzIndicies.getConstructor(ProjectInfo.class, DataDate.class, String.class, String.class);
+            IndexCalculator indexCalculator = (IndexCalculator) ctorIndicies.newInstance(
+                    new Object[] {
                             projectInfo,
                             projectInfo.getStartDate(),
                             new File(indexCalculatorItem).getName().split("\\.")[0],
-                            indexCalculatorItem });
-                }
-
-
-            }
+                            indexCalculatorItem}
+                    );
+            Method methodIndicies = indexCalculator.getClass().getMethod("Run");
+            methodIndicies.invoke(indexCalculator);
         }
     }
+
+    public void RunSummary(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+
+    }
+}
+

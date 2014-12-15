@@ -1,7 +1,8 @@
 package version2.prototype.download;
-import java.io.IOException;
 
+import java.io.IOException;
 import org.xml.sax.SAXException;
+
 public abstract class Downloader {
 
     public abstract void download() throws IOException, DownloadFailedException, Exception, SAXException;

@@ -1,13 +1,10 @@
 package version2.prototype.download;
 
 import java.io.*;
-
 import org.w3c.dom.*;
 
 import version2.prototype.DataDate;
 import version2.prototype.util.XmlUtils;
-
-
 
 public class NldasDownloadMetadata {
     private static final String ROOT_ELEMENT_NAME = "NldasDownloadMetadata";
@@ -51,24 +48,23 @@ public class NldasDownloadMetadata {
 
     public int compareTo(NldasDownloadMetadata o) {
         int cmp = mDate.compareTo(o.mDate);
-        if (cmp != 0) {
-            return cmp;
-        }
+
+        if (cmp != 0) {  return cmp;  }
 
         return Long.valueOf(mTimestamp).compareTo(Long.valueOf(o.mTimestamp));
     }
 
     @Override
     public int hashCode() {
-        int hash = mDate.hashCode();
-        hash = hash * 17 + Long.valueOf(mTimestamp).hashCode();
-        return hash;
+        return mDate.hashCode() * 17 + Long.valueOf(mTimestamp).hashCode();
     }
 
     public Element toXml(Document doc) {
         final Element rootElement = doc.createElement(ROOT_ELEMENT_NAME);
+
         rootElement.setAttribute(DATE_ATTRIBUTE_NAME, mDate.toCompactString());
         rootElement.setAttribute(TIMESTAMP_ATTRIBUTE_NAME, Long.toString(mTimestamp));
+
         return rootElement;
     }
 
@@ -77,8 +73,7 @@ public class NldasDownloadMetadata {
             throw new IOException("Unexpected root element name");
         }
 
-        final DataDate date = DataDate.fromCompactString(
-                rootElement.getAttribute(DATE_ATTRIBUTE_NAME));
+        final DataDate date = DataDate.fromCompactString(rootElement.getAttribute(DATE_ATTRIBUTE_NAME));
         final long timestamp = Long.parseLong(rootElement.getAttribute(TIMESTAMP_ATTRIBUTE_NAME));
 
         return new NldasDownloadMetadata(date, timestamp);
@@ -86,6 +81,7 @@ public class NldasDownloadMetadata {
 
     public void toFile(File file) throws IOException {
         final Document doc = XmlUtils.newDocument(ROOT_ELEMENT_NAME);
+
         doc.replaceChild(toXml(doc), doc.getDocumentElement());
         XmlUtils.transformToGzippedFile(doc, file);
     }
@@ -93,5 +89,4 @@ public class NldasDownloadMetadata {
     public static NldasDownloadMetadata fromFile(File file) throws IOException {
         return fromXml(XmlUtils.parseGzipped(file).getDocumentElement());
     }
-
 }

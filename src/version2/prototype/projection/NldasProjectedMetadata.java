@@ -7,6 +7,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
+
 import version2.prototype.projection.NldasDownloadMetadataHolder;
 //import version2.prototype.download.NldasDownloadMetadata;
 import version2.prototype.util.XmlUtils;
@@ -33,16 +34,11 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof NldasProjectedMetadata) {
-            return equals((NldasProjectedMetadata)obj);
-        } else {
-            return false;
-        }
+        return obj instanceof NldasProjectedMetadata ? equals((NldasProjectedMetadata)obj) : false;
     }
 
     public boolean equals(NldasProjectedMetadata o) {
-        return mDownload.equals(o.mDownload) &&
-                mTimestamp == o.mTimestamp;
+        return mDownload.equals(o.mDownload) && mTimestamp == o.mTimestamp;
     }
 
     public boolean equalsIgnoreTimestamp(NldasProjectedMetadata o) {
@@ -51,25 +47,22 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
 
     @Override
     public int compareTo(NldasProjectedMetadata o) {
-        int cmp = mDownload.compareTo(o.mDownload);
-        if (cmp != 0) {
-            return cmp;
-        }
-
-        return Long.valueOf(mTimestamp).compareTo(Long.valueOf(o.mTimestamp));
+        return mDownload.compareTo(o.mDownload) != 0 ?
+                mDownload.compareTo(o.mDownload):
+                    Long.valueOf(mTimestamp).compareTo(Long.valueOf(o.mTimestamp));
     }
 
     @Override
     public int hashCode() {
-        int hash = mDownload.hashCode();
-        hash = hash * 17 + Long.valueOf(mTimestamp).hashCode();
-        return hash;
+        return  mDownload.hashCode() * 17 + Long.valueOf(mTimestamp).hashCode();
     }
 
     public Element toXml(Document doc) {
         final Element rootElement = doc.createElement(ROOT_ELEMENT_NAME);
+
         rootElement.appendChild(mDownload.toXml(doc));
         rootElement.setAttribute(TIMESTAMP_ATTRIBUTE_NAME, Long.toString(mTimestamp));
+
         return rootElement;
     }
 
@@ -78,8 +71,7 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
             throw new IOException("Unexpected root element name");
         }
 
-        final NldasDownloadMetadataHolder download = NldasDownloadMetadataHolder.fromXml(
-                XmlUtils.getChildElement(rootElement));
+        final NldasDownloadMetadataHolder download = NldasDownloadMetadataHolder.fromXml(XmlUtils.getChildElement(rootElement));
         final long timestamp = Long.parseLong(rootElement.getAttribute(TIMESTAMP_ATTRIBUTE_NAME));
 
         return new NldasProjectedMetadata(download, timestamp);
@@ -87,6 +79,7 @@ public class NldasProjectedMetadata  implements Comparable<NldasProjectedMetadat
 
     public void toFile(File file) throws IOException {
         final Document doc = XmlUtils.newDocument(ROOT_ELEMENT_NAME);
+
         doc.replaceChild(toXml(doc), doc.getDocumentElement());
         XmlUtils.transformToGzippedFile(doc, file);
     }

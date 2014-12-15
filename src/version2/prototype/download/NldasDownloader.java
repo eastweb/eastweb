@@ -34,15 +34,14 @@ public final class NldasDownloader extends Downloader {
     public NldasDownloader(DataDate date, File outFile, String NldasMode, String NldasRootDir) throws IOException {
         mDate = date;
         mOutFile = outFile;
-
     }
 
     public NldasDownloader(DataDate date, File outFile, DownloadMetaData data) {
         mDate=date;
         mOutFile=outFile;
         metaData = data;
-
     }
+
     public NldasDownloader() {
         mDate=null;
         mOutFile=null;

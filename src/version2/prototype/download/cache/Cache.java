@@ -4,5 +4,4 @@ import version2.prototype.DataDate;
 
 public interface Cache {
     public DataDate getLastUpdated();
-
 }

@@ -7,8 +7,6 @@ import org.w3c.dom.*;
 import version2.prototype.DataDate;
 import version2.prototype.util.XmlUtils;
 
-
-
 public class NldasDownloadMetadataHolder {
     private static final String ROOT_ELEMENT_NAME = "NldasDownloadMetadata";
     private static final String DATE_ATTRIBUTE_NAME = "date";
@@ -32,43 +30,34 @@ public class NldasDownloadMetadataHolder {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof NldasDownloadMetadataHolder) {
-            return equals((NldasDownloadMetadataHolder)obj);
-        } else {
-            return false;
-        }
+        return obj instanceof NldasDownloadMetadataHolder ? equals((NldasDownloadMetadataHolder)obj) : false;
     }
 
     public boolean equals(NldasDownloadMetadataHolder o) {
-        return mDate.equals(o.mDate) &&
-                mTimestamp == o.mTimestamp;
+        return mDate.equals(o.mDate) && mTimestamp == o.mTimestamp;
     }
 
     public boolean equalsIgnoreTimestamp(NldasDownloadMetadataHolder o) {
         return mDate.equals(o.mDate);
     }
 
-
     public int compareTo(NldasDownloadMetadataHolder o) {
-        int cmp = mDate.compareTo(o.mDate);
-        if (cmp != 0) {
-            return cmp;
-        }
-
-        return Long.valueOf(mTimestamp).compareTo(Long.valueOf(o.mTimestamp));
+        return mDate.compareTo(o.mDate) != 0 ?
+                mDate.compareTo(o.mDate):
+                    Long.valueOf(mTimestamp).compareTo(Long.valueOf(o.mTimestamp));
     }
 
     @Override
     public int hashCode() {
-        int hash = mDate.hashCode();
-        hash = hash * 17 + Long.valueOf(mTimestamp).hashCode();
-        return hash;
+        return mDate.hashCode() * 17 + Long.valueOf(mTimestamp).hashCode();
     }
 
     public Element toXml(Document doc) {
         final Element rootElement = doc.createElement(ROOT_ELEMENT_NAME);
+
         rootElement.setAttribute(DATE_ATTRIBUTE_NAME, mDate.toCompactString());
         rootElement.setAttribute(TIMESTAMP_ATTRIBUTE_NAME, Long.toString(mTimestamp));
+
         return rootElement;
     }
 
@@ -77,8 +66,7 @@ public class NldasDownloadMetadataHolder {
             throw new IOException("Unexpected root element name");
         }
 
-        final DataDate date = DataDate.fromCompactString(
-                rootElement.getAttribute(DATE_ATTRIBUTE_NAME));
+        final DataDate date = DataDate.fromCompactString(rootElement.getAttribute(DATE_ATTRIBUTE_NAME));
         final long timestamp = Long.parseLong(rootElement.getAttribute(TIMESTAMP_ATTRIBUTE_NAME));
 
         return new NldasDownloadMetadataHolder(date, timestamp);
@@ -86,6 +74,7 @@ public class NldasDownloadMetadataHolder {
 
     public void toFile(File file) throws IOException {
         final Document doc = XmlUtils.newDocument(ROOT_ELEMENT_NAME);
+
         doc.replaceChild(toXml(doc), doc.getDocumentElement());
         XmlUtils.transformToGzippedFile(doc, file);
     }
@@ -93,5 +82,4 @@ public class NldasDownloadMetadataHolder {
     public static NldasDownloadMetadataHolder fromFile(File file) throws IOException {
         return fromXml(XmlUtils.parseGzipped(file).getDocumentElement());
     }
-
 }

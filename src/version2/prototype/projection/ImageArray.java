@@ -1,15 +1,8 @@
 package version2.prototype.projection;
 
-/* ImageArray class stores the array produced by Gdal for given band.
- * It also provides the getRow(), and setRow() method for image operation.
- * Programmer: Jiameng Hu
- * Date: 17/03/2013
- */
-
 import org.gdal.gdal.Band;
 
 import version2.prototype.util.GdalUtils;
-
 
 public class ImageArray {
     private double [] array;
@@ -18,13 +11,13 @@ public class ImageArray {
 
     ImageArray(Band band){
         GdalUtils.register();
+
         synchronized (GdalUtils.lockObject) {
             xSize=band.getXSize();
             ySize=band.getYSize();
             array=new double[xSize*ySize];
-            //System.out.println("before read array, xSize= "+xSize+"ySize= "+ySize);
+
             band.ReadRaster(0, 0, xSize, ySize, array);
-            //System.out.println("after read array");
         }
     }
 
@@ -41,14 +34,15 @@ public class ImageArray {
     public double[] getRow(int rowNumber){
         if(rowNumber<0 || rowNumber>ySize){
             System.out.println("row number out of range: "+ rowNumber);
+
             return null;
         }else{
             double[] row=new double[xSize];
-            for(int i=rowNumber*xSize, j=0; i<(rowNumber+1)*xSize; i++, j++){
-                //System.out.println(rowNumber);
 
+            for(int i=rowNumber*xSize, j=0; i<(rowNumber+1)*xSize; i++, j++){
                 row[j]=array[i];
             }
+
             return row;
         }
     }
@@ -57,9 +51,5 @@ public class ImageArray {
         for(int i=rowNumber*xSize, j=0; i<(rowNumber+1)*xSize; i++, j++){
             array[i]=rowValue[j];
         }
-
     }
 }
-
-
-

@@ -9,14 +9,7 @@ import org.gdal.gdal.gdal;
 
 import version2.prototype.util.GdalUtils;
 
-
-/**
- *
- *
- * @author Isaiah Snell-Feikema
- */
 public class GdalFilterWithWatermask  {
-
     private File mInput;
     private File mWatermask;
     private File mOutput;
@@ -26,19 +19,16 @@ public class GdalFilterWithWatermask  {
         mWatermask = watermask;
         mOutput = output;
 
-
         synchronized (GdalUtils.lockObject) {
 
         }
     }
-
 
     public void filter() throws IOException {
         synchronized (GdalUtils.lockObject) {
             Dataset mInputDS = gdal.Open(mInput.getPath());
             Dataset mWatermaskDS = gdal.Open(mWatermask.getPath());
             Dataset mOutputDS = mInputDS.GetDriver().CreateCopy(mOutput.getPath(), mInputDS); // FIXME: create 32bit new raster instead?
-            //mOutputDS.GetRasterBand(1).Fill(32767);
 
             assert(mInputDS.GetRasterCount() == 1);
             assert(mWatermaskDS.GetRasterCount() == 1);
@@ -49,12 +39,11 @@ public class GdalFilterWithWatermask  {
             int rasterHeight = mInputDS.GetRasterYSize();
             int rasterRight = rasterWidth;
             int rasterBottom = rasterHeight;
-
             Transformer transformer = new Transformer(mWatermaskDS, mInputDS, null);
-
             double[] point = new double[] {-0.5, -0.5, 0}; // Location of corner of first zone raster pixel
 
             transformer.TransformPoint(0, point);
+
             int watermaskX = (int) Math.round(point[0]);
             int watermaskY = (int) Math.round(point[1]);
             int watermaskWidth = mWatermaskDS.GetRasterXSize();
@@ -71,24 +60,25 @@ public class GdalFilterWithWatermask  {
 
             double[] output = new double[intersectWidth];
             double[] watermask = new double[intersectWidth];
+
             for (int y=0; y<intersectHeight; y++) {
                 mInputDS.GetRasterBand(1).ReadRaster(intersectX, intersectY + y, intersectWidth, 1, output);
                 mWatermaskDS.GetRasterBand(1).ReadRaster(intersectX - watermaskX, intersectY - watermaskY + y, intersectWidth, 1, watermask);
+
                 for (int x=0; x<intersectWidth; x++) {
                     if (watermask[x] == 0) {
                         output[x] = 32767; // FIXME: variable no data values
                     }
                 }
+
                 mOutputDS.GetRasterBand(1).WriteRaster(intersectX, intersectY + y, intersectWidth, 1, output);
             }
 
             mOutputDS.GetRasterBand(1).SetNoDataValue(32767);
             mOutputDS.GetRasterBand(1).ComputeStatistics(false);
-
             mInputDS.delete();
             mWatermaskDS.delete();
             mOutputDS.delete();
         }
     }
-
 }

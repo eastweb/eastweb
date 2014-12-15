@@ -12,7 +12,6 @@ import org.gdal.gdalconst.gdalconst;
 import version2.prototype.util.GdalUtils;
 
 public abstract class IndicesFramework implements IndexCalculator {
-
     private static final float OUTPUT_NODATA = Float.intBitsToFloat(0xff7fffff);
 
     private File[] mInputFiles;
@@ -31,11 +30,15 @@ public abstract class IndicesFramework implements IndexCalculator {
         System.out.println("inputs 0 is  "+inputs[0]);
         System.out.println(inputs[0].GetRasterXSize());
         System.out.println(inputs[0].GetRasterYSize());
+
         FileUtils.forceMkdir(mOutputFile.getParentFile());
-        Dataset outputDS =
-                gdal.GetDriverByName("GTiff").Create(mOutputFile.getPath(),
-                        inputs[0].GetRasterXSize(), inputs[0].GetRasterYSize(),
-                        1, gdalconst.GDT_Float32);
+        Dataset outputDS = gdal.GetDriverByName("GTiff").Create(
+                mOutputFile.getPath(),
+                inputs[0].GetRasterXSize(),
+                inputs[0].GetRasterYSize(),
+                1,
+                gdalconst.GDT_Float32);
+
         System.out.println("output is  "+outputDS);
         outputDS.SetGeoTransform(inputs[0].GetGeoTransform());
         outputDS.SetProjection(inputs[0].GetProjection());
@@ -51,15 +54,14 @@ public abstract class IndicesFramework implements IndexCalculator {
         synchronized (GdalUtils.lockObject) {
             // Setup the output and inputs
             Dataset[] inputs = new Dataset[mInputFiles.length];
+
             for (int i = 0; i < mInputFiles.length; i++) {
                 System.out.println("index calculate input files name: "+mInputFiles[i].getPath());
                 inputs[i] = gdal.Open(mInputFiles[i].getPath());
             }
 
             Dataset outputDS = createOutput(inputs);
-
-            // Process the output and inputs
-            process(inputs, outputDS);
+            process(inputs, outputDS);// Process the output and inputs
 
             // Calculate statistics
             for (int i = 1; i <= outputDS.GetRasterCount(); i++) {
@@ -73,30 +75,25 @@ public abstract class IndicesFramework implements IndexCalculator {
             for (Dataset input : inputs) {
                 input.delete();
             }
+
             outputDS.delete();
         }
     }
 
-    /**
-     * @param inputs
-     * @param output
-     * @throws Exception
-     */
     private void process(Dataset[] inputs, Dataset output) throws Exception {
         int xSize = inputs[0].GetRasterXSize();
         int ySize = inputs[0].GetRasterYSize();
-
         double[][] inputsArray = new double[inputs.length][xSize];
         double[] outputArray = new double[xSize];
 
         for (int y = 0; y < ySize; y++) {
             for (int i = 0; i < inputs.length; i++) {
-                inputs[i].GetRasterBand(1).ReadRaster(0, y, xSize, 1,
-                        inputsArray[i]);
+                inputs[i].GetRasterBand(1).ReadRaster(0, y, xSize, 1, inputsArray[i]);
             }
 
             for (int x = 0; x < xSize; x++) {
                 double[] values = new double[inputs.length];
+
                 for (int i = 0; i < inputs.length; i++) {
                     values[i] = inputsArray[i][x];
                 }
@@ -106,14 +103,7 @@ public abstract class IndicesFramework implements IndexCalculator {
 
             output.GetRasterBand(1).WriteRaster(0, y, xSize, 1, outputArray);
         }
-
     }
 
-    /**
-     * @param values
-     * @return
-     */
-    protected abstract double calculatePixelValue(double[] values)
-            throws Exception;
-
+    protected abstract double calculatePixelValue(double[] values) throws Exception;
 }

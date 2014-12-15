@@ -12,6 +12,7 @@ public class GdalNLDASCalculator extends IndicesFramework{
         setInputFiles(new File[] { getNldasReprojected(mProject, mDate) });
         setOutputFile(getIndex(mProject, mIndex, mDate, feature));
     }
+
     @Override
     protected double calculatePixelValue(double[] values) throws Exception {
         // TODO Auto-generated method stub
@@ -26,12 +27,12 @@ public class GdalNLDASCalculator extends IndicesFramework{
                 "Nldas",
                 date.getYear(),
                 date.getDayOfYear(),
-                "Nldas"
-                ));
+                "Nldas"));
     }
 
     public File getIndex(String project, String index, DataDate date, String shapefile) throws ConfigReadException {
         String shapeFile = new File(shapefile).getName();
+
         return new File(String.format(
                 "%s/projects/%s/indices/%s/%04d/%03d/%s/%s.tif",
                 DirectoryLayout.getRootDirectory(),
@@ -40,8 +41,6 @@ public class GdalNLDASCalculator extends IndicesFramework{
                 date.getYear(),
                 date.getDayOfYear(),
                 shapeFile,
-                index
-                ));
+                index));
     }
-
 }

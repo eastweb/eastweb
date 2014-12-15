@@ -9,12 +9,11 @@ import java.util.Set;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
-/**
- * Maintains a static pool of FTP connections for reuse.
- * 
- * @author Michael VanBemmel
- */
 public class FtpClientPool {
+    private static final long CLIENT_POOL_CHECK_INTERVAL = 10000; // 10 seconds
+    private static final long CLIENT_POOL_EXPIRE_TIME = 60000; // 60 seconds
+    private static Map<String, Set<PoolEntry>> sClientsByHost = new HashMap<String, Set<PoolEntry>>();
+
     private static final class PoolEntry {
         private final FTPClient mClient;
         private long mLastReturnedTime;
@@ -32,14 +31,6 @@ public class FtpClientPool {
             return mLastReturnedTime;
         }
     }
-
-    // private static final String FTP_USERNAME = "anonymous";
-    // private static final String FTP_PASSWORD = "anonymous";
-    private static final long CLIENT_POOL_CHECK_INTERVAL = 10000; // 10 seconds
-    private static final long CLIENT_POOL_EXPIRE_TIME = 60000; // 60 seconds
-
-    private static Map<String, Set<PoolEntry>> sClientsByHost =
-            new HashMap<String, Set<PoolEntry>>();
 
     static {
         final Thread thread = new Thread(new Runnable() {
@@ -79,6 +70,7 @@ public class FtpClientPool {
                 }
             }
         });
+
         thread.setDaemon(true);
         thread.start();
     }
@@ -87,6 +79,8 @@ public class FtpClientPool {
     }
 
     public static final FTPClient getFtpClient(String hostname, String un, String pw) throws IOException {
+        final FTPClient client = new FTPClient();
+
         // Attempt to retrieve a connected client
         synchronized (sClientsByHost) {
             final Set<PoolEntry> clients = sClientsByHost.get(hostname);
@@ -99,11 +93,12 @@ public class FtpClientPool {
 
         // No connected clients were available in the pool -- make a new one
         System.out.println("[FtpClientPool] Opening a new FTP connection to " + hostname);
-        final FTPClient client = new FTPClient();
+
         client.connect(hostname);
         client.enterLocalPassiveMode(); // Setup for data transfers between client and server
         client.login(un, pw);
         client.setFileType(FTP.BINARY_FILE_TYPE);
+
         return client;
     }
 
@@ -111,6 +106,7 @@ public class FtpClientPool {
         // Return the client to the pool
         synchronized (sClientsByHost) {
             Set<PoolEntry> clients = sClientsByHost.get(hostname);
+
             if (clients == null) {
                 clients = new HashSet<PoolEntry>();
                 sClientsByHost.put(hostname, clients);

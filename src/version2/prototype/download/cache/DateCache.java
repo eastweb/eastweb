@@ -2,21 +2,12 @@ package version2.prototype.download.cache;
 
 import java.io.*;
 import java.util.*;
-
 import org.w3c.dom.*;
 
 import version2.prototype.*;
 import version2.prototype.util.XmlUtils;
 
-
-/**
- * Represents a cached, sorted list of dates.
- * Instances of this class are immutable.
- *
- * @author Michael VanBemmel
- */
 public final class DateCache  implements Cache{
-
     private static final long serialVersionUID = 1L;
     private static final String ROOT_ELEMENT_NAME = "DateCache";
     private static final String LAST_UPDATED_ATTRIBUTE_NAME = "lastUpdated";
@@ -30,15 +21,15 @@ public final class DateCache  implements Cache{
     private final List<DataDate> mDates;
 
     public DateCache(DataDate lastUpdated, DataDate startDate, List<DataDate> dates) {
+        final List<DataDate> listCopy = new ArrayList<DataDate>(dates);
         mLastUpdated = lastUpdated;
         mStartDate = startDate;
 
-        final List<DataDate> listCopy = new ArrayList<DataDate>(dates);
         Collections.sort(listCopy);
         mDates = Collections.unmodifiableList(listCopy);
     }
 
-
+    @Override
     public DataDate getLastUpdated() {
         return mLastUpdated;
     }
@@ -53,11 +44,7 @@ public final class DateCache  implements Cache{
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof DateCache) {
-            return equals((DateCache)obj);
-        } else {
-            return false;
-        }
+        return obj instanceof DateCache ? equals((DateCache)obj) : false;
     }
 
     public boolean equals(DateCache o) {
@@ -68,6 +55,7 @@ public final class DateCache  implements Cache{
 
     public static DateCache fromFile(File file) throws IOException {
         final Element rootElement = XmlUtils.parseGzipped(file).getDocumentElement();
+
         if (!rootElement.getNodeName().equals(ROOT_ELEMENT_NAME)) {
             throw new IOException("Unexpected root element name");
         }
@@ -83,30 +71,32 @@ public final class DateCache  implements Cache{
         // Read data dates
         final List<DataDate> dates = new ArrayList<DataDate>();
         final NodeList yearNodes = rootElement.getElementsByTagName(YEAR_ELEMENT_NAME);
+
         for (int i = 0; i < yearNodes.getLength(); ++i) {
             final Element yearElement = (Element)yearNodes.item(i);
             final int year = Integer.parseInt(yearElement.getAttribute(YEAR_ATTRIBUTE_NAME));
-
             final NodeList dayNodes = yearElement.getElementsByTagName(DAY_ELEMENT_NAME);
+
             for (int j = 0; j < dayNodes.getLength(); ++j) {
                 final Element dayElement = (Element)dayNodes.item(j);
                 final int day = Integer.parseInt(dayElement.getTextContent());
+
                 dates.add(new DataDate(day, year));
             }
         }
-
         return new DateCache(lastUpdated, startDate, dates);
     }
 
     public void toFile(File file) throws IOException {
         final Document doc = XmlUtils.newDocument(ROOT_ELEMENT_NAME);
-
         final Element rootElement = doc.getDocumentElement();
+
         rootElement.setAttribute(LAST_UPDATED_ATTRIBUTE_NAME, mLastUpdated.toCompactString());
         rootElement.setAttribute(START_DATE_ATTRIBUTE_NAME, mStartDate.toCompactString());
 
         int currentYear = -1;
         Element yearElement = null;
+
         for (DataDate date : mDates) {
             // Create a year element for each new year
             if (date.getYear() != currentYear) {
@@ -117,6 +107,7 @@ public final class DateCache  implements Cache{
             }
 
             final Element dayElement = doc.createElement(DAY_ELEMENT_NAME);
+
             dayElement.setTextContent(Integer.toString(date.getDayOfYear()));
             yearElement.appendChild(dayElement);
         }

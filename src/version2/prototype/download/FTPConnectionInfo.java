@@ -1,9 +1,7 @@
 package version2.prototype.download;
 
 import java.io.IOException;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.xml.sax.SAXException;
 
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
@@ -20,10 +18,4 @@ public class FTPConnectionInfo extends ConnectionInfo {
         userName=metadata.myFtp.userName;
         password=metadata.myFtp.password;
     }
-    /*FTPConnectionInfo(){
-        super();
-        mode=Mode.FTP;
-    }*/
-
-
 }
