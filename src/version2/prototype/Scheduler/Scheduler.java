@@ -12,7 +12,11 @@ import version2.prototype.PluginMetaDataCollection;
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
 import version2.prototype.PluginMetaDataCollection.ProcessMetaData;
 import version2.prototype.ProjectInfo;
+import version2.prototype.ZonalSummary;
 import version2.prototype.indices.IndexCalculator;
+import version2.prototype.summary.SummaryData;
+import version2.prototype.summary.TemporalSummaryCalculator;
+import version2.prototype.summary.ZonalSummaryCalculator;
 
 public class Scheduler {
 
@@ -37,12 +41,12 @@ public class Scheduler {
         return instance;
     }
 
-    public void run() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    public void run() throws Exception
     {
         for(String item: projectInfo.getPlugin())
         {
-            NldasDownloadTask download = new NldasDownloadTask(projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(item).Download);
-            download.run();
+            //NldasDownloadTask download = new NldasDownloadTask(projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(item).Download);
+            //download.run();
 
             RunDownloader(item);
             RunProcess(item);
@@ -75,15 +79,15 @@ public class Scheduler {
         }
     }
 
-    public void RunIndicies(String pulginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    public void RunIndicies(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         // get data for data, file, and the last thing that i dont really know about
         // ask jiameng what the hell the file is suppose to do
-        for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(pulginName).IndicesMetaData)
+        for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(pluginName).IndicesMetaData)
         {
             Class<?> clazzIndicies = Class.forName("version2.prototype.indices." + "Gdal" + indexCalculatorItem + "Calculator");
             Constructor<?> ctorIndicies = clazzIndicies.getConstructor(ProjectInfo.class, DataDate.class, String.class, String.class);
-            IndexCalculator indexCalculator = (IndexCalculator) ctorIndicies.newInstance(
+            Object indexCalculator =  ctorIndicies.newInstance(
                     new Object[] {
                             projectInfo,
                             projectInfo.getStartDate(),
@@ -95,9 +99,19 @@ public class Scheduler {
         }
     }
 
-    public void RunSummary(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    public void RunSummary(String pluginName) throws Exception
     {
+        if(PluginMetaDataCollection.instance.get(pluginName).Summary.IsTeamporalSummary)
+        {
+            TemporalSummaryCalculator temporalSummaryCal = new TemporalSummaryCalculator(new SummaryData(new File("")));
+            temporalSummaryCal.calculate();
+        }
 
+        for(ZonalSummary summary: projectInfo.getZonalSummaries())
+        {
+            ZonalSummaryCalculator zonalSummaryCal = new ZonalSummaryCalculator(new SummaryData(new File("")));
+            zonalSummaryCal.calculate();
+        }
     }
 }
 

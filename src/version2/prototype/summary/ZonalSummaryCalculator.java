@@ -45,6 +45,12 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
      * @throws NoSuchMethodException
      * @throws ClassNotFoundException
      */
+
+    public ZonalSummaryCalculator(SummaryData data)
+    {
+
+    }
+
     public ZonalSummaryCalculator(File inRaster, File inShape, File outTable,
             String zone, String... summarySingletonNames) throws Exception {
         super();

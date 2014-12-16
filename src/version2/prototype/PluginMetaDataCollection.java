@@ -46,7 +46,7 @@ public class PluginMetaDataCollection {
                 temp.IndicesMetaData.add( ((Element) doc.getElementsByTagName("Indices").item(i)).getElementsByTagName("ClassName").item(0).getTextContent());
             }
 
-            temp.Summary = new SummaryMetaData();
+            temp.Summary = new SummaryMetaData(doc.getElementsByTagName("Summary"));
             myMap.put(item, temp);
         }
         return myMap;
@@ -160,7 +160,15 @@ public class PluginMetaDataCollection {
     }
 
     public class SummaryMetaData{
+        public Boolean IsTeamporalSummary;
+        private NodeList nList;
 
+        public SummaryMetaData(NodeList n){
+            nList = n;
+            Node projectionNode = nList.item(0);
+
+            IsTeamporalSummary = Boolean.valueOf(((Element) projectionNode).getElementsByTagName("TemporalSummary").item(0).getTextContent());
+        }
     }
 
 

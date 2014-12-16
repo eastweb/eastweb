@@ -47,11 +47,7 @@ public class Config {
     private static final String NAD83_WGS84_TRANSFORM_KEY = "NAD83_WGS84_TRANSFORM";
     private static final String WGS84_NAD27_TRANSFORM_KEY = "WGS84_NAD27_TRANSFORM";
     private static final String WGS84_WGS72_TRANSFORM_KEY = "WGS84_WGS72_TRANSFORM";
-    //private static final String DOWNLOAD_REFRESH_DAYS_KEY = "DOWNLOAD_REFRESH_DAYS";
     private static final String TRANSFORM_KEY = "Transform";
-    //private static final String HOST_ADDRESS_KEY = "HOST_ADDRESS";
-    //private static final String CONTROL_PORT_KEY = "CONTROL_PORT";
-    //private static final String TRANSFER_PORT_KEY = "TRANSFER_PORT";
 
     private static final LazyCachedReference<Config, ConfigReadException> instance =
             new LazyCachedReference<Config, ConfigReadException>() {
@@ -122,7 +118,6 @@ public class Config {
     private Hashtable<Datum, String> trmmTransforms;
     private Hashtable<Datum, String> etoTransforms;
 
-
     private Config() throws Exception {
         trmmTransforms = new Hashtable<Datum, String>();
         etoTransforms = new Hashtable<Datum, String>();
@@ -137,34 +132,27 @@ public class Config {
         return instance.get();
     }
 
-    /**
-     * Parses config file and loads settings.
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     * @throws Exception
-     */
     private void loadSettings() throws ConfigReadException, IOException, SAXException, ParserConfigurationException {
         File fXmlFile = new File(CONFIG_FILENAME);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
 
-        //root.setIdAttribute("id", true);
-
         rootDirectory=doc.getElementsByTagName(ROOT_DIRECTORY_KEY).item(0).getTextContent();
         tempDirectory=doc.getElementsByTagName(TEMP_DIRECTORY_KEY).item(0).getTextContent();
+
         // FIXME: not really in the right place
         File file = new File(rootDirectory);
         if (!file.exists()) {
             FileUtils.forceMkdir(file);
         }
 
-
         String pList=doc.getElementsByTagName(PRODUCT_LIST_KEY).item(0).getTextContent();
         setProductList(pList.split(";"));
 
         Element modis = (Element) doc.getElementsByTagName(MODIS_KEY).item(0);
         String modisMode=modis.getElementsByTagName(TYPE_KEY).item(0).getTextContent();
+
         if(modisMode.equals("http")){
             setModisDownMode(Mode.HTTP);
             //TODO: replace hostname and rootdir with real url
@@ -180,9 +168,9 @@ public class Config {
             setModisPassWord(modis.getElementsByTagName(PASS_WORD_KEY).item(0).getTextContent());
         }
 
-
         Element eto=(Element) doc.getElementsByTagName(ETO_KEY).item(0);
         String etoMode=eto.getElementsByTagName(TYPE_KEY).item(0).getTextContent();
+
         if(etoMode.equals("http")){
             setEtoDownMode(Mode.HTTP);
             etoHttpUrl=eto.getElementsByTagName(URL_KEY).item(0).getTextContent();
@@ -196,6 +184,7 @@ public class Config {
 
         Element trmm=(Element) doc.getElementsByTagName(TRMM_KEY).item(0);
         String trmmMode=trmm.getElementsByTagName(TYPE_KEY).item(0).getTextContent();
+
         if(trmmMode.equals("http")){
             setTrmmDownMode(Mode.HTTP);
             trmmHttpUrl=trmm.getElementsByTagName(URL_KEY).item(0).getTextContent();
@@ -212,6 +201,7 @@ public class Config {
         //read setting data into TRMM3B42
         Element TRMM_3B42=(Element) doc.getElementsByTagName("TRMM_3B42").item(0);
         String TRMM_3B42Mode=TRMM_3B42.getElementsByTagName(TYPE_KEY).item(0).getTextContent();
+
         if(TRMM_3B42Mode.equals("http")){
             setTRMM_3B42DownMode(Mode.HTTP);
             trmmHttpUrl=TRMM_3B42.getElementsByTagName(URL_KEY).item(0).getTextContent();
@@ -226,6 +216,7 @@ public class Config {
         //read setting data into nldas
         Element NLDAS=(Element) doc.getElementsByTagName("NLDAS" ).item(0);
         String NLDASMode=NLDAS.getElementsByTagName( TYPE_KEY).item(0).getTextContent();
+
         if(NLDASMode.equals( "http")){
             setNLDASDownMode(Mode. HTTP);
             trmmHttpUrl=NLDAS.getElementsByTagName(URL_KEY).item(0).getTextContent();

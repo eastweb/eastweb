@@ -32,6 +32,11 @@ public class TemporalSummaryCalculator implements SummaryCalculator {
      * @param merStrategy
      * @param intStrategy
      */
+    public TemporalSummaryCalculator(SummaryData data)
+    {
+
+    }
+
     public TemporalSummaryCalculator(File[] inRaster, File inShape,
             DataDate[] inDate, String outPath, int hrsPerInputData,
             int hrsPerOutputData, Calendar projectSDate, CalendarStrategy calStrategy,

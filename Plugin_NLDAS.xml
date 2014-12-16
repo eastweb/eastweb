@@ -34,7 +34,6 @@
 		<ClassName>GdalNLDASCalculator</ClassName>
 	</Indices>
 	<Summary>
-		<type>Zonal</type>
-		<className>ZonalStatistics</className>
+		<TemporalSummary>true</TemporalSummary>
 	</Summary>
 </PluginMetadata>
