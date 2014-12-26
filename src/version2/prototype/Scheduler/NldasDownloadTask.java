@@ -17,8 +17,6 @@ import version2.prototype.download.NldasDownloader;
 import version2.prototype.download.cache.*;
 import version2.prototype.ConfigReadException;
 import version2.prototype.DirectoryLayout;
-import version2.prototype.MetaData;
-
 
 public class NldasDownloadTask implements Runnable {
     DataDate startDate;

@@ -18,15 +18,15 @@ public class TestMain {
 
 
 
-            String haha = GdalETACalculator.class.getClass().getPackage().getName();
+            //String haha = GdalETACalculator.class.getClass().getPackage().getName();
 
-            Class<?> clazz = Class.forName("edu.sdstate.eastweb.prototype.indices." + MetaData.GetInstance().IndicesMetaData);
-            Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
-            Object object = ctor.newInstance(new Object[] { null, null, null, null });
+            //Class<?> clazz = Class.forName("edu.sdstate.eastweb.prototype.indices." + MetaData.GetInstance().IndicesMetaData);
+            //Constructor<?> ctor = clazz.getConstructor(ProjectInfo.class, DataDate.class, String.class, EnvironmentalIndex.class);
+            //Object object = ctor.newInstance(new Object[] { null, null, null, null });
 
             //Field j = indices.getClass().getField(mIndex.toString());
 
-            IndexCalculator temp = (IndexCalculator) object;
+            //IndexCalculator temp = (IndexCalculator) object;
 
             //Field j = test.getClass().getField(temp.IndicesMetaData);
 
