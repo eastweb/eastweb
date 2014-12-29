@@ -103,14 +103,14 @@ public class Scheduler {
     {
         if(PluginMetaDataCollection.instance.get(pluginName).Summary.IsTeamporalSummary)
         {
-            TemporalSummaryCalculator temporalSummaryCal = new TemporalSummaryCalculator(new SummaryData(new File("")));
-            temporalSummaryCal.calculate();
+            TemporalSummaryCalculator temporalSummaryCal = new TemporalSummaryCalculator(new SummaryData());
+            temporalSummaryCal.run();
         }
 
         for(ZonalSummary summary: projectInfo.getZonalSummaries())
         {
-            ZonalSummaryCalculator zonalSummaryCal = new ZonalSummaryCalculator(new SummaryData(new File("")));
-            zonalSummaryCal.calculate();
+            ZonalSummaryCalculator zonalSummaryCal = new ZonalSummaryCalculator(new SummaryData());
+            zonalSummaryCal.run();
         }
     }
 }
