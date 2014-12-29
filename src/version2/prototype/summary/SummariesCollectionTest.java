@@ -6,6 +6,7 @@ package version2.prototype.summary;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class SummariesCollectionTest {
     public void testSummariesCollection() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         SummariesCollection col;
 
-        col = new SummariesCollection("");
+        col = new SummariesCollection(new ArrayList<String>());
 
     }
 

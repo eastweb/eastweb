@@ -17,7 +17,6 @@ public class TemporalSummaryCalculator implements SummaryCalculator {
     private ArrayList<TemporalSummary> tempMethods;
     private ArrayList<MergeSummary> mergMethods;
     private MergeStrategy merStrategy;
-    private InterpolateStrategy intStrategy;
     private Calendar projectSDate;
     private CalendarStrategy calStrategy;
 
@@ -34,31 +33,21 @@ public class TemporalSummaryCalculator implements SummaryCalculator {
      */
     public TemporalSummaryCalculator(SummaryData data)
     {
-
-    }
-
-    public TemporalSummaryCalculator(File[] inRaster, File inShape,
-            DataDate[] inDate, String outPath, int hrsPerInputData,
-            int hrsPerOutputData, Calendar projectSDate, CalendarStrategy calStrategy,
-            MergeStrategy merStrategy, InterpolateStrategy intStrategy,
-            ArrayList<TemporalSummary> tempMethods, ArrayList<MergeSummary> mergMethods) {
-        super();
-        this.inRaster = inRaster;
-        this.inShape = inShape;
-        this.inDate = inDate;
-        this.outPath = outPath;
-        this.hrsPerInputData = hrsPerInputData;
-        this.hrsPerOutputData = hrsPerOutputData;
-        this.tempMethods = tempMethods;
-        this.merStrategy = merStrategy;
-        this.intStrategy = intStrategy;
-        this.projectSDate = projectSDate;
-        this.calStrategy = calStrategy;
-        this.mergMethods = mergMethods;
+        inRaster = data.inRaster;
+        inShape = data.inShape;
+        inDate = data.inDate;
+        outPath = data.outTableFile.getPath();
+        hrsPerInputData = data.hrsPerInputData;
+        hrsPerOutputData = data.hrsPerOutputData;
+        tempMethods = data.tempMethods;
+        merStrategy = data.merStrategy;
+        projectSDate = data.projectSDate;
+        calStrategy = data.calStrategy;
+        mergMethods = data.mergMethods;
     }
 
     @Override
-    public void calculate() throws Exception {
+    public void run() throws Exception {
         // TODO Auto-generated method stub
 
     }

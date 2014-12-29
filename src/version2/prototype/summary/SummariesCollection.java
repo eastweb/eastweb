@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class SummariesCollection {
-    public SummariesCollection(String... summaryNames) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
+    public SummariesCollection(ArrayList<String> summaryNames) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
     InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
         summaries = new ArrayList<SummarySingleton>();
         registry = new ArrayList<SummaryNameInstancePair>();
@@ -13,7 +13,7 @@ public class SummariesCollection {
         String canonicalPath = this.getClass().getCanonicalName().substring(0, this.getClass().getCanonicalName().lastIndexOf(".") + 1);
         boolean alreadyRegistered = false;
 
-        if(summaryNames.length > 0){
+        if(summaryNames.size() > 0){
             for(String name : summaryNames){
                 if(!name.equals("")){
                     Class<?> summary =  Class.forName(canonicalPath + name);

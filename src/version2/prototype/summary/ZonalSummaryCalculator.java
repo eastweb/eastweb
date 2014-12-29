@@ -48,21 +48,15 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
 
     public ZonalSummaryCalculator(SummaryData data)
     {
-
-    }
-
-    public ZonalSummaryCalculator(File inRaster, File inShape, File outTable,
-            String zone, String... summarySingletonNames) throws Exception {
-        super();
-        mRasterFile = inRaster;
-        mLayerFile = inShape;
-        mTableFile = outTable;
-        mField = zone;
-        summaries = new SummariesCollection(summarySingletonNames);
+        mRasterFile = data.inRaster[0];
+        mLayerFile = data.inShape;
+        mTableFile = data.outTableFile;
+        mField = data.zoneField;
+        summaries = data.summaries;
     }
 
     @Override
-    public void calculate() throws Exception {
+    public void run() throws Exception {
         GdalUtils.register();
 
         synchronized (GdalUtils.lockObject) {

@@ -1,13 +1,15 @@
 package version2.prototype.summary;
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Tester {
     public static void main(String[] args) {
         SummariesCollection col = null;
         try {
-            col = new SummariesCollection("Count", "Sum", "Mean", "StdDev");
+            col = new SummariesCollection(new ArrayList<String>(Arrays.asList("Count", "Sum", "Mean", "StdDev")));
             //testData1(col);
             testData2(col);
             ArrayList<SummaryNameResultPair> results = col.getResults();
