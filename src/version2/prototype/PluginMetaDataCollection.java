@@ -134,13 +134,9 @@ public class PluginMetaDataCollection {
             processStep.put(Integer.parseInt((projection.getAttributes().getNamedItem("processStep").getTextContent())),
                     ((Element) projection).getElementsByTagName("className").item(0).getTextContent());
 
-            //projectionClassName = ((Element) projectionNode).getElementsByTagName("className").item(0).getTextContent();
-            //mozaic
             Node mozaic = ((Element) processNode).getElementsByTagName("mozaic").item(0);
             processStep.put(Integer.parseInt(mozaic.getAttributes().getNamedItem("processStep").getTextContent()),
                     mozaic.getTextContent());
-
-            //projectionMozaix = Boolean.valueOf(((Element) processNode).getElementsByTagName("mozaic").item(0).getTextContent());
 
             Node convertNode = ((Element) processNode).getElementsByTagName("convert").item(0);
             convertHasConvert = ((Element) convertNode).getElementsByTagName("isConvert").item(0).getTextContent();
@@ -153,7 +149,6 @@ public class PluginMetaDataCollection {
 
             Node filterNode = ((Element) processNode).getElementsByTagName("filter").item(0);
             filterClassName = ((Element) filterNode).getElementsByTagName("className").item(0).getTextContent();
-            //filterRunFilter = Boolean.valueOf(((Element) filterNode).getElementsByTagName("isFilter").item(0).getTextContent());
             processStep.put(Integer.parseInt((filterNode.getAttributes().getNamedItem("processStep").getTextContent())),
                     ((Element) filterNode).getElementsByTagName("className").item(0).getTextContent());
         }

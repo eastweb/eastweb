@@ -4,7 +4,7 @@
 	<title>NLDAS</title>
 	
 	<Download>
-		<className>NLDASDownloader</className>
+		<className>NldasDownloadTask</className>
 		<Ftp>
 			<type>http</type>
 			<hostName>e4ftl01.cr.usgs.gov</hostName>

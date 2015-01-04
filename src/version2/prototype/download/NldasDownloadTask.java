@@ -1,4 +1,4 @@
-package version2.prototype.Scheduler;
+package version2.prototype.download;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,26 +13,21 @@ import org.xml.sax.SAXException;
 
 import version2.prototype.DataDate;
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
-import version2.prototype.download.NldasDownloader;
 import version2.prototype.download.cache.*;
 import version2.prototype.ConfigReadException;
 import version2.prototype.DirectoryLayout;
 
 public class NldasDownloadTask implements Runnable {
     DataDate startDate;
-    static final String downloadedCache =
-            "C:\\Users\\jiameng\\Nldas\\downloaded.xml.gz";
-    static final String onlineAvaliableCache =
-            "C:\\Users\\jiameng\\Nldas\\avaliable.xml.gz";
+    static final String downloadedCache = "C:\\Users\\jiameng\\Nldas\\downloaded.xml.gz";
+    static final String onlineAvaliableCache = "C:\\Users\\jiameng\\Nldas\\avaliable.xml.gz";
     List<DataDate> available;
     List<DataDate> finished;
     DownloadMetaData mode;
 
-
     public NldasDownloadTask(DataDate dataDate, DownloadMetaData metaData) {
         startDate = dataDate;
         mode=metaData;
-
     }
 
     @Override
@@ -64,7 +59,6 @@ public class NldasDownloadTask implements Runnable {
         }
         // update the downloadedCache
         updateDownloadedCache();
-
     }
 
     private void updateDownloadedCache() {
@@ -72,8 +66,7 @@ public class NldasDownloadTask implements Runnable {
         final File file = new File(downloadedCache);
         try {
             FileUtils.forceMkdir(file.getParentFile());
-            NldasCache cache =
-                    new NldasCache(DataDate.today(), startDate, finished);
+            NldasCache cache = new NldasCache(DataDate.today(), startDate, finished);
 
             cache.toFile(file);
         } catch (IOException e) {
@@ -87,23 +80,22 @@ public class NldasDownloadTask implements Runnable {
         // update the downloadedCache
         final File file = new File(downloadedCache);
         FileUtils.forceMkdir(file.getParentFile());
-        NldasCache cache =
-                new NldasCache(DataDate.today(), startDate, finished);
+        NldasCache cache = new NldasCache(DataDate.today(), startDate, finished);
+
         cache.toFile(file);
         stop();
     }
 
     private File getoutFile(DataDate date) throws ConfigReadException {
-
         return DirectoryLayout.getNldasDownload(date);
     }
 
     private ArrayList<DataDate> getDownloadList() throws IOException {
         available = updateAvailabeCache();
         finished = new ArrayList<DataDate>();
+
         try {
-            finished =
-                    NldasCache.fromFile(new File(downloadedCache)).getDates();
+            finished = NldasCache.fromFile(new File(downloadedCache)).getDates();
         } catch (IOException e) {
 
         }
@@ -143,14 +135,15 @@ public class NldasDownloadTask implements Runnable {
             if (new File(onlineAvaliableCache).isFile()) {
                 final NldasCache cache =NldasCache.fromFile(new File(onlineAvaliableCache));
                 // Check freshness
-                if (!CacheUtils.isFresh(cache)
-                        || !cache.getStartDate().equals(startDate)) {
+                if (!CacheUtils.isFresh(cache)|| !cache.getStartDate().equals(startDate)) {
                     // Get a list of dates and construct a date cache
                     NldasCache updatedCache = getOnlineDataList();
                     // Write out the date cache
                     final File file = new File(onlineAvaliableCache);
+
                     FileUtils.forceMkdir(file.getParentFile());
                     updatedCache.toFile(file);
+
                     return updatedCache.getDates();
                 } else {
                     return cache.getDates();
@@ -161,13 +154,14 @@ public class NldasDownloadTask implements Runnable {
                 NldasCache updatedCache = getOnlineDataList();
                 // Write out the date cache
                 final File file = new File(onlineAvaliableCache);
+
                 FileUtils.forceMkdir(file.getParentFile());
                 updatedCache.toFile(file);
+
                 return updatedCache.getDates();
             }
 
         } catch (IOException e) {
-
             return null;
         }
 
@@ -176,10 +170,9 @@ public class NldasDownloadTask implements Runnable {
     private NldasCache getOnlineDataList() throws IOException {
         // Get a list of dates and construct a date cache
         NldasCache updatedCache = null;
+
         try {
-            updatedCache =
-                    new NldasCache(DataDate.today(), startDate,
-                            NldasDownloader.listDates(startDate));
+            updatedCache = new NldasCache(DataDate.today(), startDate, NldasDownloader.listDates(startDate));
         } catch (ParserConfigurationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -189,9 +182,10 @@ public class NldasDownloadTask implements Runnable {
         }
         // Write out the date cache
         final File file = new File(onlineAvaliableCache);
+
         FileUtils.forceMkdir(file.getParentFile());
         updatedCache.toFile(file);
+
         return updatedCache;
     }
-
 }

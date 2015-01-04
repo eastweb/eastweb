@@ -45,9 +45,6 @@ public class Scheduler {
     {
         for(String item: projectInfo.getPlugin())
         {
-            //NldasDownloadTask download = new NldasDownloadTask(projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(item).Download);
-            //download.run();
-
             RunDownloader(item);
             RunProcess(item);
             RunIndicies(item);
@@ -58,8 +55,8 @@ public class Scheduler {
     public void RunDownloader(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         // uses reflection
-        Class<?> clazzDownloader = Class.forName("version2.prototype.projection." + "NldasDownloadTask"); // TODO: need to change so that it calls base on the metaData
-        Constructor<?> ctorDownloader = clazzDownloader.getConstructor(ProjectInfo.class, DownloadMetaData.class);
+        Class<?> clazzDownloader = Class.forName("version2.prototype.projection." + pluginName);
+        Constructor<?> ctorDownloader = clazzDownloader.getConstructor(DataDate.class, DownloadMetaData.class);
         Object downloader =  ctorDownloader.newInstance(new Object[] {projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(pluginName).Download});
         Method methodDownloader = downloader.getClass().getMethod("Run");
         methodDownloader.invoke(downloader);
