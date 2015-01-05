@@ -10,7 +10,6 @@ import version2.prototype.DirectoryLayout;
 import version2.prototype.ProjectInfo;
 import version2.prototype.download.NldasDownloadMetadata;
 
-
 public class ProjectNldasTask {
     //private static final long serialVersionUID = 1L;
     private final ProjectInfo mProject;
@@ -76,5 +75,4 @@ public class ProjectNldasTask {
                 mDate.toCompactString()
                 );
     }
-
 }

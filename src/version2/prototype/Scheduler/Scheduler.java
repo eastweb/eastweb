@@ -15,6 +15,7 @@ import version2.prototype.PluginMetaDataCollection.ProcessMetaData;
 import version2.prototype.ProjectInfo;
 import version2.prototype.ZonalSummary;
 import version2.prototype.indices.IndexCalculator;
+import version2.prototype.projection.PrepareProcessTask;
 import version2.prototype.projection.ProcessData;
 import version2.prototype.summary.SummaryData;
 import version2.prototype.summary.TemporalSummaryCalculator;
