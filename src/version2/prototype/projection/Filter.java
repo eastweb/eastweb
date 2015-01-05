@@ -11,13 +11,13 @@ public abstract class Filter {
     private final File mInput;
     private final File mOutput;
 
-    public Filter(File input, File output) {
-        assert(input.exists());
-        assert(!output.exists());
-        assert(!input.equals(output));
+    public Filter(ProcessData data) {
+        assert(data.input.exists());
+        assert(!data.output.exists());
+        assert(!data.input.equals(data.output));
 
-        mInput = input;
-        mOutput = output;
+        mInput = data.input;
+        mOutput = data.output;
     }
 
     public void filter() throws Exception {

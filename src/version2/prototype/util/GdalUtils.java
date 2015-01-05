@@ -43,7 +43,7 @@ public class GdalUtils {
     /**
      * Checks for exceptions reported to the GDAL error reporting system and
      * maps them to Java exceptions or errors.
-     * 
+     *
      * @throws IOException
      *             CPLE_AppDefined, CPLE_FileIO, CPLE_OpenFailed,
      *             CPLE_NoWriteAccess, CPLE_UserInterrupt
@@ -83,7 +83,7 @@ public class GdalUtils {
     /**
      * Do the projection for input file, and write the processed data into
      * output file
-     * 
+     *
      * @param wkt
      *            wkt string contains the projection information for the output
      *            file
@@ -98,10 +98,8 @@ public class GdalUtils {
      * @throws ConfigReadException
      *             *
      **/
-    public static void project(File input, ProjectInfo project,
-            File output) throws ConfigReadException {
+    public static void project(File input, ProjectInfo project, File output) throws ConfigReadException {
         assert (project.getShapeFiles().size() > 0);
-
         GdalUtils.register();
 
         synchronized (GdalUtils.lockObject) {

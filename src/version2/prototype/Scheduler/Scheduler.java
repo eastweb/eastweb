@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import version2.prototype.Config;
+import version2.prototype.ConfigReadException;
 import version2.prototype.DataDate;
 import version2.prototype.InitializeMockData;
 import version2.prototype.PluginMetaDataCollection;
@@ -14,6 +15,7 @@ import version2.prototype.PluginMetaDataCollection.ProcessMetaData;
 import version2.prototype.ProjectInfo;
 import version2.prototype.ZonalSummary;
 import version2.prototype.indices.IndexCalculator;
+import version2.prototype.projection.ProcessData;
 import version2.prototype.summary.SummaryData;
 import version2.prototype.summary.TemporalSummaryCalculator;
 import version2.prototype.summary.ZonalSummaryCalculator;
@@ -55,22 +57,27 @@ public class Scheduler {
     public void RunDownloader(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         // uses reflection
-        Class<?> clazzDownloader = Class.forName("version2.prototype.projection." + pluginName);
+        Class<?> clazzDownloader = Class.forName("version2.prototype.download." + pluginName);
         Constructor<?> ctorDownloader = clazzDownloader.getConstructor(DataDate.class, DownloadMetaData.class);
         Object downloader =  ctorDownloader.newInstance(new Object[] {projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(pluginName).Download});
         Method methodDownloader = downloader.getClass().getMethod("Run");
         methodDownloader.invoke(downloader);
     }
 
-    public void RunProcess(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    public void RunProcess(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ConfigReadException
     {
         ProcessMetaData temp = PluginMetaDataCollection.instance.get(pluginName).Projection;
+        PrepareProcessTask prepareProcessTask = new PrepareProcessTask(projectInfo, "NBAR", projectInfo.getStartDate());
 
         for (int i = 0; i < temp.processStep.size(); i++)
         {
             Class<?> clazzProcess = Class.forName("version2.prototype.projection." + temp.processStep.get(i));
-            Constructor<?> ctorProcess = clazzProcess.getConstructor(ProcessReflectionData.class);
-            Object process =  ctorProcess.newInstance(new Object[] {new ProcessReflectionData()});
+            Constructor<?> ctorProcess = clazzProcess.getConstructor(ProcessData.class);
+            Object process =  ctorProcess.newInstance(new Object[] {new ProcessData(
+                    prepareProcessTask.getInputFiles(),
+                    prepareProcessTask.getBands(),
+                    prepareProcessTask.getInputFile(),
+                    prepareProcessTask.getOutputFile(), projectInfo)});
             Method methodProcess = process.getClass().getMethod("Run");
             methodProcess.invoke(process);
         }
@@ -82,7 +89,7 @@ public class Scheduler {
         // ask jiameng what the hell the file is suppose to do
         for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(pluginName).IndicesMetaData)
         {
-            Class<?> clazzIndicies = Class.forName("version2.prototype.indices." + "Gdal" + indexCalculatorItem + "Calculator");
+            Class<?> clazzIndicies = Class.forName("version2.prototype.indices." + indexCalculatorItem);
             Constructor<?> ctorIndicies = clazzIndicies.getConstructor(ProjectInfo.class, DataDate.class, String.class, String.class);
             Object indexCalculator =  ctorIndicies.newInstance(
                     new Object[] {

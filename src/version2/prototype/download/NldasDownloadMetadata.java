@@ -1,9 +1,11 @@
 package version2.prototype.download;
 
 import java.io.*;
+
 import org.w3c.dom.*;
 
 import version2.prototype.DataDate;
+import version2.prototype.projection.NldasDownloadMetadataHolder;
 import version2.prototype.util.XmlUtils;
 
 public class NldasDownloadMetadata {
@@ -68,7 +70,7 @@ public class NldasDownloadMetadata {
         return rootElement;
     }
 
-    public static NldasDownloadMetadata fromXml(Element rootElement) throws IOException {
+    public static NldasDownloadMetadataHolder fromXml(Element rootElement) throws IOException {
         if (!rootElement.getNodeName().equals(ROOT_ELEMENT_NAME)) {
             throw new IOException("Unexpected root element name");
         }
@@ -76,7 +78,7 @@ public class NldasDownloadMetadata {
         final DataDate date = DataDate.fromCompactString(rootElement.getAttribute(DATE_ATTRIBUTE_NAME));
         final long timestamp = Long.parseLong(rootElement.getAttribute(TIMESTAMP_ATTRIBUTE_NAME));
 
-        return new NldasDownloadMetadata(date, timestamp);
+        return new NldasDownloadMetadataHolder(date, timestamp);
     }
 
     public void toFile(File file) throws IOException {
@@ -86,7 +88,7 @@ public class NldasDownloadMetadata {
         XmlUtils.transformToGzippedFile(doc, file);
     }
 
-    public static NldasDownloadMetadata fromFile(File file) throws IOException {
+    public static NldasDownloadMetadataHolder fromFile(File file) throws IOException {
         return fromXml(XmlUtils.parseGzipped(file).getDocumentElement());
     }
 }

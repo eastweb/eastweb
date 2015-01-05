@@ -26,17 +26,17 @@ public class Mozaic {
     ArrayList<File> outputFiles;
     private File tempDictionary;
 
-    public Mozaic(File[] input, int[] band) throws InterruptedException, ConfigReadException {
+    public Mozaic(ProcessData data) throws InterruptedException, ConfigReadException {
         tempDictionary = new File(Config.getInstance().getTempDirectory());
-        this.band = band.clone();
+        band = data.bandArray.clone();
         outputFiles = new ArrayList<File>();
 
         // read tile data and get size of tiles
-        tileNumber = input.length;
+        tileNumber = data.inputArray.length;
         tileList = new ModisTileData[tileNumber];
 
         for (int i = 0; i < tileNumber; i++) {
-            tileList[i] = new ModisTileData(input[i]);
+            tileList[i] = new ModisTileData(data.inputArray[i]);
         }
 
         xSize = tileList[0].xSize;

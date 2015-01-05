@@ -77,10 +77,68 @@ public final class DirectoryLayout {
                 shapeFile.substring(0, shapeFile.indexOf('.'))
                 ));
     }
-    public static File getNldasDownload(DataDate date) {
-        // TODO Auto-generated method stub
-        return null;
+    public static File getNldasDownload(DataDate date) throws ConfigReadException {
+        return new File(String.format(
+                "%s/download/%s/%04d/%03d/%02d/%s.gbr",
+                getRootDirectory(),
+                "Nldas",
+                date.getYear(),
+                date.getDayOfYear(),
+                date.getHour(),
+                "Nldas"
+                ));
+    }
+    public static File getModisReprojectedMetadata(ProjectInfo mProject,
+            String mProduct, DataDate mDate) throws ConfigReadException {
+        return new File(String.format(
+                "%s/projects/%s/reprojected/%s/%04d/%03d/ModisReprojectedMetadata.xml.gz",
+                getRootDirectory(),
+                getProjectDirectoryName(mProject),
+                getModisDirectoryName(mProduct),
+                mDate.getYear(),
+                mDate.getDayOfYear()
+                ));
+    }
+    public static File getModisDownload(String mProduct, DataDate mDate,
+            ModisTile tile) throws ConfigReadException {
+        return new File(String.format(
+                "%s/download/%s/%04d/%03d/h%02dv%02d/tile.hdf",
+                getRootDirectory(),
+                getModisDirectoryName(mProduct),
+                mDate.getYear(),
+                mDate.getDayOfYear(),
+                tile.getHTile(),
+                tile.getVTile()
+                ));
     }
 
+    public static File getNldasReprojected(ProjectInfo project, DataDate date)
+            throws ConfigReadException
+    {
+        return new File(String.format(
+                "%s/projects/%s/reprojected/%s/%04d/%03d/%s.tif",
+                getRootDirectory(),
+                getProjectDirectoryName(project),
+                "Nldas",
+                date.getYear(),
+                date.getDayOfYear(),
+                "Nldas"
+                ));
+    }
 
+    public static String getModisDirectoryName(String mProduct) {
+
+        if(mProduct == "NBAR")
+        {
+            return "modis-nbar";
+        }
+        else if (mProduct == "LST")
+        {
+            return "modis-lst";
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
+    }
 }

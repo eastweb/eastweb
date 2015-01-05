@@ -14,7 +14,7 @@
 		</Ftp>
 	</Download>	
 	<Projection>
-		<className>NLDADProjection</className>
+		<className>NldasProjection</className>
 		<mozaic>true</mozaic>
 		<convert>
 			<hasConvert>true</hasConvert>
