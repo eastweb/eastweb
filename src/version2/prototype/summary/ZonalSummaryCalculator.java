@@ -48,7 +48,7 @@ public class ZonalSummaryCalculator implements SummaryCalculator {
 
     public ZonalSummaryCalculator(SummaryData data)
     {
-        mRasterFile = data.inRaster[0];
+        mRasterFile = data.inRaster;
         mLayerFile = data.inShape;
         mTableFile = data.outTableFile;
         mField = data.zoneField;

@@ -33,7 +33,7 @@ public class TemporalSummaryCalculator implements SummaryCalculator {
      */
     public TemporalSummaryCalculator(SummaryData data)
     {
-        inRaster = data.inRaster;
+        //inRaster = data.inRaster;
         inShape = data.inShape;
         inDate = data.inDate;
         outPath = data.outTableFile.getPath();

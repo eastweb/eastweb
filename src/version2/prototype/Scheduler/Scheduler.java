@@ -4,10 +4,14 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import version2.prototype.Config;
 import version2.prototype.ConfigReadException;
 import version2.prototype.DataDate;
+import version2.prototype.DirectoryLayout;
 import version2.prototype.InitializeMockData;
 import version2.prototype.PluginMetaDataCollection;
 import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
@@ -17,7 +21,11 @@ import version2.prototype.ZonalSummary;
 import version2.prototype.indices.IndexCalculator;
 import version2.prototype.projection.PrepareProcessTask;
 import version2.prototype.projection.ProcessData;
+import version2.prototype.summary.CalendarStrategy;
+import version2.prototype.summary.MergeStrategy;
+import version2.prototype.summary.MergeSummary;
 import version2.prototype.summary.SummaryData;
+import version2.prototype.summary.TemporalSummary;
 import version2.prototype.summary.TemporalSummaryCalculator;
 import version2.prototype.summary.ZonalSummaryCalculator;
 
@@ -27,12 +35,16 @@ public class Scheduler {
     public ProjectInfo projectInfo;
     public Config config;
     public PluginMetaDataCollection pluginMetaDataCollection;
+    private File outTable;
+    private ArrayList<String> summarySingletonNames;
 
     private Scheduler(InitializeMockData data)
     {
         projectInfo = data.projectInfo;
         config = data.config;
         pluginMetaDataCollection = data.pluginMetaDataCollection;
+        outTable = data.OutTableFile;
+        summarySingletonNames = data.SummarySingletonNames;
     }
 
     public static Scheduler getInstance(InitializeMockData data)
@@ -108,13 +120,52 @@ public class Scheduler {
     {
         if(PluginMetaDataCollection.instance.get(pluginName).Summary.IsTeamporalSummary)
         {
-            TemporalSummaryCalculator temporalSummaryCal = new TemporalSummaryCalculator(new SummaryData());
-            temporalSummaryCal.run();
+            /**
+             * <p>Use this when you want to send data to a TemporalSummaryCalculator object.</p>
+             * 
+             * @param inRaster - Type: File[] - A File object for each DataDate.<br/>
+             * Example:  <code>{@link #version2.prototype.DirectoryLayout.getIndexMetadata(ProjectInfo, String, DataDate, String)}<br/>
+             * getIndexMetadata(mProject, mIndex, sDate, zone.getShapeFile())</code>
+             * @param inShape - Type: File - The layer/shape file.<br/>
+             * Example:  <code>File({@link #version2.prototype.DirectoryLayout.getSettingsDirectory(ProjectInfo)},
+             * {@link #version2.prototype.ZonalSummary.getShapeFile()})<br/>
+             * File(DirectoryLayout.getSettingsDirectory(mProject), zone.getShapeFile())</code>
+             * @param outTable - Type: File - File object pointing to output location for zonal summary
+             * Example:  <code>for ({@link version2.prototype.ZonalSummary ZonalSummary} zone : mProject.{@link #version2.prototype.ProjectInfo.getSummaries()}) { zone.{@link #version2.prototype.ZonalSummary.getField()}; }<br/>
+             * for (ZonalSummary zone : mProject.getSummaries())<br/>  { zone.getField(); }</code>
+             * @param inDate - Type: DataDate[] - An array of the dates of the downloaded data to be used in finding the data in the file system and in processing temporal summaries.<br/>
+             * @param hrsPerInputData - Type: int - The number of hours each piece of downloaded data represents.
+             * @param hrsPerOutputData - Type: int - The number of hours each piece of summary/output data will represent.
+             * @param projectSDate - Type: Calendar - The projects start date.
+             * @param calStrategy - Type: CalendarStrategy - The strategy to use when getting the starting date of the week.
+             * @param merStrategy - Type: MergeStrategy - The strategy to use when merging downloaded data.
+             * @param tempMethods - Type: ArrayList<TemporalSummary> - The list of summary methods to calculate for temporal summary.
+             * @param mergMethods - Type: ArrayList<MergeSummary> - The list of summary methods to use during merging with the chosen MergeStrategy.
+
+
+            TemporalSummaryCalculator temporalSummaryCal = new TemporalSummaryCalculator(new SummaryData(
+                    File[] inRaster,
+                    new File(DirectoryLayout.getSettingsDirectory(projectInfo), zone.getShapeFile()),
+                    outTable,
+                    DataDate[] inDate,
+                    int hrsPerInputData,
+                    int hrsPerOutputData,
+                    Calendar projectSDate,
+                    CalendarStrategy calStrategy,
+                    MergeStrategy merStrategy,
+                    ArrayList<TemporalSummary> tempMethods,
+                    ArrayList<MergeSummary> mergMethods));
+            temporalSummaryCal.run();*/
         }
 
-        for(ZonalSummary summary: projectInfo.getZonalSummaries())
+        for(ZonalSummary zone: projectInfo.getZonalSummaries())
         {
-            ZonalSummaryCalculator zonalSummaryCal = new ZonalSummaryCalculator(new SummaryData());
+            ZonalSummaryCalculator zonalSummaryCal = new ZonalSummaryCalculator(new SummaryData(
+                    DirectoryLayout.getIndexMetadata(projectInfo, "nldas", projectInfo.getStartDate(), zone.getShapeFile()),
+                    new File(DirectoryLayout.getSettingsDirectory(projectInfo), zone.getShapeFile()),
+                    outTable,
+                    zone.getField(),
+                    summarySingletonNames));
             zonalSummaryCal.run();
         }
     }

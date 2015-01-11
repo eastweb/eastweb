@@ -9,7 +9,7 @@ import edu.sdstate.eastweb.prototype.DataDate;
 
 public class SummaryData {
     // ZonalSummaryCalculator variables
-    public File[] inRaster;
+    public File inRaster;
     public File inShape;
     public File outTableFile;
     public String zoneField;
@@ -56,7 +56,7 @@ public class SummaryData {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public SummaryData(File[] inRaster, File inShape, File outTable, String zone,
+    public SummaryData(File inRaster, File inShape, File outTable, String zone,
             ArrayList<String> summarySingletonNames, DataDate[] inDate, int hrsPerInputData,
             int hrsPerOutputData, Calendar projectSDate, CalendarStrategy calStrategy,
             MergeStrategy merStrategy, ArrayList<TemporalSummary> tempMethods,
@@ -101,7 +101,7 @@ public class SummaryData {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public SummaryData(File[] inRaster, File inShape, File outTable, String zone, ArrayList<String> summarySingletonNames)
+    public SummaryData(File inRaster, File inShape, File outTable, String zone, ArrayList<String> summarySingletonNames)
             throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
             IllegalAccessException, IllegalArgumentException, InvocationTargetException{
         this.inRaster = inRaster;
@@ -149,7 +149,7 @@ public class SummaryData {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public SummaryData(File[] inRaster, File inShape, File outTable, DataDate[] inDate, int hrsPerInputData,
+    public SummaryData(File inRaster, File inShape, File outTable, DataDate[] inDate, int hrsPerInputData,
             int hrsPerOutputData, Calendar projectSDate, CalendarStrategy calStrategy,
             MergeStrategy merStrategy, ArrayList<TemporalSummary> tempMethods,
             ArrayList<MergeSummary> mergMethods) throws ClassNotFoundException, NoSuchMethodException,
