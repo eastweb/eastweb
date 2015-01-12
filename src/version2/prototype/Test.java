@@ -10,6 +10,4 @@ public class Test {
 
         Scheduler.getInstance(data).run();
     }
-
-
 }

@@ -7,13 +7,16 @@ import version2.prototype.ProjectInfo;
 import version2.prototype.util.GdalUtils;
 
 public class NldasProjection implements Projection{
-    @Override
-    public void project(ProcessData data) throws Exception {
+    public NldasProjection(ProcessData data) throws ConfigReadException {
         project(data.input, data.projectInfo, data.output);
     }
 
+    @Override
     public void project(File inFile, ProjectInfo projectInfo, File outFile) throws ConfigReadException {
-        GdalUtils.project(inFile, projectInfo, outFile);
+        //GdalUtils.project(inFile, projectInfo, outFile);
 
     }
+
+    @Override
+    public void run(){};
 }

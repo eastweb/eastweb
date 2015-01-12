@@ -2,7 +2,7 @@
 <PluginMetadata>
 	<title>NLDAS</title>
 	<Download>
-		<className>NLDASDownloader</className>
+		<className>NldasDownloadTask</className>
 		<mode>ftp</mode>
 		<FTP>
 			<hostName>hydro1.sci.gsfc.nasa.gov</hostName>
@@ -13,7 +13,7 @@
 	</Download>	
 	<Process>
 		<Projection processStep="1">
-			<className>NLDASProjection</className>
+			<className>NldasProjection</className>
 		</Projection>
 		<mozaic processStep="2">false</mozaic>
 		<convert processStep="3">
@@ -30,7 +30,6 @@
 		</filter>
 	</Process>
 	<Indices>
-		<ClassName>GdalEtaCalculator</ClassName>
 		<ClassName>GdalNLDASCalculator</ClassName>
 	</Indices>
 	<Summary>
