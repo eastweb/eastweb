@@ -5,28 +5,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 import version2.prototype.Config;
 import version2.prototype.ConfigReadException;
 import version2.prototype.DataDate;
 import version2.prototype.DirectoryLayout;
-import version2.prototype.InitializeMockData;
-import version2.prototype.PluginMetaDataCollection;
-import version2.prototype.PluginMetaDataCollection.DownloadMetaData;
-import version2.prototype.PluginMetaDataCollection.ProcessMetaData;
 import version2.prototype.ProjectInfo;
 import version2.prototype.ZonalSummary;
-import version2.prototype.indices.IndexCalculator;
+import version2.prototype.PluginMetaData.PluginMetaDataCollection;
+import version2.prototype.PluginMetaData.PluginMetaDataCollection.DownloadMetaData;
+import version2.prototype.PluginMetaData.PluginMetaDataCollection.ProcessMetaData;
 import version2.prototype.projection.PrepareProcessTask;
 import version2.prototype.projection.ProcessData;
-import version2.prototype.summary.CalendarStrategy;
-import version2.prototype.summary.MergeStrategy;
-import version2.prototype.summary.MergeSummary;
 import version2.prototype.summary.SummaryData;
-import version2.prototype.summary.TemporalSummary;
-import version2.prototype.summary.TemporalSummaryCalculator;
 import version2.prototype.summary.ZonalSummaryCalculator;
 
 public class Scheduler {
@@ -38,7 +29,7 @@ public class Scheduler {
     private File outTable;
     private ArrayList<String> summarySingletonNames;
 
-    private Scheduler(InitializeMockData data)
+    private Scheduler(SchedulerData data)
     {
         projectInfo = data.projectInfo;
         config = data.config;
@@ -47,7 +38,7 @@ public class Scheduler {
         summarySingletonNames = data.SummarySingletonNames;
     }
 
-    public static Scheduler getInstance(InitializeMockData data)
+    public static Scheduler getInstance(SchedulerData data)
     {
         if(instance == null) {
             instance = new Scheduler(data);
@@ -70,7 +61,9 @@ public class Scheduler {
     public void RunDownloader(String pluginName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         // uses reflection
-        Class<?> clazzDownloader = Class.forName("version2.prototype.download." + PluginMetaDataCollection.instance.get(pluginName).Download.className);
+        Class<?> clazzDownloader = Class.forName("version2.prototype.download."
+                + PluginMetaDataCollection.instance.get(pluginName).Title
+                + PluginMetaDataCollection.instance.get(pluginName).Download.className);
         Constructor<?> ctorDownloader = clazzDownloader.getConstructor(DataDate.class, DownloadMetaData.class);
         Object downloader =  ctorDownloader.newInstance(new Object[] {projectInfo.getStartDate(), PluginMetaDataCollection.instance.get(pluginName).Download});
         Method methodDownloader = downloader.getClass().getMethod("run");
@@ -84,15 +77,21 @@ public class Scheduler {
 
         for (int i = 1; i <= temp.processStep.size(); i++)
         {
-            Class<?> clazzProcess = Class.forName("version2.prototype.projection." + temp.processStep.get(i));
-            Constructor<?> ctorProcess = clazzProcess.getConstructor(ProcessData.class);
-            Object process =  ctorProcess.newInstance(new Object[] {new ProcessData(
-                    prepareProcessTask.getInputFiles(),
-                    prepareProcessTask.getBands(),
-                    prepareProcessTask.getInputFile(),
-                    prepareProcessTask.getOutputFile(), projectInfo)});
-            Method methodProcess = process.getClass().getMethod("run");
-            //methodProcess.invoke(process);
+            if(temp.processStep.get(i) != null && !temp.processStep.get(i).isEmpty())
+            {
+                Class<?> clazzProcess = Class.forName("version2.prototype.projection."
+                        + PluginMetaDataCollection.instance.get(pluginName).Title
+                        + temp.processStep.get(i));
+                Constructor<?> ctorProcess = clazzProcess.getConstructor(ProcessData.class);
+                Object process =  ctorProcess.newInstance(new Object[] {new ProcessData(
+                        prepareProcessTask.getInputFiles(),
+                        prepareProcessTask.getBands(),
+                        prepareProcessTask.getInputFile(),
+                        prepareProcessTask.getOutputFile(),
+                        projectInfo)});
+                Method methodProcess = process.getClass().getMethod("run");
+                //methodProcess.invoke(process);
+            }
         }
     }
 
@@ -102,7 +101,9 @@ public class Scheduler {
         // ask jiameng what the hell the file is suppose to do
         for(String indexCalculatorItem: PluginMetaDataCollection.instance.get(pluginName).IndicesMetaData)
         {
-            Class<?> clazzIndicies = Class.forName("version2.prototype.indices." + indexCalculatorItem);
+            Class<?> clazzIndicies = Class.forName("version2.prototype.indices."
+                    + PluginMetaDataCollection.instance.get(pluginName).Title
+                    + indexCalculatorItem);
             Constructor<?> ctorIndicies = clazzIndicies.getConstructor(String.class, DataDate.class, String.class, String.class);
             Object indexCalculator =  ctorIndicies.newInstance(
                     new Object[] {
@@ -165,7 +166,7 @@ public class Scheduler {
                     new File(DirectoryLayout.getSettingsDirectory(projectInfo), zone.getShapeFile()),
                     outTable,
                     zone.getField(),
-                    summarySingletonNames));
+                    summarySingletonNames, null, 0, 0, null, null, null, null, null));
             zonalSummaryCal.run();
         }
     }

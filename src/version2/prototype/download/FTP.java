@@ -8,7 +8,7 @@ public class FTP extends ConnectionStrategy{
     public  Object buildConn(ConnectionInfo ci) throws IOException {
         FTPConnectionInfo fci=(FTPConnectionInfo)ci;
 
-        return FtpClientPool.getFtpClient(fci.hostName, fci.userName, fci.password);
+        return FTPClientPool.getFtpClient(fci.hostName, fci.userName, fci.password);
     }
 
 }

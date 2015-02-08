@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ConnectException;
 
+import org.apache.commons.net.ftp.FTPClient;
+
 import edu.sdstate.eastweb.prototype.Config;
 import edu.sdstate.eastweb.prototype.ConfigReadException;
 import edu.sdstate.eastweb.prototype.download.Downloader.DataType;
@@ -12,21 +14,21 @@ import edu.sdstate.eastweb.prototype.download.Downloader.Mode;
 
 public class ConnectionContext {
 
-    static Object getConnection(String mode, String dt) throws ConnectException{
+    static Object getConnection(Mode http, DataType eto) throws ConnectException{
         Object connection=null;
         System.out.println("enter the get connection");
         try {
             //create connectionInfo object according to mode type.
 
-            String classnameInfo="edu.sdstate.eastweb.prototype.download."+mode+"ConnectionInfo";
+            String classnameInfo="edu.sdstate.eastweb.prototype.download."+http+"ConnectionInfo";
             System.out.println(classnameInfo);
             Class clsInfo = Class.forName(classnameInfo);
             Constructor ctor=clsInfo.getDeclaredConstructor(String.class);
             ctor.setAccessible(true);
-            ConnectionInfo ci=(ConnectionInfo)ctor.newInstance(dt);
+            ConnectionInfo ci=(ConnectionInfo)ctor.newInstance(eto);
 
             //build and return connection
-            String classnameStg="edu.sdstate.eastweb.prototype.download."+mode;
+            String classnameStg="edu.sdstate.eastweb.prototype.download."+http;
             System.out.println(classnameStg);
             Class clsStg=Class.forName(classnameStg);
             System.out.println(classnameStg);
@@ -74,6 +76,17 @@ public class ConnectionContext {
 
     static void close(Object conn){
 
+    }
+
+    public static Object getConnection(Mode mode, DataType modis,
+            ModisProduct lst) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static FTPClient getConnection(String mode, String string) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

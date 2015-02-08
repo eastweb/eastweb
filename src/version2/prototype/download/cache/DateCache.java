@@ -8,7 +8,7 @@ import version2.prototype.*;
 import version2.prototype.util.XmlUtils;
 
 public final class DateCache  implements Cache{
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
     private static final String ROOT_ELEMENT_NAME = "DateCache";
     private static final String LAST_UPDATED_ATTRIBUTE_NAME = "lastUpdated";
     private static final String START_DATE_ATTRIBUTE_NAME = "startDate";
