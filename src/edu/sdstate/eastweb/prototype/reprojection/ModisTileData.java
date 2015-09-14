@@ -4,10 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
-
 import edu.sdstate.eastweb.prototype.util.GdalUtils;
 
 /*
@@ -30,7 +28,6 @@ public class ModisTileData {
 
     }
 
-    @SuppressWarnings("unchecked")
     ModisTileData(File file) throws InterruptedException {
         GdalUtils.register();
         synchronized (GdalUtils.lockObject) {
@@ -51,10 +48,10 @@ public class ModisTileData {
             }
             bandNumber=sdsdict.size()/2;
             horizon =
-                    Integer.parseInt(hdf
-                            .GetMetadataItem("HORIZONTALTILENUMBER"));
+                Integer.parseInt(hdf
+                        .GetMetadataItem("HORIZONTALTILENUMBER"));
             vertical =
-                    Integer.parseInt(hdf.GetMetadataItem("VERTICALTILENUMBER"));
+                Integer.parseInt(hdf.GetMetadataItem("VERTICALTILENUMBER"));
             sdsName = new String[bandNumber];
 
             // save all the band names into sdsName[] array in the order of band number

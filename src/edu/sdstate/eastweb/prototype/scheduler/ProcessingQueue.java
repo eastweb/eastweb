@@ -37,7 +37,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new PrepareModisTask(project, product, date),
                 continuation
-        ));
+                ));
     }
 
     public void enqueueModisClip(ProjectInfo project, ModisProduct product,
@@ -46,7 +46,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new ModisClipTask(project, product, date, feature),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -57,20 +57,8 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new GdalProjectTrmmTask(project, product, date),
                 continuation
-        ));
+                ));
     }
-
-    /**
-     * Enqueues a Nldas reprojection task.
-     */
-    public void enqueueReprojectNldas(ProjectInfo project, DataDate date, Runnable continuation) {
-        enqueue(new RunnableTaskQueueEntry(
-                Priority.Reprojection.ordinal(),
-                new ProjectNldasTask(project, date),
-                continuation
-        ));
-    }
-
 
     public void enqueueTrmmClip(ProjectInfo project, TrmmProduct product,
             DataDate date, String feature, Runnable continuation) {
@@ -78,7 +66,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new TrmmClipTask(project, product, date, feature),
                 continuation
-        ));
+                ));
     }
 
 
@@ -92,7 +80,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.Reprojection.ordinal(),
                 new ReprojectEtoTask(project, date),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -105,7 +93,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.IndexCalculation.ordinal(),
                 new GdalCalculateIndexTask(project, index, date, feature),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -117,7 +105,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.ZonalSummary.ordinal(),
                 new CalculateZonalStatisticsTask(project, index, date),
                 continuation
-        ));
+                ));
     }
 
     /**
@@ -129,7 +117,7 @@ public final class ProcessingQueue extends BaseTaskQueue {
                 Priority.DatabaseInsert.ordinal(),
                 new UploadResultsTask(project, index, date),
                 continuation
-        ));
+                ));
     }
 
 

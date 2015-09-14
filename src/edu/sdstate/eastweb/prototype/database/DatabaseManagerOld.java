@@ -1,6 +1,7 @@
 package edu.sdstate.eastweb.prototype.database;
 
 import java.sql.*;
+import java.util.*;
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.indices.EnvironmentalIndex;
 
@@ -81,75 +82,75 @@ public class DatabaseManagerOld {
         mConn.prepareStatement(String.format(
                 "DROP SCHEMA IF EXISTS \"%s\" CASCADE",
                 mSchemaName
-                )).executeUpdate();
+        )).executeUpdate();
 
         // Create the schema for this project
         mConn.prepareStatement(String.format(
                 "CREATE SCHEMA \"%s\"",
                 mSchemaName
-                )).executeUpdate();
+        )).executeUpdate();
 
         // Create the ZoneFields table
         mConn.prepareStatement(String.format(
                 "CREATE TABLE \"%1$s\".\"ZoneFields\"\n" +
-                        "(\n" +
-                        "  \"zoneFieldID\" integer NOT NULL,\n" +
-                        "  \"shapefile\" text NOT NULL,\n" +
-                        "  \"field\" text NOT NULL,\n" +
-                        "  CONSTRAINT \"pk_ZoneFields\"\n" +
-                        "      PRIMARY KEY (\"zoneFieldID\")\n" +
-                        ")",
-                        mSchemaName
-                )).executeUpdate();
+                "(\n" +
+                "  \"zoneFieldID\" integer NOT NULL,\n" +
+                "  \"shapefile\" text NOT NULL,\n" +
+                "  \"field\" text NOT NULL,\n" +
+                "  CONSTRAINT \"pk_ZoneFields\"\n" +
+                "      PRIMARY KEY (\"zoneFieldID\")\n" +
+                ")",
+                mSchemaName
+        )).executeUpdate();
 
         // Create the Zones table
         mConn.prepareStatement(String.format(
                 "CREATE TABLE \"%1$s\".\"Zones\"\n" +
-                        "(\n" +
-                        "  \"zoneID\" integer NOT NULL,\n" +
-                        "  \"zoneFieldID\" integer NOT NULL,\n" +
-                        "  \"name\" text NOT NULL,\n" +
-                        "  CONSTRAINT \"pk_Zones\"\n" +
-                        "      PRIMARY KEY (\"zoneID\"),\n" +
-                        "  CONSTRAINT \"fk_Zones\"\n" +
-                        "      FOREIGN KEY (\"zoneFieldID\")\n" +
-                        "      REFERENCES \"%1$s\".\"ZoneFields\" (\"zoneFieldID\")\n" +
-                        ")",
-                        mSchemaName
-                )).executeUpdate();
+                "(\n" +
+                "  \"zoneID\" integer NOT NULL,\n" +
+                "  \"zoneFieldID\" integer NOT NULL,\n" +
+                "  \"name\" text NOT NULL,\n" +
+                "  CONSTRAINT \"pk_Zones\"\n" +
+                "      PRIMARY KEY (\"zoneID\"),\n" +
+                "  CONSTRAINT \"fk_Zones\"\n" +
+                "      FOREIGN KEY (\"zoneFieldID\")\n" +
+                "      REFERENCES \"%1$s\".\"ZoneFields\" (\"zoneFieldID\")\n" +
+                ")",
+                mSchemaName
+        )).executeUpdate();
 
         // Create an index for the Zones table's foreign key
         mConn.prepareStatement(String.format(
                 "CREATE INDEX \"fki_Zones\" ON \"%1$s\".\"Zones\"(\"zoneFieldID\")",
                 mSchemaName
-                )).executeUpdate();
+        )).executeUpdate();
 
         // Create the ZonalStats table
         mConn.prepareStatement(String.format(
                 "CREATE TABLE \"%1$s\".\"ZonalStats\"\n" +
-                        "(\n" +
-                        "  \"index\" integer NOT NULL,\n" +
-                        "  \"year\" integer NOT NULL,\n" +
-                        "  \"day\" integer NOT NULL,\n" +
-                        "  \"zoneID\" integer NOT NULL,\n" +
-                        "  \"count\" double precision NOT NULL,\n" +
-                        "  \"sum\" double precision NOT NULL,\n" +
-                        "  \"mean\" double precision NOT NULL,\n" +
-                        "  \"stdev\" double precision NOT NULL,\n" +
-                        "  CONSTRAINT \"pk_ZonalStats\"\n" +
-                        "      PRIMARY KEY (\"index\", \"year\", \"day\", \"zoneID\"),\n" +
-                        "  CONSTRAINT \"fk_ZonalStats\"\n" +
-                        "      FOREIGN KEY (\"zoneID\")\n" +
-                        "      REFERENCES \"%1$s\".\"Zones\" (\"zoneID\")\n" +
-                        ")",
-                        mSchemaName
-                )).executeUpdate();
+                "(\n" +
+                "  \"index\" integer NOT NULL,\n" +
+                "  \"year\" integer NOT NULL,\n" +
+                "  \"day\" integer NOT NULL,\n" +
+                "  \"zoneID\" integer NOT NULL,\n" +
+                "  \"count\" double precision NOT NULL,\n" +
+                "  \"sum\" double precision NOT NULL,\n" +
+                "  \"mean\" double precision NOT NULL,\n" +
+                "  \"stdev\" double precision NOT NULL,\n" +
+                "  CONSTRAINT \"pk_ZonalStats\"\n" +
+                "      PRIMARY KEY (\"index\", \"year\", \"day\", \"zoneID\"),\n" +
+                "  CONSTRAINT \"fk_ZonalStats\"\n" +
+                "      FOREIGN KEY (\"zoneID\")\n" +
+                "      REFERENCES \"%1$s\".\"Zones\" (\"zoneID\")\n" +
+                ")",
+                mSchemaName
+        )).executeUpdate();
 
         // Create an index for the ZonalStats table's foreign key
         mConn.prepareStatement(String.format(
                 "CREATE INDEX \"fki_ZonalStats\" ON \"%1$s\".\"ZonalStats\"(\"zoneID\")",
                 mSchemaName
-                )).executeUpdate();
+        )).executeUpdate();
     }
 
     /**
@@ -160,10 +161,10 @@ public class DatabaseManagerOld {
     public Integer lookupZoneFieldId(String shapefile, String field) throws SQLException {
         final PreparedStatement ps = mConn.prepareStatement(String.format(
                 "SELECT \"zoneFieldID\"\n" +
-                        "FROM \"%1$s\".\"ZoneFields\"\n" +
-                        "WHERE \"shapefile\" = ? AND \"field\" = ?",
-                        mSchemaName
-                ));
+                "FROM \"%1$s\".\"ZoneFields\"\n" +
+                "WHERE \"shapefile\" = ? AND \"field\" = ?",
+                mSchemaName
+        ));
         ps.setString(1, shapefile);
         ps.setString(2, field);
 
@@ -182,9 +183,9 @@ public class DatabaseManagerOld {
     public int nextZoneFieldId() throws SQLException {
         final ResultSet rs = mConn.prepareStatement(String.format(
                 "SELECT MAX(\"zoneFieldID\")\n" +
-                        "FROM \"%1$s\".\"ZoneFields\"",
-                        mSchemaName
-                )).executeQuery();
+                "FROM \"%1$s\".\"ZoneFields\"",
+                mSchemaName
+        )).executeQuery();
 
         if (rs.next()) {
             return rs.getInt(1) + 1;
@@ -209,16 +210,16 @@ public class DatabaseManagerOld {
 
         final PreparedStatement ps = mConn.prepareStatement(String.format(
                 "INSERT INTO \"%1$s\".\"ZoneFields\" (\n" +
-                        "  \"zoneFieldID\",\n" +
-                        "  \"shapefile\",\n" +
-                        "  \"field\"\n" +
-                        ") VALUES (\n" +
-                        "  ?,\n" +
-                        "  ?,\n" +
-                        "  ?\n" +
-                        ")",
-                        mSchemaName
-                ));
+                "  \"zoneFieldID\",\n" +
+                "  \"shapefile\",\n" +
+                "  \"field\"\n" +
+                ") VALUES (\n" +
+                "  ?,\n" +
+                "  ?,\n" +
+                "  ?\n" +
+                ")",
+                mSchemaName
+        ));
         ps.setInt(1, zoneFieldId);
         ps.setString(2, shapefile);
         ps.setString(3, field);
@@ -235,10 +236,10 @@ public class DatabaseManagerOld {
     public Integer lookupZoneId(int zoneFieldId, String zone) throws SQLException {
         final PreparedStatement ps = mConn.prepareStatement(String.format(
                 "SELECT \"zoneID\"\n" +
-                        "FROM \"%1$s\".\"Zones\"\n" +
-                        "WHERE \"zoneFieldID\" = ? AND \"name\" = ?",
-                        mSchemaName
-                ));
+                "FROM \"%1$s\".\"Zones\"\n" +
+                "WHERE \"zoneFieldID\" = ? AND \"name\" = ?",
+                mSchemaName
+        ));
         ps.setInt(1, zoneFieldId);
         ps.setString(2, zone);
 
@@ -257,9 +258,9 @@ public class DatabaseManagerOld {
     public int nextZoneId() throws SQLException {
         final ResultSet rs = mConn.prepareStatement(String.format(
                 "SELECT MAX(\"zoneID\")\n" +
-                        "FROM \"%1$s\".\"Zones\"",
-                        mSchemaName
-                )).executeQuery();
+                "FROM \"%1$s\".\"Zones\"",
+                mSchemaName
+        )).executeQuery();
 
         if (rs.next()) {
             return rs.getInt(1) + 1;
@@ -284,16 +285,16 @@ public class DatabaseManagerOld {
 
         final PreparedStatement ps = mConn.prepareStatement(String.format(
                 "INSERT INTO \"%1$s\".\"Zones\" (\n" +
-                        "  \"zoneID\",\n" +
-                        "  \"zoneFieldID\",\n" +
-                        "  \"name\"\n" +
-                        ") VALUES (\n" +
-                        "  ?,\n" +
-                        "  ?,\n" +
-                        "  ?\n" +
-                        ")",
-                        mSchemaName
-                ));
+                "  \"zoneID\",\n" +
+                "  \"zoneFieldID\",\n" +
+                "  \"name\"\n" +
+                ") VALUES (\n" +
+                "  ?,\n" +
+                "  ?,\n" +
+                "  ?\n" +
+                ")",
+                mSchemaName
+        ));
         ps.setInt(1, zoneId);
         ps.setInt(2, zoneFieldId);
         ps.setString(3, zone);
@@ -308,8 +309,8 @@ public class DatabaseManagerOld {
      */
     public void testInsertRow(String shapefile, String field, String zone, EnvironmentalIndex index,
             int year, int day, double count, double sum, double mean, double stdev)
-                    throws SQLException
-                    {
+    throws SQLException
+    {
         final boolean previousAutoCommit = mConn.getAutoCommit();
         mConn.setAutoCommit(false);
         try {
@@ -319,14 +320,14 @@ public class DatabaseManagerOld {
 
             final PreparedStatement psExists = mConn.prepareStatement(String.format(
                     "SELECT COUNT(*)\n" +
-                            "FROM \"%1$s\".\"ZonalStats\"\n" +
-                            "WHERE\n" +
-                            "  \"index\" = ? AND\n" +
-                            "  \"year\" = ? AND\n" +
-                            "  \"day\" = ? AND\n" +
-                            "  \"zoneID\" = ?\n",
-                            mSchemaName
-                    ));
+                    "FROM \"%1$s\".\"ZonalStats\"\n" +
+                    "WHERE\n" +
+                    "  \"index\" = ? AND\n" +
+                    "  \"year\" = ? AND\n" +
+                    "  \"day\" = ? AND\n" +
+                    "  \"zoneID\" = ?\n",
+                    mSchemaName
+            ));
             psExists.setInt(1, index.ordinal());
             psExists.setInt(2, year);
             psExists.setInt(3, day);
@@ -345,26 +346,26 @@ public class DatabaseManagerOld {
             if (numMatchingRows == 0) {
                 final PreparedStatement psInsert = mConn.prepareStatement(String.format(
                         "INSERT INTO \"%1$s\".\"ZonalStats\" (\n" +
-                                "  \"index\",\n" +
-                                "  \"year\",\n" +
-                                "  \"day\",\n" +
-                                "  \"zoneID\",\n" +
-                                "  \"count\",\n" +
-                                "  \"sum\",\n" +
-                                "  \"mean\",\n" +
-                                "  \"stdev\"\n" +
-                                ") VALUES (\n" +
-                                "  ?,\n" +
-                                "  ?,\n" +
-                                "  ?,\n" +
-                                "  ?,\n" +
-                                "  ?,\n" +
-                                "  ?,\n" +
-                                "  ?,\n" +
-                                "  ?\n" +
-                                ")",
-                                mSchemaName
-                        ));
+                        "  \"index\",\n" +
+                        "  \"year\",\n" +
+                        "  \"day\",\n" +
+                        "  \"zoneID\",\n" +
+                        "  \"count\",\n" +
+                        "  \"sum\",\n" +
+                        "  \"mean\",\n" +
+                        "  \"stdev\"\n" +
+                        ") VALUES (\n" +
+                        "  ?,\n" +
+                        "  ?,\n" +
+                        "  ?,\n" +
+                        "  ?,\n" +
+                        "  ?,\n" +
+                        "  ?,\n" +
+                        "  ?,\n" +
+                        "  ?\n" +
+                        ")",
+                        mSchemaName
+                ));
                 psInsert.setInt(1, index.ordinal());
                 psInsert.setInt(2, year);
                 psInsert.setInt(3, day);
@@ -377,18 +378,18 @@ public class DatabaseManagerOld {
             } else {
                 final PreparedStatement psUpdate = mConn.prepareStatement(String.format(
                         "UPDATE \"%1$s\".\"ZonalStats\"\n" +
-                                "SET\n" +
-                                "  \"count\" = ?,\n" +
-                                "  \"sum\" = ?,\n" +
-                                "  \"mean\" = ?,\n" +
-                                "  \"stdev\" = ?\n" +
-                                "WHERE\n" +
-                                "  \"index\" = ? AND\n" +
-                                "  \"year\" = ? AND\n" +
-                                "  \"day\" = ? AND\n" +
-                                "  \"zoneID\" = ?\n",
-                                mSchemaName
-                        ));
+                        "SET\n" +
+                        "  \"count\" = ?,\n" +
+                        "  \"sum\" = ?,\n" +
+                        "  \"mean\" = ?,\n" +
+                        "  \"stdev\" = ?\n" +
+                        "WHERE\n" +
+                        "  \"index\" = ? AND\n" +
+                        "  \"year\" = ? AND\n" +
+                        "  \"day\" = ? AND\n" +
+                        "  \"zoneID\" = ?\n",
+                        mSchemaName
+                ));
                 psUpdate.setDouble(1, count);
                 psUpdate.setDouble(2, sum);
                 psUpdate.setDouble(3, mean);
@@ -407,9 +408,9 @@ public class DatabaseManagerOld {
         } finally {
             mConn.setAutoCommit(previousAutoCommit);
         }
-                    }
+    }
 
-    /* private static void testCreateFakeData(DatabaseManagerOld mgr) throws SQLException {
+    private static void testCreateFakeData(DatabaseManagerOld mgr) throws SQLException {
         mgr.recreateSchema();
 
         // Fake data -- normally this would come from the project's shapefiles
@@ -439,7 +440,7 @@ public class DatabaseManagerOld {
                 }
             }
         }
-    }*/
+    }
 
 
 }

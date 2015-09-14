@@ -5,14 +5,12 @@ import java.sql.*;
 import java.util.*;
 
 import org.apache.commons.io.FileUtils;
-
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.database.*;
 import edu.sdstate.eastweb.prototype.indices.EnvironmentalIndex;
 import edu.sdstate.eastweb.prototype.scheduler.framework.RunnableTask;
 import edu.sdstate.eastweb.prototype.zonalstatistics.*;
 
-@SuppressWarnings("serial")
 public final class UploadResultsTask implements RunnableTask {
     private final ProjectInfo mProject;
     private final EnvironmentalIndex mIndex;
@@ -38,7 +36,7 @@ public final class UploadResultsTask implements RunnableTask {
             final File file = DirectoryLayout.getDatabaseInsertMetadata(
                     mProject, mIndex, mDate, zonalSummary.getName());
             return ResultsUploadMetadata.fromFile(file)
-                    .equalsIgnoreTimestamp(makeMetadata(zonalSummary));
+            .equalsIgnoreTimestamp(makeMetadata(zonalSummary));
         } catch (IOException e) {
             return false;
         }
@@ -79,10 +77,9 @@ public final class UploadResultsTask implements RunnableTask {
                 Config.getInstance().getDatabaseHost(),
                 Config.getInstance().getDatabaseUsername(),
                 Config.getInstance().getDatabasePassword()
-                );
+        );
     }
 
-    @SuppressWarnings("resource")
     @Override
     public void run() throws Exception {
         final List<ZonalSummary> neededZones = getNeededZones();
@@ -111,8 +108,8 @@ public final class UploadResultsTask implements RunnableTask {
                                     Double.parseDouble(values[2]),
                                     Double.parseDouble(values[3]),
                                     Double.parseDouble(values[4])
-                                    )
-                            );
+                            )
+                    );
                 }
 
                 for (SummaryRow row : rows) {
@@ -127,7 +124,7 @@ public final class UploadResultsTask implements RunnableTask {
                             row.getSum(),
                             row.getMean(),
                             row.getStdev()
-                            );
+                    );
                 }
             } finally {
                 conn.close();
@@ -150,7 +147,7 @@ public final class UploadResultsTask implements RunnableTask {
                 mProject.getName(),
                 mIndex,
                 mDate.toCompactString()
-                );
+        );
     }
 
 }

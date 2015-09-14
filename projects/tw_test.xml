@@ -3,11 +3,11 @@
     <active>true</active>
     <name>tw_test</name>
     <start.date>
-        <month>10</month>
-        <day>1</day>
-        <year>2014</year>
+        <month>7</month>
+        <day>23</day>
+        <year>2013</year>
     </start.date>
-    <watermask>watermask\Water_M.tif</watermask>
+    <watermask>settings\watermask\Water_M.tif</watermask>
     <elevation>elevation</elevation>
     <min.lst>-123.15</min.lst>
     <max.lst>1037.55</max.lst>
@@ -38,7 +38,7 @@
     <zonal.summaries>
         <summary>
             <name>tt</name>
-            <shapefile>shapefiles\TW_DIS_F_P_Dis_REGION\TW_DIS_F_P_Dis_REGION.shp</shapefile>
+            <shapefile>settings\shapefiles\TW_DIS_F_P_Dis_REGION\TW_DIS_F_P_Dis_REGION.shp</shapefile>
             <field>N_ID2</field>
         </summary>
     </zonal.summaries>

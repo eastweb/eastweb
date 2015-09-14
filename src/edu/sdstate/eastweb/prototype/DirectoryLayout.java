@@ -51,14 +51,14 @@ public final class DirectoryLayout {
         return Config.getInstance().getRootDirectory();
     }
 
-    /* private static File getFeature(ProjectInfo project, String feature) throws ConfigReadException{
+    private static File getFeature(ProjectInfo project, String feature) throws ConfigReadException{
         return new File(String.format(
                 "%s/%s/%s.shp",
                 getSettingsDirectory(project).getPath(),
                 feature,
                 feature
         ));
-    }*/
+    }
 
 
     private static String getTrmmName(TrmmProduct product) {
@@ -119,8 +119,6 @@ public final class DirectoryLayout {
 
         case TRMM_RT:
             return "trmmrt";
-        case NLDAS:
-            return "ndlas";
 
         default:
             throw new IllegalArgumentException();
@@ -164,14 +162,6 @@ public final class DirectoryLayout {
                 "%s/download/%s/DateCache.xml.gz",
                 getRootDirectory(),
                 getTrmmName(product)
-        ));
-    }
-
-    public static File getDateCache(String pluginName) throws ConfigReadException {
-        return new File(String.format(
-                "%s/download/%s/DateCache.xml.gz",
-                getRootDirectory(),
-                pluginName
         ));
     }
 
@@ -237,28 +227,6 @@ public final class DirectoryLayout {
                 "%s/download/%s/%04d/%03d/TrmmDownloadMetadata.xml.gz",
                 getRootDirectory(),
                 getTrmmName(product),
-                date.getYear(),
-                date.getDayOfYear()
-        ));
-    }
-
-    public static File getNldasDownload(DataDate date) throws ConfigReadException{
-        return new File(String.format(
-                "%s/download/%s/%04d/%03d/%02d/%s.gbr",
-                getRootDirectory(),
-                "Nldas",
-                date.getYear(),
-                date.getDayOfYear(),
-                date.getHour(),
-                "Nldas"
-        ));
-    }
-
-    public static File getDownloadMetadata(String pluginName, DataDate date)throws ConfigReadException{
-        return new File(String.format(
-                "%s/download/%s/%04d/%03d/"+pluginName+"DownloadMetadata.xml.gz",
-                getRootDirectory(),
-                pluginName,
                 date.getYear(),
                 date.getDayOfYear()
         ));
@@ -399,21 +367,6 @@ public final class DirectoryLayout {
         ));
     }
 
-    public static File getNldasReprojected(ProjectInfo project, DataDate date)
-    throws ConfigReadException
-    {
-        return new File(String.format(
-                "%s/projects/%s/reprojected/%s/%04d/%03d/%s.tif",
-                getRootDirectory(),
-                getProjectDirectoryName(project),
-                "Nldas",
-                date.getYear(),
-                date.getDayOfYear(),
-                "Nldas"
-        ));
-    }
-
-
     public static File getTrmmReprojectedMetadata(ProjectInfo project, TrmmProduct product, DataDate date)
     throws ConfigReadException
     {
@@ -422,19 +375,6 @@ public final class DirectoryLayout {
                 getRootDirectory(),
                 getProjectDirectoryName(project),
                 getTrmmName(product),
-                date.getYear(),
-                date.getDayOfYear()
-        ));
-    }
-
-    public static File getNldasReprojectedMetadata(ProjectInfo project, DataDate date)
-    throws ConfigReadException
-    {
-        return new File(String.format(
-                "%s/projects/%s/reprojected/%s/%04d/%03d/NldasReprojectedMetadata.xml.gz",
-                getRootDirectory(),
-                getProjectDirectoryName(project),
-                "Nldas",
                 date.getYear(),
                 date.getDayOfYear()
         ));
@@ -549,7 +489,7 @@ public final class DirectoryLayout {
                 getIndexDirectoryName(index),
                 date.getYear(),
                 date.getDayOfYear(),
-                shapeFile,
+                shapeFile.substring(0, shapeFile.indexOf('.')),
                 getIndexFileName(index)
         ));
     }
@@ -621,14 +561,4 @@ public final class DirectoryLayout {
                 getIndexFileName(index)
         ));
     }
-    public static File getNldasDownloadMetadata(DataDate date) throws ConfigReadException {
-        return new File(String.format(
-                "%s/download/%s/%04d/%03d/NldasDownloadMetadata.xml.gz",
-                getRootDirectory(),
-                "Nldas",
-                date.getYear(),
-                date.getDayOfYear()
-        ));
-    }
-
 }

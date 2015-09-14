@@ -3,6 +3,7 @@ package edu.sdstate.eastweb.prototype.download;
 import java.io.*;
 import java.util.*;
 import edu.sdstate.eastweb.prototype.*;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 /**

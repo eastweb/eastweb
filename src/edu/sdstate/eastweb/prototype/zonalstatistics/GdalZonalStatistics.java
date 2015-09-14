@@ -272,10 +272,9 @@ public class GdalZonalStatistics {
         double[] rasterArray = new double[WIDTH];
 
         Double[] noData = new Double[1];
-        //FIXME: Can't get the no data value from NLDAS reprojected file, manually set it to 0. It will affect the zonal result.
         rasterBand.GetNoDataValue(noData);
-        //final float NO_DATA = noData[0].floatValue();
-        final float NO_DATA=0;
+        final float NO_DATA = noData[0].floatValue();
+
         for (int y=0; y<HEIGHT; y++) {
             zoneBand.ReadRaster(0, y, WIDTH, 1, zoneArray); GdalUtils.errorCheck();
             rasterBand.ReadRaster(0, y, WIDTH, 1, rasterArray); GdalUtils.errorCheck();

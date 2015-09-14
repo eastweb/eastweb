@@ -17,7 +17,7 @@ public class GdalClipper implements Clipper {
     private final File mRaster;
     private final File mFeature;
     private final File mOutput;
-    //private final String mFormat;
+    private final String mFormat;
 
     /**
      * The feature extent must be a subset of the raster extent.
@@ -31,7 +31,7 @@ public class GdalClipper implements Clipper {
         mRaster = raster;
         mFeature = feature;
         mOutput = output;
-        //mFormat = format;
+        mFormat = format;
     }
 
     @Override
@@ -71,8 +71,8 @@ public class GdalClipper implements Clipper {
             double[] point = new double[] {-0.5, -0.5, 0}; // Location of corner of first zone raster pixel
 
             transformer.TransformPoint(0, point);
-            //int xOffset = (int) Math.round(point[0]);
-            //int yOffset = (int) Math.round(point[1]);
+            int xOffset = (int) Math.round(point[0]);
+            int yOffset = (int) Math.round(point[1]);
 
             Dataset maskDS = gdal.GetDriverByName("MEM").Create(
                     "",

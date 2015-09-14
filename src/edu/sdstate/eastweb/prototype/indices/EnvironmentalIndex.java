@@ -11,6 +11,5 @@ public enum EnvironmentalIndex {
     SAVI,
     ETA,
     TRMM,
-    TRMM_RT,
-    NLDAS
+    TRMM_RT
 }

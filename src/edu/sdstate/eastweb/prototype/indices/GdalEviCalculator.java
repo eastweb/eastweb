@@ -2,19 +2,13 @@ package edu.sdstate.eastweb.prototype.indices;
 
 import java.io.File;
 
-import edu.sdstate.eastweb.prototype.ConfigReadException;
-import edu.sdstate.eastweb.prototype.DataDate;
-import edu.sdstate.eastweb.prototype.DirectoryLayout;
-import edu.sdstate.eastweb.prototype.ProjectInfo;
-import edu.sdstate.eastweb.prototype.download.ModisProduct;
-
 /**
  * EVI = G * (NIR - RED)/(NIR + C1*RED - C2*BLUE + L) where L=1, C1=6, C2=7.5,
  * and G=2.5
  * 
  * @author Isaiah Snell-Feikema
  */
-public class GdalEVICalculator extends IndicesFramework {
+public class GdalEviCalculator extends GdalSimpleIndexCalculator {
 
     private static final double L = 1;
     private static final double C1 = 6;
@@ -25,14 +19,14 @@ public class GdalEVICalculator extends IndicesFramework {
     private static final int NIR = 1;
     private static final int BLUE = 2;
 
-    public GdalEVICalculator(ProjectInfo mProject, DataDate mDate, String feature, EnvironmentalIndex mIndex ) throws ConfigReadException {
+    public GdalEviCalculator(File red, File nir, File blue, File output) {
         File[] inputs = new File[3];
-        inputs[RED] = DirectoryLayout.getModisClip(mProject, mDate, ModisProduct.NBAR, feature, "Nadir_Reflectance_Band1");
-        inputs[NIR] = DirectoryLayout.getModisClip(mProject, mDate, ModisProduct.NBAR, feature, "Nadir_Reflectance_Band2");
-        inputs[BLUE] = DirectoryLayout.getModisClip(mProject, mDate, ModisProduct.NBAR, feature, "Nadir_Reflectance_Band3");
+        inputs[RED] = red;
+        inputs[NIR] = nir;
+        inputs[BLUE] = blue;
 
         setInputFiles(inputs);
-        setOutputFile(DirectoryLayout.getIndex(mProject, mIndex, mDate, feature));
+        setOutputFile(output);
     }
 
     @Override

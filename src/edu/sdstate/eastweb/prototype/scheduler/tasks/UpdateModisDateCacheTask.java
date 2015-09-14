@@ -1,6 +1,8 @@
 package edu.sdstate.eastweb.prototype.scheduler.tasks;
 
 import java.io.*;
+import java.util.*;
+
 import org.apache.commons.io.FileUtils;
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.download.*;

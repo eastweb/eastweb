@@ -8,22 +8,20 @@ import org.junit.Test;
 import edu.sdstate.eastweb.prototype.Config;
 import edu.sdstate.eastweb.prototype.DataDate;
 import edu.sdstate.eastweb.prototype.download.cache.DateCache;
-import edu.sdstate.eastweb.prototype.download.cache.NldasCache;
 import edu.sdstate.eastweb.prototype.tests.*;
 import static org.junit.Assert.*;
 
 public class DateCacheTests extends MetadataTests {
     @Test
     public void test() throws IOException {
-        //File tempDictionary=new File(Config.getInstance().getTempDirectory());
-        File tempDictionary=new File("c://");
+        File tempDictionary=new File(Config.getInstance().getTempDirectory());
         for (int i = 0; i < 100; ++i) {
             final File tempFile = File.createTempFile("test", null,tempDictionary);
             try {
                 final DataDate lastUpdated = DataDateTests.random();
                 final DataDate startDate = DataDateTests.random();
                 final List<DataDate> dates = DataDateTests.randomList();
-                final NldasCache ref = new NldasCache(lastUpdated, startDate, dates);
+                final DateCache ref = new DateCache(lastUpdated, startDate, dates);
 
                 Collections.sort(dates);
                 assertEquals(lastUpdated, ref.getLastUpdated());

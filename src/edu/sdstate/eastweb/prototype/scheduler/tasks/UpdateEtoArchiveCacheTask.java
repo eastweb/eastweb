@@ -1,14 +1,15 @@
 package edu.sdstate.eastweb.prototype.scheduler.tasks;
 
 import java.io.*;
+import java.util.*;
+
 import org.apache.commons.io.FileUtils;
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.download.EtoDownloader;
 import edu.sdstate.eastweb.prototype.download.cache.*;
 import edu.sdstate.eastweb.prototype.scheduler.framework.CallableTask;
 
-public final class UpdateEtoArchiveCacheTask implements
-CallableTask<EtoArchiveCache> {
+public final class UpdateEtoArchiveCacheTask implements CallableTask<EtoArchiveCache> {
     /**
      * 
      */
@@ -47,9 +48,11 @@ CallableTask<EtoArchiveCache> {
     @Override
     public EtoArchiveCache call() throws IOException {
         // Get a list of archives and construct an archive cache
-        final EtoArchiveCache cache =
-                new EtoArchiveCache(DataDate.today(), mStartDate,
-                        EtoDownloader.listArchives(mStartDate));
+        final EtoArchiveCache cache = new EtoArchiveCache(
+                DataDate.today(),
+                mStartDate,
+                EtoDownloader.listArchives(mStartDate)
+        );
 
         // Write out the archive cache
         final File file = getFile();
@@ -61,8 +64,10 @@ CallableTask<EtoArchiveCache> {
 
     @Override
     public String getName() {
-        return String.format("Update ETo archive cache: startDate=%s",
-                mStartDate.toCompactString());
+        return String.format(
+                "Update ETo archive cache: startDate=%s",
+                mStartDate.toCompactString()
+        );
     }
 
 }

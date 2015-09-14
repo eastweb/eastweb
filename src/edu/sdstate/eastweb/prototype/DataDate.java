@@ -54,8 +54,6 @@ public final class DataDate implements Comparable<DataDate>, Serializable {
         dayOfYear = cal.get(GregorianCalendar.DAY_OF_YEAR);
     }
 
-
-
     public DataDate(int dayOfYear, int year) {
         this.dayOfYear = dayOfYear;
         this.year = year;
@@ -67,18 +65,6 @@ public final class DataDate implements Comparable<DataDate>, Serializable {
         cal.set(GregorianCalendar.DAY_OF_YEAR, dayOfYear);
         day = cal.get(GregorianCalendar.DAY_OF_MONTH);
         month = cal.get(GregorianCalendar.MONTH) + 1; // Add 1 to convert from 0-based months to 1-based months
-    }
-
-
-    public static DataDate DataDateWithHour(int hour, int day, int year){
-        // Compute day, month
-        GregorianCalendar cal = getClearedCalendar();
-        cal.set(GregorianCalendar.YEAR, year);
-        cal.set(GregorianCalendar.DAY_OF_YEAR, day);
-        int dayOfMonth = cal.get(GregorianCalendar.DAY_OF_MONTH);
-        int month = cal.get(GregorianCalendar.MONTH) + 1; // Add 1 to convert from 0-based months to 1-based months
-        return new DataDate(hour,dayOfMonth,month,year);
-
     }
 
     private DataDate(GregorianCalendar cal) {
@@ -115,21 +101,20 @@ public final class DataDate implements Comparable<DataDate>, Serializable {
         final String PARSE_ERROR_MESSAGE = "Failed to parse compact data date string";
 
         final String[] parts = str.split("-");
-        if (parts.length != 4) {
+        if (parts.length != 3) {
             throw new IllegalArgumentException(PARSE_ERROR_MESSAGE);
         }
 
-        final int year, month, day,hour;
+        final int year, month, day;
         try {
             year = Integer.parseInt(parts[0]);
             month = Integer.parseInt(parts[1]);
             day = Integer.parseInt(parts[2]);
-            hour=Integer.parseInt(parts[3]);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(PARSE_ERROR_MESSAGE);
         }
 
-        return new DataDate(hour,day, month, year);
+        return new DataDate(day, month, year);
     }
 
     /**
@@ -247,8 +232,7 @@ public final class DataDate implements Comparable<DataDate>, Serializable {
         .append("}").toString();
     }
 
-
     public String toCompactString() {
-        return String.format("%04d-%02d-%02d-%02d", year, month, day,hour);
+        return String.format("%04d-%02d-%02d", year, month, day);
     }
 }

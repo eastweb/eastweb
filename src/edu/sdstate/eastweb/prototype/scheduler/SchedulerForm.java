@@ -807,9 +807,7 @@ public class SchedulerForm {
             Scheduler scheduler = null;
             try {
                 final Config config = Config.getInstance();
-                //scheduler = new LocalScheduler(config.getProjects());
-                //change to one plugin scheduler
-                scheduler = new PluginScheduler(config.getProjects());
+                scheduler = new LocalScheduler(config.getProjects());
             } catch (Exception e) {
                 e.printStackTrace();
             }

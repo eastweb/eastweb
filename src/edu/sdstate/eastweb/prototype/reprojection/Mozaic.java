@@ -89,7 +89,7 @@ public class Mozaic {
             // System.out.println(tileList[i].vertical);
             // System.out.println(tileList[i].horizon);
             tileMetrix[tileList[i].vertical - minV][tileList[i].horizon - minH] =
-                    tileList[i];
+                tileList[i];
         }
 
         for (int i = 0; i < tileMetrixRow; i++) {
@@ -110,7 +110,7 @@ public class Mozaic {
     // number(row) of output
     // Assuming tile=1200*1200: return 0 if 0<=line<1200;
     // return 1 if 1200<=line<2400;
-    /* private int getRow(int line) {
+    private int getRow(int line) {
         int row = 0;
         for (int i = 0; i < tileMetrixRow; i++) {
 
@@ -120,7 +120,7 @@ public class Mozaic {
             }
         }
         return row;
-    }*/
+    }
 
     private void linkTiles() throws IOException {
 
@@ -129,8 +129,8 @@ public class Mozaic {
         for (int i = 0; i < band.length; i++) {
             int currentBand = band[i];
             File temp =
-                    File.createTempFile("band" + currentBand, ".tif",
-                            tempDictionary);
+                File.createTempFile("band" + currentBand, ".tif",
+                        tempDictionary);
             System.out.println("create temp: " + temp.toString());
             temp.deleteOnExit();
 
@@ -138,10 +138,10 @@ public class Mozaic {
             // create output file and set the metadata
             String[] option = { "INTERLEAVE=PIXEL" };
             Dataset output =
-                    gdal.GetDriverByName("GTiff").Create(
-                            temp.getAbsolutePath(), outputXSize, outputYSize,
-                            1, // band number
-                            gdalconst.GDT_Float32, option);
+                gdal.GetDriverByName("GTiff").Create(
+                        temp.getAbsolutePath(), outputXSize, outputYSize,
+                        1, // band number
+                        gdalconst.GDT_Float32, option);
 
             Dataset input = gdal.Open(tileList[0].sdsName[0]);
             output.SetGeoTransform(input.GetGeoTransform());
@@ -152,8 +152,8 @@ public class Mozaic {
 
             // outputTemp is used to store double array data of output file
             ImageArray outputTemp =
-                    new ImageArray(output.getRasterXSize(),
-                            output.getRasterYSize());
+                new ImageArray(output.getRasterXSize(),
+                        output.getRasterYSize());
 
             // loop for each tile
             for (int col = 0; col < tileMetrixClo; col++) {
@@ -167,7 +167,7 @@ public class Mozaic {
                                 + tileMetrix[row][col].sdsName[currentBand - 1]);
                         // currentTile=null;
                         Dataset tempTile =
-                                gdal.Open(tileMetrix[row][col].sdsName[currentBand - 1]);
+                            gdal.Open(tileMetrix[row][col].sdsName[currentBand - 1]);
                         tempArray = new ImageArray(tempTile.GetRasterBand(1));
                         tempTile.delete();
 
@@ -180,7 +180,7 @@ public class Mozaic {
                         double[] rowTemp = outputTemp.getRow(j);
                         if (tempArray != null) {
                             double[] tileRow =
-                                    tempArray.getRow(j - row * ySize);
+                                tempArray.getRow(j - row * ySize);
                             System.arraycopy(tileRow, 0, rowTemp, col * xSize,
                                     xSize);
                         } else {

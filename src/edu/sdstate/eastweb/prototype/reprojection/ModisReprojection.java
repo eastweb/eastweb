@@ -26,7 +26,7 @@ public class ModisReprojection {
             File output=new File(outputFiles[index].getPath());
             //TODO: GdalUtils.project() doesn't use wtk right now, may change later
             String wtk="  ";
-            //GdalUtils.project(wtk,nonProjectFile, project,output);
+            GdalUtils.project(wtk,nonProjectFile, project,output);
 
         }
     }

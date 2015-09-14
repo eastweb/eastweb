@@ -22,7 +22,6 @@ import edu.sdstate.eastweb.prototype.reprojection.ModisReprojectedMetadata;
 import edu.sdstate.eastweb.prototype.reprojection.ModisReprojection;
 import edu.sdstate.eastweb.prototype.scheduler.framework.RunnableTask;
 
-@SuppressWarnings("serial")
 public class PrepareModisTask implements RunnableTask {
     private final ProjectInfo mProject;
     private final ModisProduct mProduct;
@@ -80,7 +79,7 @@ public class PrepareModisTask implements RunnableTask {
         }
     }
 
-    /*private int getNumExpectedFiles() {
+    private int getNumExpectedFiles() {
         switch (mProduct) {
         case NBAR:
             return 7;
@@ -91,7 +90,7 @@ public class PrepareModisTask implements RunnableTask {
         default:
             throw new IllegalArgumentException();
         }
-    }*/
+    }
 
 
 
@@ -133,12 +132,12 @@ public class PrepareModisTask implements RunnableTask {
                         getInputFiles(),
                         mProject,
                         new File[]
-                                {
+                                 {
                             new File(outputFile.getParent(), "projected.LST_Day_1km.tif"),
                             new File(outputFile.getParent(), "projected.LST_Night_1km.tif"),
-                                },
-                                getBands()
-                        );
+                                 },
+                                 getBands()
+                );
                 lstProjection=null;
                 break;
             }
@@ -152,14 +151,14 @@ public class PrepareModisTask implements RunnableTask {
                     new GdalFilterModisNbar(
                             new File(outputFile.getParent(), "projected.Nadir_Reflectance_Band" + i + ".tif"),
                             new File(outputFile.getParent(), "filtered.Nadir_Reflectance_Band" + i + ".tif")
-                            ).filter();
+                    ).filter();
                     FileUtils.deleteQuietly(new File(outputFile.getParent(), "projected.Nadir_Reflectance_Band" + i + ".tif"));
 
                     new GdalFilterWithWatermask(
                             new File(outputFile.getParent(), "filtered.Nadir_Reflectance_Band" + i + ".tif"),
                             new File(DirectoryLayout.getSettingsDirectory(mProject), mProject.getWatermask()),
                             new File(outputFile.getParent(), "Nadir_Reflectance_Band" + i + ".tif")
-                            ).filter();
+                    ).filter();
                     FileUtils.deleteQuietly(new File(outputFile.getParent(), "filtered.Nadir_Reflectance_Band" + i + ".tif"));
                 }
                 break;
@@ -167,27 +166,27 @@ public class PrepareModisTask implements RunnableTask {
                 new GdalFilterModisLst(
                         new File(outputFile.getParent(), "projected.LST_Day_1km.tif"),
                         new File(outputFile.getParent(), "filtered.LST_Day_1km.tif")
-                        ).filter();
+                ).filter();
                 FileUtils.deleteQuietly(new File(outputFile.getParent(), "projected.LST_Day_1km.tif"));
 
                 new GdalFilterModisLst(
                         new File(outputFile.getParent(), "projected.LST_Night_1km.tif"),
                         new File(outputFile.getParent(), "filtered.LST_Night_1km.tif")
-                        ).filter();
+                ).filter();
                 FileUtils.deleteQuietly(new File(outputFile.getParent(), "projected.LST_Night_1km.tif"));
 
                 new GdalFilterWithWatermask(
                         new File(outputFile.getParent(), "filtered.LST_Day_1km.tif"),
                         new File(DirectoryLayout.getSettingsDirectory(mProject), mProject.getWatermask()),
                         new File(outputFile.getParent(), "LST_Day_1km.tif")
-                        ).filter();
+                ).filter();
                 FileUtils.deleteQuietly(new File(outputFile.getParent(), "filtered.LST_Day_1km.tif"));
 
                 new GdalFilterWithWatermask(
                         new File(outputFile.getParent(), "filtered.LST_Night_1km.tif"),
                         new File(DirectoryLayout.getSettingsDirectory(mProject), mProject.getWatermask()),
                         new File(outputFile.getParent(), "LST_Night_1km.tif")
-                        ).filter();
+                ).filter();
                 FileUtils.deleteQuietly(new File(outputFile.getParent(), "filtered.LST_Night_1km.tif"));
                 break;
             default:
@@ -211,7 +210,7 @@ public class PrepareModisTask implements RunnableTask {
                 mProject.getName(),
                 mProduct,
                 mDate.toCompactString()
-                );
+        );
     }
 
 

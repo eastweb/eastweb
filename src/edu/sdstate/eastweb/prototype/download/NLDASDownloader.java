@@ -16,14 +16,14 @@ import edu.sdstate.eastweb.prototype.*;
 
 /**
  *This download class is automatically generated. Please go through all the TODO tags before using it.
- *Implements the TRMM_3B42 component of the download module.
+ *Implements the NLDAS component of the download module.
  *Dependency: config.java; Downloader.Mode; Downloader.Settings; Downloader.ConnectionContext
  */
-public final class TRMM_3B42Downloader extends Downloader {
+public final class NLDASDownloader extends Downloader {
     private final DataDate mDate;
     private final File mOutFile;
 
-    public TRMM_3B42Downloader(DataDate date, File outFile) throws IOException {
+    public NLDASDownloader(DataDate date, File outFile) throws IOException {
         mDate = date;
         mOutFile = outFile;
     }
@@ -35,19 +35,19 @@ public final class TRMM_3B42Downloader extends Downloader {
      * @throws IOException
      */
     public static final List<DataDate> listDates(DataDate startDate) throws ConfigReadException, IOException {
-        Mode mode=Settings.getMode(DataType.TRMM_3B42);
+        Mode mode=Settings.getMode(DataType.NLDAS);
         if(mode==Mode.FTP){
             //TODO: Please check the patterns to make sure that they are compatible.
             final Pattern yearDirPattern = Pattern.compile("\\d{4}");
             final Pattern dayOfYearDirPattern = Pattern.compile("\\d{3}");
 
             FTPClient ftp=null;
-            String rootDir=Config.getInstance().getTRMM_3B42RootDir();
+            String rootDir=Config.getInstance().getNLDASRootDir();
 
             try{
-                ftp = (FTPClient) ConnectionContext.getConnection(mode, DataType.TRMM_3B42);
+                ftp = (FTPClient) ConnectionContext.getConnection(mode, DataType.NLDAS);
             }catch(ConnectException e){
-                System.out.println("Can't connect to TRMM_3B42 data website, please check your URL.");
+                System.out.println("Can't connect to NLDAS data website, please check your URL.");
                 return null;
             }
 
@@ -79,12 +79,25 @@ public final class TRMM_3B42Downloader extends Downloader {
                         throw new IOException("Couldn't navigate to directory: " + yearDirectory);
                     }
 
+                    //The path of NLDS is \year\dayOfYear\fileName.grd
+                    for (FTPFile file : ftp.listDirectories()) {
+                        int dayOfYear=Integer.parseInt(file.getName());
+                        final DataDate dataDate=new DataDate(dayOfYear,Integer.parseInt(yearFile.getName()));
+                        if (dataDate.compareTo(startDate) >= 0) {
+                            list.add(dataDate);
+                        }
+                    }
+
+
+
+                    /* NLDS file have different file structure. list days need be rewrite.
+                     *
                     //TODO: Create your pattern here
-                    Pattern mpattern=Pattern.compile("3B42_daily\\.(\\d{4})\\.(\\d{2})\\.(\\d{2})\\.7\\.bin");
+                    Pattern mpattern=Pattern.compile("NLDAS_FORA0125_H\\.A(\\d{4})(\\d{2})(\\d{2})\\.(\\d{4})\\.002\\.grb");
 
                     for (FTPFile file : ftp.listFiles()) {
                         if (file.isFile() && mpattern.matcher(file.getName()).matches()) {
-                            // TODO: Assume following formatis {product name}.%y4.%m2.%d2.7.bin, please change it as needed
+                            // TODO: Assume following format is {product name}.%y4.%m2.%d2.7.bin, please change it as needed
                             String[] strings = file.getName().split("[.]");
                             final int month = Integer.parseInt(strings[2]);
                             final int day = Integer.parseInt(strings[3]);
@@ -94,17 +107,18 @@ public final class TRMM_3B42Downloader extends Downloader {
                                 list.add(dataDate);
                             }
                         }
-                    }
+                    }*/
+
                 }
 
                 return list;
             } finally {
-                FtpClientPool.returnFtpClient(Config.getInstance().getTRMM_3B42FtpHostName(), ftp);
+                FtpClientPool.returnFtpClient(Config.getInstance().getNLDASFtpHostName(), ftp);
             }
 
         }else{
             //create url connection
-            URLConnection conn=(URLConnection)ConnectionContext.getConnection(mode, DataType.TRMM_3B42);
+            URLConnection conn=(URLConnection)ConnectionContext.getConnection(mode, DataType.NLDAS);
             //TODO: Please check the pattern to make sure that it is compatible.
             final Pattern re = Pattern.compile("(\\d{4})\\.(\\d{2})\\.(\\d{2})");
             byte[] downloadPage=null;
@@ -121,7 +135,7 @@ public final class TRMM_3B42Downloader extends Downloader {
             try {
                 pagedoc = builder.parse(new ByteArrayInputStream(downloadPage));
             } catch (SAXException e) {
-                throw new IOException("Failed to parse the TRMM_3B42 download page", e);
+                throw new IOException("Failed to parse the NLDAS download page", e);
             }
 
             final NodeList dirlist = pagedoc.getElementsByTagName("a");
@@ -154,26 +168,40 @@ public final class TRMM_3B42Downloader extends Downloader {
 
     @Override
     public final void download() throws IOException, ConfigReadException, DownloadFailedException {
-        Mode mode=Settings.getMode(DataType.TRMM_3B42);
+        Mode mode=Settings.getMode(DataType.NLDAS);
         if(mode==Mode.FTP){
-            final FTPClient ftp = (FTPClient) ConnectionContext.getConnection(mode, DataType.TRMM_3B42);
+            final FTPClient ftp = (FTPClient) ConnectionContext.getConnection(mode, DataType.NLDAS);
             try {
                 //TODO: Change the year directory as needed.
                 final String yearDirectory = String.format(
                         "%s/%s",
-                        Settings.getRootDir(DataType.TRMM_3B42),
+                        Settings.getRootDir(DataType.NLDAS),
                         Integer.toString(mDate.getYear())
                 );
+
+
                 if (!ftp.changeWorkingDirectory(yearDirectory)) {
                     throw new IOException("Couldn't navigate to directory: " + yearDirectory);
+
                 }
-                //TODO: Change the string format as needed.
+
+                //Change to the day of year directory. Added by Jiameng Hu
+                int dayOfYear=mDate.getDayOfYear();
+                final String dayDirectory=String.format("%s/%3d",yearDirectory, dayOfYear);
+                if (!ftp.changeWorkingDirectory(dayDirectory)) {
+                    throw new IOException("Couldn't navigate to directory: " + dayDirectory);
+                }
+
+                //TODO: Change the string format as needed. Add hour into date information by Jiameng
                 String targetFile=String.format(
-                        "3B42_daily.%04d.%02d.%02d.7.bin",
+                        "NLDAS_FORA0125_H.A%04d%02d%02d.%04d.002.grb",
                         mDate.getYear(),
                         mDate.getMonth(),
-                        mDate.getDay()
+                        mDate.getDay(),
+                        //The format of hour of 2 is 0200. by Jiameng
+                        mDate.getHour()*100
                 );
+
                 DownloadUtils.download(ftp, targetFile, mOutFile);
             } catch (IOException e) { // FIXME: ugly fix so that the system doesn't repeatedly try and fail
                 try {
@@ -183,12 +211,12 @@ public final class TRMM_3B42Downloader extends Downloader {
                 }
                 throw e;
             } finally {
-                FtpClientPool.returnFtpClient(Config.getInstance().getTRMM_3B42FtpHostName(), ftp);
+                FtpClientPool.returnFtpClient(Config.getInstance().getNLDASFtpHostName(), ftp);
             }
         }else{
             //mode is http
             //TODO: Create url based on date
-            String url_str=Config.getInstance().getTRMM_3B42Url()+String.format(
+            String url_str=Config.getInstance().getNLDASUrl()+String.format(
                     "%04d.%02d.%02d",mDate.getYear(),mDate.getMonth(),mDate.getDay());
             // Download the archive
             URL url = new URL(url_str);

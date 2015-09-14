@@ -1,6 +1,8 @@
 package edu.sdstate.eastweb.prototype.scheduler.tasks;
 
 import java.io.*;
+import java.util.*;
+
 import org.apache.commons.io.*;
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.download.*;
@@ -43,9 +45,10 @@ public class UpdateModisTileCacheTask implements CallableTask<ModisTileCache> {
     @Override
     public ModisTileCache call() throws IOException {
         // Get a list of tiles and construct a tile cache
-        final ModisTileCache cache =
-                new ModisTileCache(DataDate.today(), ModisDownloader.listTiles(
-                        mProduct, mDate));
+        final ModisTileCache cache = new ModisTileCache(
+                DataDate.today(),
+                ModisDownloader.listTiles(mProduct, mDate)
+        );
 
         // Write out the tile cache
         final File file = getFile();
@@ -57,8 +60,11 @@ public class UpdateModisTileCacheTask implements CallableTask<ModisTileCache> {
 
     @Override
     public String getName() {
-        return String.format("Update MODIS tile cache: product=%s, date=%s",
-                mProduct, mDate.toCompactString());
+        return String.format(
+                "Update MODIS tile cache: product=%s, date=%s",
+                mProduct,
+                mDate.toCompactString()
+        );
     }
 
 }

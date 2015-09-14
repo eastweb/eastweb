@@ -1,10 +1,8 @@
 package edu.sdstate.eastweb.prototype.download;
 import java.io.IOException;
-
-import org.xml.sax.SAXException;
 public abstract class Downloader {
 
-    public abstract void download() throws IOException, DownloadFailedException, Exception, SAXException;
+    public abstract void download() throws IOException, DownloadFailedException;
     public enum DataType {
         TRMM,
         ETO,

@@ -1,6 +1,8 @@
 package edu.sdstate.eastweb.prototype.scheduler.tasks;
 
 import java.io.*;
+import java.util.*;
+
 import org.apache.commons.io.FileUtils;
 import edu.sdstate.eastweb.prototype.*;
 import edu.sdstate.eastweb.prototype.download.TrmmDownloader;
@@ -49,9 +51,11 @@ public final class UpdateTrmmDateCacheTask implements CallableTask<DateCache> {
     @Override
     public DateCache call() throws IOException {
         // Get a list of dates and construct a date cache
-        final DateCache cache =
-                new DateCache(DataDate.today(), mStartDate,
-                        TrmmDownloader.listDates(mProduct, mStartDate));
+        final DateCache cache = new DateCache(
+                DataDate.today(),
+                mStartDate,
+                TrmmDownloader.listDates(mProduct, mStartDate)
+        );
 
         // Write out the date cache
         final File file = getFile();
@@ -63,8 +67,10 @@ public final class UpdateTrmmDateCacheTask implements CallableTask<DateCache> {
 
     @Override
     public String getName() {
-        return String.format("Update TRMM date cache: startDate=%s",
-                mStartDate.toCompactString());
+        return String.format(
+                "Update TRMM date cache: startDate=%s",
+                mStartDate.toCompactString()
+        );
     }
 
 }
