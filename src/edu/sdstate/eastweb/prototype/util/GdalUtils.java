@@ -45,7 +45,7 @@ public class GdalUtils {
     /**
      * Checks for exceptions reported to the GDAL error reporting system and
      * maps them to Java exceptions or errors.
-     * 
+     *
      * @throws IOException CPLE_AppDefined, CPLE_FileIO, CPLE_OpenFailed, CPLE_NoWriteAccess, CPLE_UserInterrupt
      * @throws IllegalArgumentException CPLE_IllegalArg
      * @throws UnsupportedOperationException CPLE_NotSupported
@@ -128,7 +128,7 @@ public class GdalUtils {
                     (int) Math.ceil((top-bottom)/project.getProjection().getPixelSize()),
                     1,
                     gdalconst.GDT_Float32
-            );
+                    );
 
             //TODO: get projection from project info, and get transform from shape file
             //SpatialReference outputRef = new SpatialReference();
@@ -146,8 +146,11 @@ public class GdalUtils {
             ResamplingType resample=project.getProjection().getResamplingType();
             switch(resample){
             case NEAREST_NEIGHBOR:resampleAlg=gdalconst.GRA_NearestNeighbour;
+            break;
             case BILINEAR: resampleAlg=gdalconst.GRA_Bilinear;
+            break;
             case CUBIC_CONVOLUTION: resampleAlg=gdalconst.GRA_CubicSpline;
+            break;
             }
             gdal.ReprojectImage(inputDS, outputDS, null, null, resampleAlg);
             outputDS.GetRasterBand(1).ComputeStatistics(false);

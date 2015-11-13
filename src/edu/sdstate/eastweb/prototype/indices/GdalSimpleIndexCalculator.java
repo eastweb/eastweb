@@ -43,6 +43,7 @@ public abstract class GdalSimpleIndexCalculator implements IndexCalculator {
         synchronized (GdalUtils.lockObject) {
             // Setup the output and inputs
             Dataset[] inputs = new Dataset[mInputFiles.length];
+
             for (int i = 0; i < mInputFiles.length; i++) {
                 inputs[i] = gdal.Open(mInputFiles[i].getPath());
             }
@@ -81,12 +82,12 @@ public abstract class GdalSimpleIndexCalculator implements IndexCalculator {
 
         for (int y = 0; y < ySize; y++) {
             for (int i = 0; i < inputs.length; i++) {
-                inputs[i].GetRasterBand(1).ReadRaster(0, y, xSize, 1,
-                        inputsArray[i]);
+                inputs[i].GetRasterBand(1).ReadRaster(0, y, xSize, 1, inputsArray[i]);
             }
 
             for (int x = 0; x < xSize; x++) {
                 double[] values = new double[inputs.length];
+
                 for (int i = 0; i < inputs.length; i++) {
                     values[i] = inputsArray[i][x];
                 }
@@ -96,6 +97,24 @@ public abstract class GdalSimpleIndexCalculator implements IndexCalculator {
 
             output.GetRasterBand(1).WriteRaster(0, y, xSize, 1, outputArray);
         }
+
+        //        for (int y = 0; y < ySize; y++) {
+        //            for (int i = 0; i < inputs.length; i++) {
+        //                inputs[i].GetRasterBand(1).ReadRaster(0, y, xSize, 1,
+        //                        inputsArray[i]);
+        //            }
+        //
+        //            for (int x = 0; x < xSize; x++) {
+        //                double[] values = new double[inputs.length];
+        //                for (int i = 0; i < inputs.length; i++) {
+        //                    values[i] = inputsArray[i][x];
+        //                }
+        //
+        //                outputArray[x] = calculatePixelValue(values);
+        //            }
+        //
+        //            output.GetRasterBand(1).WriteRaster(0, y, xSize, 1, outputArray);
+        //        }
 
     }
 

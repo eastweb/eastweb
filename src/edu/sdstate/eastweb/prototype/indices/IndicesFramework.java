@@ -78,9 +78,14 @@ public abstract class IndicesFramework {
             DataDate mDate, String mFeature) {
 
         try{
+
+            output =
+                    DirectoryLayout.getIndex(mProject, mIndex, mDate, mFeature);
+
             FileUtils.forceMkdir(output.getParentFile());
 
             String feature = new File(mFeature).getName().split("\\.")[0];
+
 
             red =
                     DirectoryLayout.getModisClip(mProject, mDate,
@@ -94,8 +99,6 @@ public abstract class IndicesFramework {
             night =
                     DirectoryLayout.getModisClip(mProject, mDate, ModisProduct.LST,
                             feature, "LST_Night_1km");
-            output =
-                    DirectoryLayout.getIndex(mProject, mIndex, mDate, mFeature);
             blue =
                     DirectoryLayout.getModisClip(mProject, mDate,
                             ModisProduct.NBAR, feature, "Nadir_Reflectance_Band3");
@@ -116,7 +119,9 @@ public abstract class IndicesFramework {
                     DirectoryLayout.getTrmmClip(mProject, TrmmProduct.TRMM_3B42RT,
                             mDate, feature);
         }
-        catch(Exception e){}
+        catch(Exception e){
+            //System.out.println("No Files Were Set: " + e);
+        }
     }
 
     public abstract void AddMaps() throws Exception;

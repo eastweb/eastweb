@@ -22,7 +22,7 @@ public class GdalSaviCalculator extends GdalSimpleIndexCalculator {
         if (values[NIR] == 32767 || values[RED] == 32767) {
             return -3.40282346639e+038;
         } else {
-            return (values[NIR] - values[RED] * (1 + L))
+            return ((values[NIR] - values[RED]) * (1 + L))
                     / (values[NIR] + values[RED] + L);
         }
     }
